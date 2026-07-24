@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+
+# Local environments and generated build output
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+
+# Source/reference files that are not needed by the playable build
+Mobile game combat UI concepts.zip
+assets/characters/*.png
+wireframes/mobile-game-combat-ui-concepts/.thumbnail

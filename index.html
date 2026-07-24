@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+    />
+    <meta name="theme-color" content="#17181c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Quick Draw — Playable Prototype</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app">
+      <section class="screen home-screen is-active" id="homeScreen" aria-labelledby="gameTitle">
+        <div class="home-orbit home-orbit-one"></div>
+        <div class="home-orbit home-orbit-two"></div>
+
+        <div class="brand-block">
+          <svg class="western-art bandana-art" viewBox="0 0 220 170" aria-hidden="true">
+            <path
+              class="bandana-knot"
+              d="M42 49C22 37 10 42 5 59c14 3 27 12 38 28l22-18Z"
+            />
+            <path
+              class="bandana-knot"
+              d="M174 49c21-12 33-7 38 10-14 3-27 12-38 28l-22-18Z"
+            />
+            <path
+              class="bandana-body"
+              d="M37 38c32-19 114-19 146 0l-13 49-60 74-60-74Z"
+            />
+            <path class="bandana-fold" d="M39 38c36 17 106 17 142 0l-7 32c-38 14-90 14-128 0Z" />
+            <g class="bandana-print">
+              <path d="M78 83c12 2 16 13 8 22-9-4-14-14-8-22Z" />
+              <path d="M132 88c10 3 13 13 5 20-8-4-12-12-5-20Z" />
+              <path d="M105 116c9 2 12 10 6 17-8-3-11-10-6-17Z" />
+              <circle cx="111" cy="61" r="5" />
+              <circle cx="60" cy="58" r="4" />
+              <circle cx="159" cy="60" r="4" />
+            </g>
+          </svg>
+
+          <div class="eyebrow">PLAYABLE PROTOTYPE</div>
+          <h1 id="gameTitle">
+            <span>Quick</span>
+            <span class="brand-draw">Draw!</span>
+          </h1>
+          <p>Two seconds to decide. Three hearts. One winner.</p>
+
+          <svg class="western-art holster-art" viewBox="0 0 170 220" aria-hidden="true">
+            <path class="holster-belt" d="M10 24h150v37H10z" />
+            <path class="holster-loop" d="M55 9h62v76H55z" />
+            <path
+              class="holster-body"
+              d="M45 55c28-15 65-14 91 3l-12 40c-6 19-11 43-12 79l-45 30-24-21c15-39 16-84 2-131Z"
+            />
+            <path class="holster-mouth" d="M48 56c28-13 59-12 85 2l-5 24c-27-14-53-14-78-1Z" />
+            <path class="holster-stitch" d="M58 91c13 32 10 66-1 92m56-88c-8 29-12 54-12 78" />
+            <circle class="holster-rivet" cx="56" cy="74" r="5" />
+            <path
+              class="holster-star"
+              d="m94 108 5 11 12 2-9 8 3 12-11-6-11 6 3-12-9-8 12-2Z"
+            />
+          </svg>
+        </div>
+
+        <div class="setup-card">
+          <div class="setup-group">
+            <span class="setup-label">MATCH</span>
+            <div class="segmented" role="group" aria-label="Match size">
+              <button class="segment is-selected" type="button" data-player-count="2">
+                Duel
+                <small>1 robot</small>
+              </button>
+              <button class="segment" type="button" data-player-count="3">
+                Trio
+                <small>2 robots</small>
+              </button>
+            </div>
+          </div>
+
+          <div class="setup-group">
+            <span class="setup-label">ROBOT SKILL</span>
+            <div class="segmented difficulty-picker" role="group" aria-label="Robot difficulty">
+              <button class="segment" type="button" data-difficulty="easy">Easy</button>
+              <button class="segment is-selected" type="button" data-difficulty="medium">
+                Medium
+              </button>
+              <button class="segment" type="button" data-difficulty="hard">Hard</button>
+            </div>
+          </div>
+
+          <button class="primary-button" id="startButton" type="button">
+            <span>PLAY A ROBOT</span>
+            <span class="button-arrow" aria-hidden="true">→</span>
+          </button>
+          <p class="setup-note">Special power in this prototype: Double Shield</p>
+        </div>
+      </section>
+
+      <section
+        class="screen character-screen"
+        id="characterScreen"
+        aria-labelledby="characterSelectTitle"
+      >
+        <header class="character-header">
+          <button class="icon-button" id="backToHomeButton" type="button" aria-label="Back to home">←</button>
+          <div>
+            <div class="eyebrow">YOUR FIGHTER</div>
+            <h2 id="characterSelectTitle">Pick your character</h2>
+          </div>
+          <div class="roster-status">
+            <span class="status-dot"></span>
+            <span>2 ready · 4 arriving soon</span>
+          </div>
+        </header>
+
+        <div class="character-layout">
+          <div class="character-roster" id="characterGrid" aria-label="Character roster"></div>
+
+          <article class="character-feature">
+            <div class="character-stage">
+              <div class="character-glow" id="characterGlow"></div>
+              <img id="heroCharacterImage" alt="" />
+              <div class="coming-soon-hero" id="comingSoonHero" hidden>
+                <span>✦</span>
+                <strong>ART COMING SOON</strong>
+              </div>
+            </div>
+
+            <div class="character-details">
+              <div class="your-color">YOUR COLOR</div>
+              <h3 id="heroCharacterName">Sir Blocksalot</h3>
+              <p class="character-tagline" id="heroCharacterTagline"></p>
+
+              <div class="power-card">
+                <span>SPECIAL CONCEPT · ONCE PER ROUND</span>
+                <strong id="heroPowerName"></strong>
+                <p id="heroPowerDescription"></p>
+              </div>
+
+              <p class="prototype-power-note">
+                Current prototype matches still use Double Shield for every fighter.
+              </p>
+
+              <button class="primary-button ready-button" id="readyButton" type="button">
+                I'M READY
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen combat-screen" id="combatScreen" aria-label="Combat">
+        <div class="territory territory-left" id="territoryLeft"></div>
+        <div class="territory territory-right" id="territoryRight"></div>
+
+        <header class="combat-header">
+          <button class="icon-button" id="quitButton" type="button" aria-label="Leave match">
+            ×
+          </button>
+          <div class="beat-status">
+            <span class="beat-number" id="beatNumber">BEAT 1</span>
+            <strong id="phaseLabel">DECIDE!</strong>
+          </div>
+          <button class="icon-button rules-button" id="rulesButton" type="button" aria-label="Rules">
+            ?
+          </button>
+        </header>
+
+        <div class="beat-track" aria-hidden="true">
+          <div class="beat-progress" id="beatProgress"></div>
+        </div>
+
+        <div class="rivals" id="rivals"></div>
+
+        <div class="arena-center" aria-live="polite">
+          <div class="event-banner" id="eventBanner">Choose your move</div>
+          <div class="reveals" id="reveals"></div>
+        </div>
+
+        <div class="action-dock">
+          <div class="player-hud">
+            <div class="you-pill">
+              <span class="you-avatar" aria-hidden="true">
+                <img id="playerAvatarImage" alt="" />
+              </span>
+              <span>YOU</span>
+            </div>
+            <div class="my-hearts" id="playerHearts" aria-label="Your hearts"></div>
+            <div class="ammo-pill" id="ammoPill">
+              <span class="ammo-icon" aria-hidden="true"></span>
+              <strong id="ammoCount">0</strong>
+              <span id="ammoLabel">shots</span>
+            </div>
+          </div>
+
+          <div class="action-fan" id="actionFan" aria-label="Choose an action"></div>
+        </div>
+
+        <div class="countdown-overlay" id="countdownOverlay" aria-live="assertive" hidden>
+          <div class="countdown-rings" aria-hidden="true"></div>
+          <div class="countdown-copy">
+            <span id="countdownLabel">GET READY</span>
+            <strong id="countdownNumber">3</strong>
+            <small>First beat starts after the count</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen result-screen" id="resultScreen" aria-labelledby="resultTitle">
+        <div class="result-burst" id="resultBurst"></div>
+        <div class="result-content">
+          <div class="eyebrow">LAST ONE STANDING</div>
+          <div class="winner-medallion" id="winnerMedallion" aria-hidden="true">Y</div>
+          <h2 id="resultTitle">You win!</h2>
+          <p id="resultSubtitle">Won on one heart. Brutal.</p>
+
+          <div class="round-stats">
+            <div><strong id="statBeats">0</strong><span>beats</span></div>
+            <div><strong id="statBlocks">0</strong><span>shots blocked</span></div>
+            <div><strong id="statReloads">0</strong><span>reloads</span></div>
+          </div>
+
+          <div class="result-actions">
+            <button class="secondary-button" id="changeMatchButton" type="button">CHANGE MATCH</button>
+            <button class="primary-button" id="rematchButton" type="button">REMATCH</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="rulesModal" hidden>
+      <section class="rules-modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+        <button class="modal-close" id="closeRulesButton" type="button" aria-label="Close rules">×</button>
+        <div class="eyebrow">CHEAT SHEET</div>
+        <h2 id="rulesTitle">Load when they hide.<br />Hide when they’re loaded.</h2>
+        <div class="rule-grid">
+          <div><span class="mini-action">⬡</span><p><strong>BLOCK</strong> stops every incoming shot.</p></div>
+          <div><span class="mini-action">∞</span><p><strong>RELOAD</strong> adds one shot, but leaves you open.</p></div>
+          <div><span class="mini-action">✦</span><p><strong>FIRE</strong> costs one shot. Pick your target.</p></div>
+          <div><span class="mini-action">★</span><p><strong>POWER</strong> blocks this beat and the next.</p></div>
+        </div>
+        <p class="rule-footnote">
+          You get one second to choose, then one second to watch every move resolve.
+        </p>
+      </section>
+    </div>
+
+    <div class="portrait-lock" aria-live="polite">
+      <div class="rotate-phone" aria-hidden="true">↻</div>
+      <strong>Turn your phone sideways</strong>
+      <span>This game is built for landscape play.</span>
+    </div>
+
+    <script type="module" src="./src/game.js"></script>
+  </body>
+</html>

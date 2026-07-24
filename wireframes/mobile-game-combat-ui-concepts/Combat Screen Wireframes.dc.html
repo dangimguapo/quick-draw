@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet"><style>body{margin:0;background:#f0eee9;font-family:system-ui,sans-serif}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55);max-width:760px}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.06)}24%{transform:scale(1)}}</style></helmet>
+
+<section class="dv-turn" id="t9">
+<div class="dv-thd"><a class="dv-tid" href="#t9">9</a><span class="dv-tname">What sits behind <a class="dv-oid" href="#8a">8a</a>'s two buttons — matchmaking and settings</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="9a"><div class="dv-olabel"><a class="dv-oid" href="#9a">9a</a><span>After PLAY. Seats fill as players arrive, so waiting shows progress instead of a spinner. Two escapes are always visible: start now as a duel with whoever showed up, or fill the empty seat with a robot.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:24px;top:16px;font:10px ui-monospace,monospace;color:#8a857c">FINDING PLAYERS · 6s</div>
+<div style="position:absolute;right:24px;top:12px;border:2px solid #1a1a1a;border-radius:20px;padding:4px 16px;font-size:16px;background:#fff">cancel</div>
+
+<div style="position:absolute;left:0;right:0;top:48px;text-align:center;font-size:30px;line-height:1">Two in. Room for one more.</div>
+
+<div style="position:absolute;left:26px;right:26px;top:100px;height:150px;display:flex;gap:14px">
+<div style="flex:1;border:3px solid #2a78d6;border-radius:14px;background:#eef4fb;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:60px;height:60px;border:2px solid #2a78d6;border-radius:10px;background:repeating-linear-gradient(45deg,#e2ecf8 0 5px,#fff 5px 10px);flex:none"></div>
+<div style="font-size:19px;line-height:1;color:#2a78d6">You</div>
+<div style="border:2px solid #2a78d6;color:#2a78d6;border-radius:20px;padding:2px 12px;font-size:14px;margin-top:auto">in</div>
+</div>
+<div style="flex:1;border:3px solid #c98a2a;border-radius:14px;background:#faf3e9;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:60px;height:60px;border:2px solid #c98a2a;border-radius:10px;background:repeating-linear-gradient(45deg,#f6ecdb 0 5px,#fff 5px 10px);flex:none"></div>
+<div style="font-size:19px;line-height:1;color:#c98a2a">Mo</div>
+<div style="border:2px solid #c98a2a;color:#c98a2a;border-radius:20px;padding:2px 12px;font-size:14px;margin-top:auto">just joined</div>
+</div>
+<div style="flex:1;border:2px dashed #b8b4ac;border-radius:14px;background:#f7f5f1;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+<div style="display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:13px;height:13px;border-radius:50%;background:#b8b4ac"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+<div style="font-size:16px;color:#8a857c">looking…</div>
+</div>
+</div>
+
+<div style="position:absolute;left:26px;right:26px;bottom:78px;font:9px ui-monospace,monospace;color:#8a857c;text-align:center;line-height:1.6">the beat pulse already runs here, so the rhythm is familiar before the round starts<br>the match locks the moment it starts — nobody joins a round in progress, and an empty 3rd seat stays empty</div>
+
+<div style="position:absolute;left:0;right:0;bottom:24px;display:flex;justify-content:center;gap:14px;align-items:center">
+<div style="border:3px solid #1a1a1a;border-radius:28px;padding:11px 28px;font-size:21px;background:#1a1a1a;color:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">start as a duel</div>
+<div style="border:2px solid #1a1a1a;border-radius:26px;padding:10px 22px;font-size:19px;background:#fff">fill it with a robot</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="9b"><div class="dv-olabel"><a class="dv-oid" href="#9b">9b</a><span>Settings. Short on purpose — only things that change how the game feels or who can reach you. Sound and haptics matter most here: the beat is audible, so a muted player is playing a harder game.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:24px;top:15px;font-size:24px;line-height:1">Settings</div>
+<div style="position:absolute;right:24px;top:14px;border:2px solid #1a1a1a;border-radius:20px;padding:4px 16px;font-size:16px;background:#fff">done</div>
+
+<div style="position:absolute;left:24px;top:56px;width:340px;display:flex;flex-direction:column;gap:13px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">FEEL</div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">Beat sound</span><span style="width:56px;height:28px;border:2px solid #1a1a1a;border-radius:16px;background:#1a1a1a;display:flex;align-items:center;justify-content:flex-end;padding:0 4px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:50%;background:#fff"></span></span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">Buzz on each beat</span><span style="width:56px;height:28px;border:2px solid #1a1a1a;border-radius:16px;background:#1a1a1a;display:flex;align-items:center;justify-content:flex-end;padding:0 4px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:50%;background:#fff"></span></span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">Music</span><span style="width:56px;height:28px;border:2px solid #b8b4ac;border-radius:16px;background:#f4f2ee;display:flex;align-items:center;padding:0 4px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:50%;background:#b8b4ac"></span></span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">Left-handed arc</span><span style="width:56px;height:28px;border:2px solid #b8b4ac;border-radius:16px;background:#f4f2ee;display:flex;align-items:center;padding:0 4px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:50%;background:#b8b4ac"></span></span></div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">mirrors the fan so POWER lands under the left thumb</div>
+</div>
+
+<div style="position:absolute;left:404px;top:56px;right:24px;display:flex;flex-direction:column;gap:13px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">ACCOUNT</div>
+<div style="display:flex;gap:11px;align-items:center"><span style="width:46px;height:46px;border:2px solid #2a78d6;border-radius:11px;background:#eef4fb;flex:none"></span><div><div style="font-size:19px;line-height:1">Bean</div><div style="font-size:14px;color:#8a857c">12 wins · 41 rounds</div></div><span style="margin-left:auto;border:2px solid #1a1a1a;border-radius:18px;padding:4px 14px;font-size:15px;background:#fff">edit</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">Let friends invite me</span><span style="width:56px;height:28px;border:2px solid #1a1a1a;border-radius:16px;background:#1a1a1a;display:flex;align-items:center;justify-content:flex-end;padding:0 4px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:50%;background:#fff"></span></span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px">Match with strangers</span><span style="width:56px;height:28px;border:2px solid #1a1a1a;border-radius:16px;background:#1a1a1a;display:flex;align-items:center;justify-content:flex-end;padding:0 4px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:50%;background:#fff"></span></span></div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">off = friends and robots only · the setting a parent looks for first</div>
+<div style="display:flex;gap:10px;margin-top:2px"><span style="border:2px solid #1a1a1a;border-radius:20px;padding:6px 16px;font-size:16px;background:#fff">rules</span><span style="border:2px solid #1a1a1a;border-radius:20px;padding:6px 16px;font-size:16px;background:#fff">training</span><span style="border:2px solid #1a1a1a;border-radius:20px;padding:6px 16px;font-size:16px;background:#fff">sign out</span></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "name the game properly" · "design the robot's behaviour at each difficulty" · "build <a class="dv-oid" href="#2b">2b</a> as a playable prototype vs the robot"</p>
+</section>
+
+<section class="dv-turn" id="t8">
+<div class="dv-thd"><a class="dv-tid" href="#t8">8</a><span class="dv-tname">Home screen — <a class="dv-oid" href="#7a">7a</a> runs once on first launch, <a class="dv-oid" href="#7c">7c</a> lives here as a choice</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="8a"><div class="dv-olabel"><a class="dv-oid" href="#8a">8a</a><span>One loud button, everything else quiet. PLAY is the only thing a returning player needs; Training sits directly under it as a peer, not buried in settings. Shows the "new to this?" nudge state for a player with no matches yet.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:-90px;top:-110px;width:460px;height:460px;border-radius:50%;background:rgba(42,120,214,.07)"></div>
+
+<div style="position:absolute;left:40px;top:74px;width:330px">
+<div style="font-size:62px;line-height:.92">Block<br>Reload<br>Bang</div>
+<div style="font-size:17px;color:#8a857c;margin-top:12px;line-height:1.2">two seconds to decide. three hearts. one winner.</div>
+</div>
+
+<div style="position:absolute;right:40px;top:56px;width:290px;display:flex;flex-direction:column;gap:11px">
+<div style="border:3px solid #1a1a1a;border-radius:30px;padding:15px 0;text-align:center;font-size:30px;background:#1a1a1a;color:#fff;box-shadow:0 0 0 6px rgba(42,120,214,.18)">PLAY</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;text-align:center;margin-top:-4px">finds 1 or 2 humans · pick a robot instead on the next screen</div>
+<div style="border:2px solid #1a1a1a;border-radius:26px;padding:11px 0;text-align:center;font-size:21px;background:#fff;position:relative">
+Training
+<span style="position:absolute;right:12px;top:-9px;background:#2a78d6;color:#fff;font:9px ui-monospace,monospace;padding:2px 8px;border-radius:10px">new to this?</span>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:26px;padding:11px 0;text-align:center;font-size:21px;background:#fff">Fighters</div>
+</div>
+
+<div style="position:absolute;left:40px;bottom:24px;display:flex;align-items:center;gap:14px">
+<div style="width:46px;height:46px;border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">gear</div>
+<div style="width:46px;height:46px;border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">rules</div>
+<div style="display:flex;gap:9px;align-items:center;border:2px solid #1a1a1a;border-radius:24px;padding:5px 14px 5px 6px;background:#fff"><span style="width:34px;height:34px;border:2px solid #2a78d6;border-radius:9px;background:#eef4fb"></span><span style="font-size:17px">you · 12 wins</span></div>
+</div>
+<div style="position:absolute;right:40px;bottom:24px;font:9px ui-monospace,monospace;color:#8a857c;text-align:right;line-height:1.5">rules button opens the <a class="dv-oid" href="#7b" style="text-decoration:none">7b</a> cheat sheet<br>training opens <a class="dv-oid" href="#7c" style="text-decoration:none">7c</a> any time</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="8b"><div class="dv-olabel"><a class="dv-oid" href="#8b">8b</a><span>Three doors, no hierarchy. Online, robot and training are equal tiles, so choosing a robot isn't a consolation prize buried behind matchmaking — good if you expect a lot of solo play.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:0;right:0;top:26px;text-align:center">
+<div style="font-size:44px;line-height:1">Block Reload Bang</div>
+<div style="font-size:15px;color:#8a857c;margin-top:4px">two seconds to decide. three hearts. one winner.</div>
+</div>
+
+<div style="position:absolute;left:34px;right:34px;top:132px;display:flex;gap:16px">
+<div style="flex:1.25;border:3px solid #1a1a1a;border-radius:16px;background:#1a1a1a;color:#fff;padding:16px;box-sizing:border-box;height:150px;display:flex;flex-direction:column;box-shadow:0 0 0 6px rgba(42,120,214,.18)">
+<div style="font-size:28px;line-height:1">Play online</div>
+<div style="font-size:15px;line-height:1.2;margin-top:6px;opacity:.8">2 or 3 players, matched for you</div>
+<div style="margin-top:auto;font:9px ui-monospace,monospace;opacity:.7">usually under 10 seconds</div>
+</div>
+<div style="flex:1;border:2px solid #1a1a1a;border-radius:16px;background:#fff;padding:16px;box-sizing:border-box;height:150px;display:flex;flex-direction:column">
+<div style="font-size:26px;line-height:1">Beat a robot</div>
+<div style="font-size:15px;line-height:1.2;margin-top:6px;color:#8a857c">easy · medium · hard</div>
+<div style="margin-top:auto;display:flex;gap:6px"><span style="border:2px solid #1a1a1a;border-radius:16px;padding:2px 10px;font-size:14px">easy</span><span style="border:2px solid #1a1a1a;border-radius:16px;padding:2px 10px;font-size:14px;background:#1a1a1a;color:#fff">medium</span><span style="border:2px solid #1a1a1a;border-radius:16px;padding:2px 10px;font-size:14px">hard</span></div>
+</div>
+<div style="flex:1;border:2px dashed #1a1a1a;border-radius:16px;background:#f7f5f1;padding:16px;box-sizing:border-box;height:150px;display:flex;flex-direction:column">
+<div style="font-size:26px;line-height:1">Training</div>
+<div style="font-size:15px;line-height:1.2;margin-top:6px;color:#8a857c">three beats, clock paused</div>
+<div style="margin-top:auto;font:9px ui-monospace,monospace;color:#8a857c">opens <a class="dv-oid" href="#7c" style="text-decoration:none">7c</a> · repeatable</div>
+</div>
+</div>
+
+<div style="position:absolute;left:34px;bottom:24px;display:flex;gap:12px;align-items:center">
+<div style="width:44px;height:44px;border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">gear</div>
+<div style="width:44px;height:44px;border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">rules</div>
+<div style="border:2px solid #1a1a1a;border-radius:24px;padding:8px 16px;font-size:17px;background:#fff">Fighters</div>
+</div>
+<div style="position:absolute;right:34px;bottom:24px;display:flex;gap:9px;align-items:center;border:2px solid #1a1a1a;border-radius:24px;padding:5px 14px 5px 6px;background:#fff"><span style="width:34px;height:34px;border:2px solid #2a78d6;border-radius:9px;background:#eef4fb"></span><span style="font-size:17px">you · 12 wins</span></div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "go with <a class="dv-oid" href="#8a">8a</a>" · "write all three pages of <a class="dv-oid" href="#7a">7a</a>" · "matchmaking / waiting state after PLAY" · "settings screen"</p>
+</section>
+
+<section class="dv-turn" id="t7">
+<div class="dv-thd"><a class="dv-tid" href="#t7">7</a><span class="dv-tname">How to play — three ways to teach the same four sentences</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="7a"><div class="dv-olabel"><a class="dv-oid" href="#7a">7a</a><span>Swipeable cards, one idea per page. Three pages, each with a picture of the real UI and one sentence. Reached from the main menu and from the pause menu; dots let you jump, SKIP is always there.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:24px;top:16px;font:10px ui-monospace,monospace;color:#8a857c">HOW TO PLAY · 2 OF 3</div>
+<div style="position:absolute;right:24px;top:12px;border:2px solid #1a1a1a;border-radius:20px;padding:4px 16px;font-size:16px;background:#fff">skip</div>
+
+<div style="position:absolute;left:24px;top:52px;width:330px;height:246px;border:3px solid #1a1a1a;border-radius:16px;background:repeating-linear-gradient(45deg,#f2f0eb 0 6px,#fff 6px 12px);display:flex;align-items:center;justify-content:center">
+<div style="display:flex;gap:14px;align-items:flex-end">
+<div style="width:66px;height:66px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;align-items:center;justify-content:center;font-size:12px">BLOCK</div>
+<div style="width:66px;height:66px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;align-items:center;justify-content:center;font-size:12px;margin-bottom:22px">RELOAD</div>
+<div style="width:66px;height:66px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;align-items:center;justify-content:center;font-size:12px">FIRE</div>
+</div>
+</div>
+<div style="position:absolute;left:34px;top:266px;font:9px ui-monospace,monospace;color:#8a857c">art is a still of the real arc, so nothing is learned twice</div>
+
+<div style="position:absolute;left:386px;top:60px;right:24px">
+<div style="font-size:38px;line-height:1.05">You start with an empty gun.</div>
+<div style="font-size:20px;line-height:1.25;margin-top:14px">FIRE is greyed out until you RELOAD — and reloading doesn't protect you. That's the whole game: is it safe to load up, or should you hide behind your shield?</div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:20px;display:flex;align-items:center;justify-content:center;gap:22px">
+<div style="border:2px solid #1a1a1a;border-radius:24px;padding:8px 20px;font-size:17px;background:#fff">back</div>
+<div style="display:flex;gap:9px;align-items:center"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:13px;height:13px;border-radius:50%;background:#1a1a1a"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+<div style="border:3px solid #1a1a1a;border-radius:26px;padding:9px 28px;font-size:20px;background:#1a1a1a;color:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">next</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="7b"><div class="dv-olabel"><a class="dv-oid" href="#7b">7b</a><span>The cheat sheet. Everything on one screen, no paging — this is the one you want behind the pause button mid-match, when a kid has forgotten what greys FIRE out.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:24px;top:15px;font-size:24px;line-height:1">The rules, all of them</div>
+<div style="position:absolute;right:24px;top:14px;border:2px solid #1a1a1a;border-radius:20px;padding:4px 16px;font-size:16px;background:#fff">back to match</div>
+
+<div style="position:absolute;left:24px;top:52px;width:340px;display:flex;flex-direction:column;gap:9px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">YOUR FOUR MOVES</div>
+<div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;border-radius:50%;border:2px solid #1a1a1a;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px">BLOCK</span><span style="font-size:16px;line-height:1.15">Nothing can hurt you. You gain nothing either.</span></div>
+<div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;border-radius:50%;border:2px solid #1a1a1a;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px">RELOAD</span><span style="font-size:16px;line-height:1.15">+1 shot, no limit — but you're wide open.</span></div>
+<div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;border-radius:50%;border:2px solid #1a1a1a;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px">FIRE</span><span style="font-size:16px;line-height:1.15">Costs one shot. Aim at whoever you like.</span></div>
+<div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;border-radius:50%;border:2px solid #1a1a1a;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px">POWER</span><span style="font-size:16px;line-height:1.15">Your character's trick. Once per round.</span></div>
+</div>
+
+<div style="position:absolute;left:396px;top:52px;right:24px;display:flex;flex-direction:column;gap:12px">
+<div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c">THE BEAT</div>
+<div style="font-size:17px;line-height:1.2;margin-top:5px">Every two seconds: one second to choose, one second to watch it happen. Miss the window and you do nothing — so choose <i>something</i>.</div>
+</div>
+<div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c">WINNING</div>
+<div style="font-size:17px;line-height:1.2;margin-top:5px">Three hearts each. Lose one every time an unblocked shot lands. Last one standing wins — no timer, no draws.</div>
+</div>
+<div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c">WHAT YOU CAN'T SEE</div>
+<div style="font-size:17px;line-height:1.2;margin-top:5px">Rivals' hearts, yes. Their bullets, never. Watch who's been reloading.</div>
+</div>
+</div>
+
+<div style="position:absolute;left:24px;bottom:18px;right:24px;border-top:2px dashed #ddd9d1;padding-top:10px;display:flex;gap:16px;align-items:center">
+<span style="font:9px ui-monospace,monospace;color:#8a857c">ONE-LINE VERSION</span>
+<span style="font-size:19px">Load when they're hiding, hide when they're loaded.</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="7c"><div class="dv-olabel"><a class="dv-oid" href="#7c">7c</a><span>Learn by playing. A scripted three-beat duel against a dummy that waits for you: the arc is live, one prompt at a time, and the pointer only lights the circle you need. No reading required — best for the youngest players.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:24px;top:16px;font:10px ui-monospace,monospace;color:#8a857c">TRAINING · BEAT 1 OF 3 · the dummy won't shoot yet</div>
+<div style="position:absolute;right:24px;top:12px;border:2px solid #1a1a1a;border-radius:20px;padding:4px 16px;font-size:16px;background:#fff">skip</div>
+
+<div style="position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px">
+<div style="width:92px;height:70px;border:2px dashed #b8b4ac;border-radius:12px;background:#f7f5f1;display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">practice<br>dummy</div>
+<div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span></div>
+</div>
+
+<div style="position:absolute;left:50%;top:158px;transform:translateX(-50%);text-align:center;width:420px">
+<div style="font-size:30px;line-height:1.05">Your gun is empty. Tap RELOAD.</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;margin-top:7px">the clock pauses here on the first two beats, then runs for real</div>
+</div>
+
+<div style="position:absolute;left:236px;top:290px;width:70px;height:70px;border-radius:50%;border:2px dashed #cdc8be;background:#f7f5f1;color:#a8a39a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-14deg)"><div style="width:20px;height:20px;border:2px solid #a8a39a;border-radius:4px 4px 10px 10px"></div><div style="font-size:12px">BLOCK</div></div>
+<div style="position:absolute;left:314px;top:274px;width:82px;height:82px;border-radius:50%;border:3px solid #2a78d6;color:#2a78d6;background:#fff;box-shadow:0 0 0 8px rgba(42,120,214,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:24px;height:24px;border:3px solid #2a78d6;border-radius:50%"></div><div style="font-size:14px">RELOAD</div></div>
+<div style="position:absolute;left:404px;top:290px;width:70px;height:70px;border-radius:50%;border:2px dashed #cdc8be;background:#f7f5f1;color:#a8a39a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(14deg)"><div style="width:20px;height:20px;border:2px solid #a8a39a;border-radius:4px"></div><div style="font-size:12px">FIRE</div></div>
+<div style="position:absolute;left:482px;top:296px;width:62px;height:62px;border-radius:50%;border:2px dashed #cdc8be;background:#f7f5f1;color:#a8a39a;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(16deg)"><div style="width:17px;height:17px;border:2px solid #a8a39a;transform:rotate(45deg)"></div><div style="font-size:11px">POWER</div></div>
+<div style="position:absolute;left:556px;top:284px;font:9px ui-monospace,monospace;color:#8a857c;width:132px;line-height:1.5">everything but the taught circle dims — no wrong taps<br>(ship the real disabled state darker than this)</div>
+
+<div style="position:absolute;left:24px;bottom:22px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;gap:6px"><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:5px;align-items:center"><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="font-size:15px;margin-left:4px">0 shots</span></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "keep <a class="dv-oid" href="#7c">7c</a> for first launch and <a class="dv-oid" href="#7b">7b</a> for the pause menu" · "write all three pages of <a class="dv-oid" href="#7a">7a</a>" · "now the title screen + settings"</p>
+</section>
+
+<section class="dv-turn" id="t6">
+<div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">The six fighters — reference sheets, not screens</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="6a"><div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a><span>The roster. One rule holds them together: <b>using your power IS your action for that beat</b> — so unless the power blocks, you're standing in the open while you use it. That single rule is what keeps all six honest.</span></div>
+<div class="dv-card" style="width:760px">
+<div style="width:760px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;padding:22px;box-sizing:border-box">
+<div style="font:10px ui-monospace,monospace;color:#8a857c;margin-bottom:14px">SIX FIGHTERS · EACH POWER ONCE PER ROUND · RECHARGES NEXT ROUND</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+
+<div style="border:2px solid #1a1a1a;border-radius:14px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border:2px solid #1a1a1a;border-radius:9px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div><div><div style="font-size:19px;line-height:1">Sir Blocksalot</div><div style="font-size:13px;color:#8a857c;line-height:1.15">a knight who has never once attacked</div></div></div>
+<div style="border-top:2px dashed #ddd9d1;padding-top:8px">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:14px;height:14px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font-size:17px">Double Shield</span></div>
+<div style="font-size:15px;line-height:1.2;margin-top:5px">Blocks this beat <i>and</i> the next one automatically.</div>
+</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">COSTS · two beats of doing nothing<br>COUNTER · rivals get two free reloads</div>
+</div>
+
+<div style="border:2px solid #1a1a1a;border-radius:14px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border:2px solid #1a1a1a;border-radius:9px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div><div><div style="font-size:19px;line-height:1">Chuck Reloadington</div><div style="font-size:13px;color:#8a857c;line-height:1.15">reloads faster than he thinks</div></div></div>
+<div style="border-top:2px dashed #ddd9d1;padding-top:8px">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:14px;height:14px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font-size:17px">Fast Hands</span></div>
+<div style="font-size:15px;line-height:1.2;margin-top:5px">One reload, two shots — in a single beat.</div>
+</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">COSTS · it's still a reload, so still no block<br>COUNTER · shoot him while he does it</div>
+</div>
+
+<div style="border:2px solid #1a1a1a;border-radius:14px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border:2px solid #1a1a1a;border-radius:9px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div><div><div style="font-size:19px;line-height:1">Peeka Boo</div><div style="font-size:13px;color:#8a857c;line-height:1.15">nosiest kid on the playground</div></div></div>
+<div style="border-top:2px dashed #ddd9d1;padding-top:8px">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:14px;height:14px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font-size:17px">Peek</span></div>
+<div style="font-size:15px;line-height:1.2;margin-top:5px">See one rival's move the instant they lock it in.</div>
+</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">COSTS · you do nothing that beat, unblocked<br>COUNTER · lock in late and she learns nothing</div>
+</div>
+
+<div style="border:2px solid #1a1a1a;border-radius:14px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border:2px solid #1a1a1a;border-radius:9px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div><div><div style="font-size:19px;line-height:1">Ricochet Rita</div><div style="font-size:13px;color:#8a857c;line-height:1.15">never wastes a bullet, ever</div></div></div>
+<div style="border-top:2px dashed #ddd9d1;padding-top:8px">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:14px;height:14px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font-size:17px">Bounce</span></div>
+<div style="font-size:15px;line-height:1.2;margin-top:5px">If this shot gets blocked it bounces to the other rival. In a duel, you keep the bullet instead.</div>
+</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">COSTS · needs a bullet, and shooting never blocks<br>COUNTER · both rivals blocking kills it</div>
+</div>
+
+<div style="border:2px solid #1a1a1a;border-radius:14px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border:2px solid #1a1a1a;border-radius:9px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div><div><div style="font-size:19px;line-height:1">Nurse Nudge</div><div style="font-size:13px;color:#8a857c;line-height:1.15">patches herself up mid-shootout</div></div></div>
+<div style="border-top:2px dashed #ddd9d1;padding-top:8px">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:14px;height:14px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font-size:17px">Patch Up</span></div>
+<div style="font-size:15px;line-height:1.2;margin-top:5px">Win back one lost heart. Never above three.</div>
+</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">COSTS · wide open that beat — can lose the heart back<br>COUNTER · she must survive to spend it</div>
+</div>
+
+<div style="border:2px solid #1a1a1a;border-radius:14px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border:2px solid #1a1a1a;border-radius:9px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div><div><div style="font-size:19px;line-height:1">Sticky Sam</div><div style="font-size:13px;color:#8a857c;line-height:1.15">gums up everybody's gear</div></div></div>
+<div style="border-top:2px dashed #ddd9d1;padding-top:8px">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:14px;height:14px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font-size:17px">Jam</span></div>
+<div style="font-size:15px;line-height:1.2;margin-top:5px">One rival can't reload next beat — if they try, they get nothing.</div>
+</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">COSTS · unblocked while he throws it<br>COUNTER · they simply block instead</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="6b"><div class="dv-olabel"><a class="dv-oid" href="#6b">6b</a>How they balance. Every power buys one of three things — safety, ammo, or information — and pays in exposure. Read down the ladder: the higher the payoff, the more beats you spend standing in the open.</div>
+<div class="dv-card" style="width:520px">
+<div style="width:520px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;padding:22px;box-sizing:border-box">
+<div style="font:10px ui-monospace,monospace;color:#8a857c">THE FOUR RULES THAT MAKE POWERS FAIR</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:9px;font-size:17px;line-height:1.25">
+<div style="display:flex;gap:10px"><span style="font:11px ui-monospace,monospace;color:#8a857c;padding-top:4px">01</span><span>Using a power is your whole action for that beat.</span></div>
+<div style="display:flex;gap:10px"><span style="font:11px ui-monospace,monospace;color:#8a857c;padding-top:4px">02</span><span>Only Double Shield protects you. Every other power leaves you hittable.</span></div>
+<div style="display:flex;gap:10px"><span style="font:11px ui-monospace,monospace;color:#8a857c;padding-top:4px">03</span><span>One use per round, recharged for the next one — so it's a "when", never a "how often".</span></div>
+<div style="display:flex;gap:10px"><span style="font:11px ui-monospace,monospace;color:#8a857c;padding-top:4px">04</span><span>No power ever creates a bullet out of nothing except Fast Hands, and that one is still a reload.</span></div>
+</div>
+
+<div style="margin-top:20px;border-top:2px dashed #ddd9d1;padding-top:14px">
+<div style="font:10px ui-monospace,monospace;color:#8a857c">EXPOSURE LADDER · beats spent unprotected</div>
+<div style="margin-top:11px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:112px;font-size:16px">Double Shield</span><span style="width:150px;height:14px;border:2px solid #1a1a1a;border-radius:8px;background:#eef4fb"></span><span style="font-size:14px;color:#8a857c">none — it blocks</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:112px;font-size:16px">Fast Hands</span><span style="width:150px;height:14px;border:2px solid #1a1a1a;border-radius:8px;background:linear-gradient(to right,#f2c9c4 55%,#fff 55%)"></span><span style="font-size:14px;color:#8a857c">one beat</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:112px;font-size:16px">Bounce</span><span style="width:150px;height:14px;border:2px solid #1a1a1a;border-radius:8px;background:linear-gradient(to right,#f2c9c4 55%,#fff 55%)"></span><span style="font-size:14px;color:#8a857c">one beat</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:112px;font-size:16px">Jam</span><span style="width:150px;height:14px;border:2px solid #1a1a1a;border-radius:8px;background:linear-gradient(to right,#f2c9c4 55%,#fff 55%)"></span><span style="font-size:14px;color:#8a857c">one beat</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:112px;font-size:16px">Peek</span><span style="width:150px;height:14px;border:2px solid #1a1a1a;border-radius:8px;background:linear-gradient(to right,#e8a79f 78%,#fff 78%)"></span><span style="font-size:14px;color:#8a857c">one wasted beat</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:112px;font-size:16px">Patch Up</span><span style="width:150px;height:14px;border:2px solid #1a1a1a;border-radius:8px;background:linear-gradient(to right,#dd8d84 100%,#fff 100%)"></span><span style="font-size:14px;color:#8a857c">highest — can undo itself</span></div>
+</div>
+</div>
+
+<div style="margin-top:18px;font:9px ui-monospace,monospace;color:#8a857c;line-height:1.6">OPEN QUESTIONS · does Peek show the move or only "armed / not armed"?<br>should Bounce work in a duel at all, or be a straight refund?<br>is Patch Up too swingy at 3 hearts, or exactly the comeback the game needs?</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "tune Patch Up and Peek" · "show each power's moment inside the <a class="dv-oid" href="#2b">2b</a> combat screen" · "build the playable prototype vs the robot"</p>
+</section>
+
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Closing the loop — elimination and victory, in <a class="dv-oid" href="#2b">2b</a> + <a class="dv-oid" href="#4a">4a</a>'s language</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="5a"><div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a>Elimination — no interruption. The beat never stops: the loser's panel drains to grey in place, their colour leaves the floor, and your FIRE circles slide inward toward the new arc. One line of text, then it's gone.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;right:-60px;top:-40px;width:340px;height:340px;border-radius:50%;background:rgba(214,138,42,.09)"></div>
+
+<div style="position:absolute;left:30px;top:20px;display:flex;gap:12px;align-items:center;opacity:.45">
+<div style="width:56px;height:56px;border:2px solid #b8b4ac;border-radius:10px;background:#f4f2ee"></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font-size:17px;line-height:1;color:#8a857c">Sir Blocksalot</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span></div><div style="font-size:14px;color:#8a857c">out — reloaded one time too many</div></div>
+</div>
+
+<div style="position:absolute;right:30px;top:20px;display:flex;gap:12px;align-items:center;flex-direction:row-reverse">
+<div style="width:56px;height:56px;border:3px solid #c98a2a;border-radius:10px;background:repeating-linear-gradient(45deg,#fbf5ec 0 5px,#fff 5px 10px)"></div>
+<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end"><div style="font-size:17px;line-height:1;color:#c98a2a">Chuck Reloadington</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span></div></div>
+</div>
+
+<div style="position:absolute;left:50%;top:118px;transform:translateX(-50%);text-align:center">
+<div style="font-size:30px;line-height:1">Blocksalot is out — it's a duel now</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;margin-top:6px">shows for one beat only · no tap to continue</div>
+</div>
+
+<div style="position:absolute;left:264px;top:296px;width:74px;height:74px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-14deg);opacity:.6"><div style="width:22px;height:22px;border:2px solid #b8b4ac;border-radius:4px"></div><div style="font-size:12px">FIRE</div></div>
+<div style="position:absolute;left:344px;top:300px;font:9px ui-monospace,monospace;color:#8a857c;width:70px;text-align:center;line-height:1.4">circle fades<br>and slides in</div>
+<div style="position:absolute;left:418px;top:296px;width:74px;height:74px;border-radius:50%;border:3px solid #c98a2a;background:#fbf5ec;color:#c98a2a;box-shadow:0 0 0 5px rgba(201,138,42,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(14deg)"><div style="width:22px;height:22px;border:3px solid #c98a2a;border-radius:4px"></div><div style="font-size:13px">FIRE</div></div>
+<div style="position:absolute;left:392px;top:250px;width:120px;height:0;border-top:2px dashed #cfcbc2;transform:rotate(-30deg)"></div>
+
+<div style="position:absolute;left:30px;bottom:22px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;gap:6px"><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;border:2px dashed #b8b4ac;border-radius:4px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:5px;align-items:center"><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="font-size:15px;margin-left:4px">1 shot</span></div>
+</div>
+<div style="position:absolute;right:30px;bottom:26px;display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:15px;height:15px;border-radius:50%;background:#1a1a1a"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="5b"><div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a>Victory. Winner centred in their own colour, the round's story in three plain numbers, and rematch as the loud button — losers land on the same screen with the podium order flipped, never a separate "you lost" screen.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:50%;top:-140px;transform:translateX(-50%);width:520px;height:520px;border-radius:50%;background:rgba(42,120,214,.08)"></div>
+
+<div style="position:absolute;left:0;right:0;top:26px;text-align:center;font:10px ui-monospace,monospace;color:#8a857c">LAST ONE STANDING</div>
+
+<div style="position:absolute;left:50%;top:52px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px">
+<div style="width:120px;height:120px;border:3px solid #2a78d6;border-radius:16px;background:repeating-linear-gradient(45deg,#eef4fb 0 6px,#fff 6px 12px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font:9px ui-monospace,monospace;color:#2a78d6">winner art</div>
+<div style="font-size:32px;line-height:1;color:#2a78d6">Sir Blocksalot</div>
+<div style="display:flex;gap:6px"><span style="width:16px;height:16px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:16px;height:16px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span><span style="width:16px;height:16px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span></div>
+<div style="font-size:16px;color:#8a857c">won on one heart — brutal</div>
+</div>
+
+<div style="position:absolute;left:26px;top:96px;width:150px;display:flex;flex-direction:column;gap:12px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">THE ROUND</div>
+<div><div style="font-size:26px;line-height:1">41</div><div style="font-size:14px;color:#8a857c">beats survived</div></div>
+<div><div style="font-size:26px;line-height:1">9</div><div style="font-size:14px;color:#8a857c">shots blocked</div></div>
+<div><div style="font-size:26px;line-height:1">3</div><div style="font-size:14px;color:#8a857c">reloads that nearly cost you</div></div>
+</div>
+
+<div style="position:absolute;right:26px;top:96px;width:170px;display:flex;flex-direction:column;gap:9px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">FINISHING ORDER</div>
+<div style="display:flex;gap:9px;align-items:center;border:3px solid #2a78d6;border-radius:11px;background:#eef4fb;padding:6px 10px"><span style="font-size:19px;color:#2a78d6">1</span><span style="width:11px;height:11px;border-radius:50%;background:#2a78d6"></span><span style="font-size:16px;color:#2a78d6">You</span></div>
+<div style="display:flex;gap:9px;align-items:center;border:2px solid #1a1a1a;border-radius:11px;background:#fff;padding:6px 10px"><span style="font-size:19px">2</span><span style="width:11px;height:11px;border-radius:50%;background:#c98a2a"></span><span style="font-size:16px">Mo</span></div>
+<div style="display:flex;gap:9px;align-items:center;border:2px solid #1a1a1a;border-radius:11px;background:#fff;padding:6px 10px"><span style="font-size:19px">3</span><span style="width:11px;height:11px;border-radius:50%;background:#5a9e6f"></span><span style="font-size:16px">Ava</span></div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:20px;display:flex;justify-content:center;gap:14px;align-items:center">
+<div style="border:2px solid #1a1a1a;border-radius:26px;padding:9px 22px;font-size:18px;background:#fff">change fighter</div>
+<div style="border:3px solid #1a1a1a;border-radius:28px;padding:11px 34px;font-size:23px;background:#1a1a1a;color:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">REMATCH</div>
+<div style="border:2px solid #1a1a1a;border-radius:26px;padding:9px 22px;font-size:18px;background:#fff">leave</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "design the real six characters + powers" · "show what a disconnect looks like mid-round" · "build <a class="dv-oid" href="#2b">2b</a> as a playable prototype vs the robot"</p>
+</section>
+
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Character select — <a class="dv-oid" href="#3a">3a</a> × <a class="dv-oid" href="#3b">3b</a> hybrid: whole roster always visible, one hero blown up beside it</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Roster grid left, hero right. All six tiles on screen with no scrolling; tapping one swaps the hero panel. Art gets room, the power stays one plain sentence, and READY anchors the corner it always will.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;right:-90px;top:-90px;width:420px;height:420px;border-radius:50%;background:rgba(42,120,214,.07)"></div>
+
+<div style="position:absolute;left:24px;top:14px;font:10px ui-monospace,monospace;color:#8a857c">PICK YOUR FIGHTER · 0:12 LEFT</div>
+<div style="position:absolute;right:24px;top:10px;display:flex;gap:14px;align-items:center">
+<div style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:50%;background:#c98a2a"></span><span style="font-size:14px">Mo · ready</span></div>
+<div style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:50%;background:#5a9e6f"></span><span style="font-size:14px">Ava · picking</span></div>
+</div>
+
+<div style="position:absolute;left:24px;top:40px;width:296px;display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:94px;gap:10px">
+<div style="border:3px solid #2a78d6;border-radius:12px;background:#eef4fb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;box-shadow:0 0 0 4px rgba(42,120,214,.14)">
+<div style="width:44px;height:44px;border:2px solid #2a78d6;border-radius:8px;background:repeating-linear-gradient(45deg,#e2ecf8 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:14px;line-height:1;color:#2a78d6">Sir Blocksalot</div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+<div style="width:44px;height:44px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:14px;line-height:1">Chuck Reloadington</div>
+</div>
+<div style="border:2px dashed #c98a2a;border-radius:12px;background:#faf3e9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:.75">
+<div style="width:44px;height:44px;border:2px dashed #c98a2a;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;font:8px ui-monospace,monospace;color:#c98a2a">Mo's</div>
+<div style="font-size:14px;line-height:1;color:#c98a2a">Peeka Boo</div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+<div style="width:44px;height:44px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:14px;line-height:1">Ricochet Rita</div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+<div style="width:44px;height:44px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:14px;line-height:1">Nurse Nudge</div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+<div style="width:44px;height:44px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:14px;line-height:1">Sticky Sam</div>
+</div>
+</div>
+<div style="position:absolute;left:24px;top:352px;font:9px ui-monospace,monospace;color:#8a857c">taken tiles wear the owner's colour, never disappear</div>
+
+<div style="position:absolute;left:340px;top:40px;right:24px;bottom:16px;display:flex;gap:16px">
+<div style="width:132px;flex:none;display:flex;flex-direction:column;gap:8px">
+<div style="flex:1;border:3px solid #2a78d6;border-radius:14px;background:repeating-linear-gradient(45deg,#eef4fb 0 6px,#fff 6px 12px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:9px ui-monospace,monospace;color:#2a78d6;text-align:center">character art<br>full body</div>
+<div style="display:flex;gap:7px;align-items:center;justify-content:center"><span style="width:14px;height:14px;border-radius:50%;background:#2a78d6"></span><span style="font-size:13px;color:#2a78d6">your colour</span></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column">
+<div style="font-size:30px;line-height:1">Sir Blocksalot</div>
+<div style="font-size:15px;color:#8a857c;line-height:1.2;margin-top:3px">the world's most defensive knight</div>
+<div style="margin-top:12px;border:2px solid #1a1a1a;border-radius:12px;padding:11px 13px;background:#fff">
+<div style="display:flex;gap:8px;align-items:center"><span style="width:18px;height:18px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font:9px ui-monospace,monospace;color:#8a857c">SPECIAL · ONCE PER ROUND</span></div>
+<div style="font-size:19px;line-height:1.2;margin-top:7px">Double Shield — blocks this beat <i>and</i> the next one.</div>
+</div>
+<div style="margin-top:auto;display:flex;justify-content:flex-end"><div style="border:3px solid #1a1a1a;border-radius:26px;padding:9px 26px;font-size:20px;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">I'M READY</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>Hero left, roster as a readable list right. Same hybrid, flipped: every power line is visible at once so you can compare without tapping — the fastest read under a pick timer, at the cost of art size.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:-80px;top:-70px;width:400px;height:400px;border-radius:50%;background:rgba(42,120,214,.07)"></div>
+<div style="position:absolute;left:24px;top:14px;font:10px ui-monospace,monospace;color:#8a857c">PICK YOUR FIGHTER · 0:12 LEFT</div>
+
+<div style="position:absolute;left:24px;top:40px;width:300px;bottom:16px;display:flex;flex-direction:column;gap:9px">
+<div style="height:150px;border:3px solid #2a78d6;border-radius:14px;background:repeating-linear-gradient(45deg,#eef4fb 0 6px,#fff 6px 12px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:9px ui-monospace,monospace;color:#2a78d6">character art · full body</div>
+<div style="font-size:28px;line-height:1">Sir Blocksalot</div>
+<div style="font-size:15px;color:#8a857c;line-height:1.15">the world's most defensive knight</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;padding:9px 12px;background:#fff">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">SPECIAL · ONCE PER ROUND</div>
+<div style="font-size:18px;line-height:1.15;margin-top:4px">Double Shield — blocks this beat and the next.</div>
+</div>
+<div style="margin-top:auto;display:flex;gap:12px;align-items:center;justify-content:space-between">
+<div style="display:flex;gap:7px;align-items:center"><span style="width:13px;height:13px;border-radius:50%;background:#2a78d6"></span><span style="font-size:12px;color:#2a78d6;line-height:1.1">your colour<br>all match long</span></div>
+<div style="border:3px solid #1a1a1a;border-radius:24px;padding:6px 20px;font-size:19px;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">I'M READY</div>
+</div>
+</div>
+
+<div style="position:absolute;left:340px;top:38px;right:24px;bottom:14px;display:flex;flex-direction:column;justify-content:space-between;gap:5px">
+<div style="border:3px solid #2a78d6;border-radius:11px;background:#eef4fb;padding:4px 9px;display:flex;gap:10px;align-items:center;box-shadow:0 0 0 4px rgba(42,120,214,.14)">
+<div style="width:32px;height:32px;border:2px solid #2a78d6;border-radius:7px;background:repeating-linear-gradient(45deg,#e2ecf8 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:16px;line-height:1;color:#2a78d6">Sir Blocksalot</div><div style="font-size:13px;line-height:1.15;margin-top:2px">Double Shield — block two beats in a row</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:11px;background:#fff;padding:4px 9px;display:flex;gap:10px;align-items:center">
+<div style="width:32px;height:32px;border:2px solid #1a1a1a;border-radius:7px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:16px;line-height:1">Chuck Reloadington</div><div style="font-size:13px;line-height:1.15;margin-top:2px">Fast Hands — reload two shots at once</div></div>
+</div>
+<div style="border:2px dashed #c98a2a;border-radius:11px;background:#faf3e9;padding:4px 9px;display:flex;gap:10px;align-items:center;opacity:.75">
+<div style="width:32px;height:32px;border:2px dashed #c98a2a;border-radius:7px;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;font:8px ui-monospace,monospace;color:#c98a2a">Mo's</div>
+<div><div style="font-size:16px;line-height:1;color:#c98a2a">Peeka Boo</div><div style="font-size:13px;line-height:1.15;margin-top:2px">Peek — see one rival's next move</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:11px;background:#fff;padding:4px 9px;display:flex;gap:10px;align-items:center">
+<div style="width:32px;height:32px;border:2px solid #1a1a1a;border-radius:7px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:16px;line-height:1">Ricochet Rita</div><div style="font-size:13px;line-height:1.15;margin-top:2px">Bounce — a blocked shot hits the other rival</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:11px;background:#fff;padding:4px 9px;display:flex;gap:10px;align-items:center">
+<div style="width:32px;height:32px;border:2px solid #1a1a1a;border-radius:7px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:16px;line-height:1">Nurse Nudge</div><div style="font-size:13px;line-height:1.15;margin-top:2px">Patch Up — win back one lost heart</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:11px;background:#fff;padding:4px 9px;display:flex;gap:10px;align-items:center">
+<div style="width:32px;height:32px;border:2px solid #1a1a1a;border-radius:7px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:16px;line-height:1">Sticky Sam</div><div style="font-size:13px;line-height:1.15;margin-top:2px">Jam — one rival can't reload next beat</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "go with <a class="dv-oid" href="#4a">4a</a>, now design the real six characters + powers" · "show <a class="dv-oid" href="#4a">4a</a> in the 2-player / vs-robot case" · "wireframe elimination + victory"</p>
+</section>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Pre-match screens, built on <a class="dv-oid" href="#2b">2b</a>'s colour-claim rule</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Character select — big hero, roster strip. One character fills the stage with its power written out as a plain sentence; the roster runs along the bottom. A character already claimed by another player is dimmed and wears their colour.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:-70px;top:-70px;width:400px;height:400px;border-radius:50%;background:rgba(42,120,214,.07)"></div>
+<div style="position:absolute;left:26px;top:18px;font:10px ui-monospace,monospace;color:#8a857c">PICK YOUR FIGHTER · 0:12 LEFT</div>
+
+<div style="position:absolute;left:40px;top:52px;width:210px;height:210px;border:3px solid #2a78d6;border-radius:16px;background:repeating-linear-gradient(45deg,#eef4fb 0 6px,#fff 6px 12px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;box-sizing:border-box;font:10px ui-monospace,monospace;color:#2a78d6">character art · full body</div>
+<div style="position:absolute;left:40px;top:274px;display:flex;gap:8px;align-items:center"><span style="width:16px;height:16px;border-radius:50%;background:#2a78d6"></span><span style="font-size:14px;color:#2a78d6">your colour all match long</span></div>
+
+<div style="position:absolute;left:280px;top:56px;width:330px">
+<div style="font-size:34px;line-height:1">Sir Blocksalot</div>
+<div style="font-size:16px;color:#8a857c;margin-top:2px">the world's most defensive knight</div>
+<div style="margin-top:16px;border:2px solid #1a1a1a;border-radius:12px;padding:12px 14px;background:#fff">
+<div style="display:flex;gap:8px;align-items:center"><span style="width:20px;height:20px;border:2px solid #1a1a1a;transform:rotate(45deg)"></span><span style="font:10px ui-monospace,monospace;color:#8a857c">SPECIAL POWER · once per round</span></div>
+<div style="font-size:20px;line-height:1.2;margin-top:8px">Double Shield — blocks this beat <i>and</i> the next one, so you can sit out a whole exchange.</div>
+</div>
+<div style="margin-top:12px;font:10px ui-monospace,monospace;color:#8a857c;line-height:1.6">power text is one sentence, no stats, no jargon</div>
+</div>
+
+<div style="position:absolute;right:26px;top:52px;width:96px;display:flex;flex-direction:column;gap:8px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">IN LOBBY</div>
+<div style="display:flex;gap:7px;align-items:center"><span style="width:11px;height:11px;border-radius:50%;background:#c98a2a"></span><span style="font-size:14px">Mo · ready</span></div>
+<div style="display:flex;gap:7px;align-items:center"><span style="width:11px;height:11px;border-radius:50%;background:#5a9e6f"></span><span style="font-size:14px">Ava · picking</span></div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:82px;border-top:2px dashed #d9d5cd;display:flex;align-items:center;gap:12px;padding:0 26px;box-sizing:border-box">
+<div style="width:56px;height:56px;border:3px solid #2a78d6;border-radius:10px;background:#eef4fb"></div>
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="width:56px;height:56px;border:2px dashed #c98a2a;border-radius:10px;background:#faf3e9;color:#c98a2a;display:flex;align-items:center;justify-content:center;font:8px ui-monospace,monospace;text-align:center">taken<br>by Mo</div>
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="margin-left:auto;border:3px solid #1a1a1a;border-radius:26px;padding:9px 26px;font-size:20px;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">I'M READY</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Character select — all six at once. No scrolling, whole roster visible; the power reads on the card itself. Better for a 12-second pick timer, worse for showing off art.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:26px;top:16px;font:10px ui-monospace,monospace;color:#8a857c">TAP A FIGHTER · 0:12 LEFT</div>
+<div style="position:absolute;right:26px;top:12px;display:flex;gap:14px;align-items:center">
+<div style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:50%;background:#c98a2a"></span><span style="font-size:14px">Mo</span></div>
+<div style="display:flex;gap:6px;align-items:center"><span style="width:11px;height:11px;border-radius:50%;background:#5a9e6f"></span><span style="font-size:14px">Ava</span></div>
+</div>
+
+<div style="position:absolute;left:26px;top:42px;right:26px;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:126px;gap:14px">
+<div style="border:3px solid #2a78d6;border-radius:12px;background:#eef4fb;padding:10px;display:flex;gap:10px;align-items:flex-start">
+<div style="width:52px;height:52px;border:2px solid #2a78d6;border-radius:8px;background:repeating-linear-gradient(45deg,#e2ecf8 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:17px;line-height:1;color:#2a78d6">Sir Blocksalot</div><div style="font-size:13px;line-height:1.25;margin-top:4px">Double Shield — block two beats in a row</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;padding:10px;display:flex;gap:10px;align-items:flex-start">
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:17px;line-height:1">Chuck Reloadington</div><div style="font-size:13px;line-height:1.25;margin-top:4px">Fast Hands — reload two shots at once</div></div>
+</div>
+<div style="border:2px dashed #c98a2a;border-radius:12px;background:#faf3e9;padding:10px;display:flex;gap:10px;align-items:flex-start;opacity:.75">
+<div style="width:52px;height:52px;border:2px dashed #c98a2a;border-radius:8px;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;font:8px ui-monospace,monospace;color:#c98a2a;text-align:center">Mo's</div>
+<div><div style="font-size:17px;line-height:1;color:#c98a2a">Peeka Boo</div><div style="font-size:13px;line-height:1.25;margin-top:4px">Peek — see one rival's next move</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;padding:10px;display:flex;gap:10px;align-items:flex-start">
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:17px;line-height:1">Ricochet Rita</div><div style="font-size:13px;line-height:1.25;margin-top:4px">Bounce — a blocked shot hits the other rival</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;padding:10px;display:flex;gap:10px;align-items:flex-start">
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:17px;line-height:1">Nurse Nudge</div><div style="font-size:13px;line-height:1.25;margin-top:4px">Patch Up — win back one lost heart</div></div>
+</div>
+<div style="border:2px solid #1a1a1a;border-radius:12px;background:#fff;padding:10px;display:flex;gap:10px;align-items:flex-start">
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:8px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);flex:none"></div>
+<div><div style="font-size:17px;line-height:1">Sticky Sam</div><div style="font-size:13px;line-height:1.25;margin-top:4px">Jam — one rival can't reload next beat</div></div>
+</div>
+</div>
+
+<div style="position:absolute;left:26px;bottom:16px;font:9px ui-monospace,monospace;color:#8a857c;line-height:1.5">power names are the joke, the line under is the rule<br>every power is once per round, so no cooldown UI needed</div>
+<div style="position:absolute;right:26px;bottom:14px;border:3px solid #1a1a1a;border-radius:26px;padding:9px 26px;font-size:20px;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16)">I'M READY</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Lobby + AI difficulty in one screen. Three seats; empty seats offer "invite" or "fill with a robot". Difficulty only appears once a seat actually holds a bot, so it never clutters a human match.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:26px;top:18px;display:flex;gap:12px;align-items:baseline">
+<div style="font-size:26px;line-height:1">Room</div>
+<div style="border:3px solid #1a1a1a;border-radius:10px;padding:3px 14px;font-size:28px;letter-spacing:6px;line-height:1">K7P2</div>
+<div style="font:10px ui-monospace,monospace;color:#8a857c">tap to copy · share sheet</div>
+</div>
+
+<div style="position:absolute;left:26px;top:74px;right:26px;height:186px;display:flex;gap:14px">
+<div style="flex:1;border:3px solid #2a78d6;border-radius:14px;background:#eef4fb;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;gap:7px;align-items:center;overflow:hidden">
+<div style="width:64px;height:64px;border:2px solid #2a78d6;border-radius:10px;background:repeating-linear-gradient(45deg,#e2ecf8 0 5px,#fff 5px 10px);flex:none"></div>
+<div style="font-size:19px;line-height:1;color:#2a78d6">You</div>
+<div style="font-size:15px;line-height:1">Sir Blocksalot</div>
+<div style="border:2px solid #2a78d6;color:#2a78d6;border-radius:20px;padding:2px 12px;font-size:14px;margin-top:auto">ready</div>
+</div>
+<div style="flex:1;border:3px solid #c98a2a;border-radius:14px;background:#faf3e9;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;gap:7px;align-items:center;overflow:hidden">
+<div style="width:64px;height:64px;border:2px solid #c98a2a;border-radius:10px;background:repeating-linear-gradient(45deg,#f6ecdb 0 5px,#fff 5px 10px);flex:none"></div>
+<div style="font-size:19px;line-height:1;color:#c98a2a">Mo</div>
+<div style="font-size:15px;line-height:1">Peeka Boo</div>
+<div style="border:2px dashed #c98a2a;color:#c98a2a;border-radius:20px;padding:2px 12px;font-size:14px;margin-top:auto">still picking…</div>
+</div>
+<div style="flex:1;border:2px dashed #b8b4ac;border-radius:14px;background:#f7f5f1;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;align-items:center;overflow:hidden">
+<div style="width:52px;height:52px;border:2px dashed #b8b4ac;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c;flex:none">empty</div>
+<div style="border:2px solid #1a1a1a;border-radius:20px;padding:3px 16px;font-size:16px;background:#fff">invite a friend</div>
+<div style="font-size:13px;color:#8a857c;line-height:1">or</div>
+<div style="border:2px solid #1a1a1a;border-radius:20px;padding:3px 16px;font-size:16px;background:#fff;box-shadow:0 0 0 4px rgba(42,120,214,.16)">add a robot</div>
+</div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:98px;border-top:2px dashed #d9d5cd;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 26px;box-sizing:border-box">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">ROBOT DIFFICULTY · appears only once a seat holds a bot</div>
+<div style="display:flex;gap:9px;align-items:center">
+<div style="border:2px solid #1a1a1a;border-radius:22px;padding:5px 16px;font-size:17px;background:#fff">Easy</div>
+<div style="border:3px solid #1a1a1a;border-radius:22px;padding:5px 16px;font-size:17px;background:#1a1a1a;color:#fff">Medium</div>
+<div style="border:2px solid #1a1a1a;border-radius:22px;padding:5px 16px;font-size:17px;background:#fff">Hard</div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;width:140px;line-height:1.5">one line of flavour each,<br>e.g. "reloads when it<br>really shouldn't"</div>
+</div>
+</div>
+<div style="border:3px solid #b8b4ac;color:#b8b4ac;border-radius:28px;padding:11px 26px;font-size:21px;background:#f4f2ee;flex:none">START · waiting on Mo</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "go with <a class="dv-oid" href="#3b">3b</a> and write me 6 real characters + powers" · "show the elimination + victory moments" · "turn <a class="dv-oid" href="#2b">2b</a> into a playable prototype"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Riffs on <a class="dv-oid" href="#1a">1a</a> — making the attack circles unmistakable</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Portrait-in-the-circle. Each FIRE circle carries a mini crop of that rival's face, so the target is the button. Their heart count sits on the rim — you shoot the one who's nearly out without looking up.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:0;top:0;right:0;height:96px;border-bottom:2px dashed #d9d5cd"></div>
+<div style="position:absolute;left:30px;top:20px;display:flex;gap:12px;align-items:center">
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">char</div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font-size:17px;line-height:1">Sir Blocksalot</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span></div><span style="border:2px solid #1a1a1a;border-radius:20px;padding:1px 8px;font-size:13px;width:fit-content">ammo ?</span></div>
+</div>
+<div style="position:absolute;right:30px;top:20px;display:flex;gap:12px;align-items:center;flex-direction:row-reverse">
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">char</div>
+<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end"><div style="font-size:17px;line-height:1">Chuck Reloadington</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span></div><span style="border:2px solid #1a1a1a;border-radius:20px;padding:1px 8px;font-size:13px">ammo ?</span></div>
+</div>
+<div style="position:absolute;left:50%;top:24px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px">
+<div style="display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:15px;height:15px;border-radius:50%;background:#2a78d6"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c">beat pulse</div>
+</div>
+
+<div style="position:absolute;left:214px;top:300px;width:74px;height:74px;border-radius:50%;border:3px solid #1a1a1a;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6px 0;box-sizing:border-box;transform:rotate(-20deg)">
+<div style="display:flex;gap:3px;background:#fff;border-radius:10px;padding:2px 5px"><span style="width:8px;height:8px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:8px;height:8px;border:1px dashed #b8b4ac;transform:rotate(45deg);border-radius:2px"></span><span style="width:8px;height:8px;border:1px dashed #b8b4ac;transform:rotate(45deg);border-radius:2px"></span></div>
+<div style="background:#1a1a1a;color:#fff;font-size:11px;padding:1px 7px;border-radius:10px">FIRE</div>
+</div>
+
+<div style="position:absolute;left:275px;top:265px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-10deg)"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px 4px 11px 11px"></div><div style="font-size:13px">BLOCK</div></div>
+<div style="position:absolute;left:343px;top:253px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:13px">RELOAD</div></div>
+<div style="position:absolute;left:411px;top:265px;width:74px;height:74px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(10deg)"><div style="width:22px;height:22px;border:2px solid #b8b4ac;transform:rotate(45deg)"></div><div style="font-size:13px">POWER</div></div>
+
+<div style="position:absolute;left:472px;top:300px;width:74px;height:74px;border-radius:50%;border:3px solid #1a1a1a;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:6px 0;box-sizing:border-box;transform:rotate(20deg)">
+<div style="display:flex;gap:3px;background:#fff;border-radius:10px;padding:2px 5px"><span style="width:8px;height:8px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:8px;height:8px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:8px;height:8px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span></div>
+<div style="background:#1a1a1a;color:#fff;font-size:11px;padding:1px 7px;border-radius:10px">FIRE</div>
+</div>
+<div style="position:absolute;left:30px;bottom:76px;font:9px ui-monospace,monospace;color:#8a857c;line-height:1.5">pips on the rim = their hearts left</div>
+
+<div style="position:absolute;left:30px;bottom:22px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;gap:6px"><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:5px;align-items:center"><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="font-size:15px;margin-left:4px">2 shots</span></div>
+</div>
+<div style="position:absolute;right:30px;bottom:22px;width:180px;font:9px ui-monospace,monospace;color:#8a857c;text-align:right;line-height:1.5">no arrows needed —<br>the face IS the target</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Tinted territory. Each rival owns a soft colour, carried onto their FIRE circle and a faint wedge of floor beneath them. Targeting is read by colour rather than by arrow — works at a glance and for pre-readers.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:-60px;top:-40px;width:340px;height:340px;border-radius:50%;background:rgba(42,120,214,.07)"></div>
+<div style="position:absolute;right:-60px;top:-40px;width:340px;height:340px;border-radius:50%;background:rgba(214,138,42,.09)"></div>
+
+<div style="position:absolute;left:30px;top:20px;display:flex;gap:12px;align-items:center">
+<div style="width:56px;height:56px;border:3px solid #2a78d6;border-radius:10px;background:repeating-linear-gradient(45deg,#eef4fb 0 5px,#fff 5px 10px)"></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font-size:17px;line-height:1;color:#2a78d6">Sir Blocksalot</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span></div></div>
+</div>
+<div style="position:absolute;right:30px;top:20px;display:flex;gap:12px;align-items:center;flex-direction:row-reverse">
+<div style="width:56px;height:56px;border:3px solid #c98a2a;border-radius:10px;background:repeating-linear-gradient(45deg,#fbf5ec 0 5px,#fff 5px 10px)"></div>
+<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end"><div style="font-size:17px;line-height:1;color:#c98a2a">Chuck Reloadington</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span></div></div>
+</div>
+<div style="position:absolute;left:50%;top:26px;transform:translateX(-50%);display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:15px;height:15px;border-radius:50%;background:#1a1a1a"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+
+<div style="position:absolute;left:214px;top:300px;width:74px;height:74px;border-radius:50%;border:3px solid #2a78d6;background:#eef4fb;color:#2a78d6;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-20deg)"><div style="width:22px;height:22px;border:3px solid #2a78d6;border-radius:4px"></div><div style="font-size:13px">FIRE</div></div>
+<div style="position:absolute;left:275px;top:265px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(0,0,0,.07);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-10deg)"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px 4px 11px 11px"></div><div style="font-size:13px">BLOCK</div></div>
+<div style="position:absolute;left:343px;top:253px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(0,0,0,.07);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:13px">RELOAD</div></div>
+<div style="position:absolute;left:411px;top:265px;width:74px;height:74px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(10deg)"><div style="width:22px;height:22px;border:2px solid #b8b4ac;transform:rotate(45deg)"></div><div style="font-size:13px">POWER</div></div>
+<div style="position:absolute;left:472px;top:300px;width:74px;height:74px;border-radius:50%;border:3px solid #c98a2a;background:#fbf5ec;color:#c98a2a;box-shadow:0 0 0 5px rgba(201,138,42,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(20deg)"><div style="width:22px;height:22px;border:3px solid #c98a2a;border-radius:4px"></div><div style="font-size:13px">FIRE</div></div>
+
+<div style="position:absolute;left:30px;bottom:22px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;gap:6px"><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:5px;align-items:center"><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span></div>
+</div>
+<div style="position:absolute;right:30px;bottom:22px;width:190px;font:9px ui-monospace,monospace;color:#8a857c;text-align:right;line-height:1.5">colour comes from character<br>select, so it stays theirs<br>all match long</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Wide fan, thumbs at the ends. Same arc, stretched: the two FIRE circles are pushed into the natural thumb corners and made biggest; safe moves shrink toward the middle. Fastest to hit under pressure, but the arc reads less as one object.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:0;top:0;right:0;height:96px;border-bottom:2px dashed #d9d5cd"></div>
+<div style="position:absolute;left:30px;top:20px;display:flex;gap:12px;align-items:center">
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="font-size:17px;line-height:1">Sir Blocksalot</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span></div></div>
+</div>
+<div style="position:absolute;right:30px;top:20px;display:flex;gap:12px;align-items:center;flex-direction:row-reverse">
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end"><div style="font-size:17px;line-height:1">Chuck Reloadington</div><div style="display:flex;gap:5px"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span></div></div>
+</div>
+<div style="position:absolute;left:50%;top:26px;transform:translateX(-50%);display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:15px;height:15px;border-radius:50%;background:#2a78d6"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+
+<div style="position:absolute;left:44px;top:266px;width:100px;height:100px;border-radius:50%;border:3px solid #1a1a1a;background:#fff;box-shadow:0 0 0 6px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transform:rotate(-26deg)"><div style="width:28px;height:28px;border:3px solid #1a1a1a;border-radius:5px"></div><div style="font-size:16px;line-height:1">FIRE ◀</div><div style="font:8px ui-monospace,monospace;color:#8a857c">Blocksalot</div></div>
+<div style="position:absolute;left:170px;top:126px;width:150px;height:0;border-top:2px dashed #cfcbc2;transform:rotate(-46deg)"></div>
+
+<div style="position:absolute;left:236px;top:302px;width:66px;height:66px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 4px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transform:rotate(-11deg)"><div style="width:19px;height:19px;border:2px solid #1a1a1a;border-radius:4px 4px 10px 10px"></div><div style="font-size:12px">BLOCK</div></div>
+<div style="position:absolute;left:314px;top:294px;width:66px;height:66px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 4px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><div style="width:19px;height:19px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:12px">RELOAD</div></div>
+<div style="position:absolute;left:392px;top:302px;width:66px;height:66px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transform:rotate(11deg)"><div style="width:19px;height:19px;border:2px solid #b8b4ac;transform:rotate(45deg)"></div><div style="font-size:12px">POWER</div></div>
+
+<div style="position:absolute;right:44px;top:266px;width:100px;height:100px;border-radius:50%;border:3px solid #1a1a1a;background:#fff;box-shadow:0 0 0 6px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transform:rotate(26deg)"><div style="width:28px;height:28px;border:3px solid #1a1a1a;border-radius:5px"></div><div style="font-size:16px;line-height:1">FIRE ▶</div><div style="font:8px ui-monospace,monospace;color:#8a857c">Reloadington</div></div>
+<div style="position:absolute;right:170px;top:126px;width:150px;height:0;border-top:2px dashed #cfcbc2;transform:rotate(46deg)"></div>
+
+<div style="position:absolute;left:50%;top:112px;transform:translateX(-50%);display:flex;gap:16px;align-items:center">
+<div style="display:flex;gap:5px"><span style="width:15px;height:15px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:15px;height:15px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:15px;height:15px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:4px;align-items:center"><span style="width:10px;height:18px;border:2px solid #1a1a1a;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px solid #1a1a1a;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px dashed #b8b4ac;border-radius:3px 3px 5px 5px"></span></div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c">my HUD sits centre-top — the arc owns the whole bottom</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "merge <a class="dv-oid" href="#2a">2a</a>'s portraits into <a class="dv-oid" href="#2c">2c</a>'s wide fan" · "show <a class="dv-oid" href="#2b">2b</a> mid-resolve with a shot landing" · "lock the layout and wireframe character select + lobby"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">In-round combat screen — 4 layouts + the 2-player collapse (phone, landscape)</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Single fan, outward-pointing attacks. One arc of 5 circles centred at the bottom; the two FIRE circles sit at the far ends so each one physically leans toward the rival it hits.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+
+<div style="position:absolute;left:0;top:0;right:0;height:96px;border-bottom:2px dashed #d9d5cd"></div>
+
+<div style="position:absolute;left:30px;top:20px;display:flex;gap:12px;align-items:center">
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c;text-align:center">char<br>art</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<div style="font-size:17px;line-height:1">Sir Blocksalot</div>
+<div style="display:flex;gap:5px;align-items:center"><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;border:2px dashed #b8b4ac;border-radius:3px;transform:rotate(45deg)"></span><span style="font:9px ui-monospace,monospace;color:#8a857c;margin-left:4px">hearts 2/3</span></div>
+<div style="display:flex;gap:6px;align-items:center"><span style="border:2px solid #1a1a1a;border-radius:20px;padding:1px 8px;font-size:13px">ammo ?</span><span style="font:9px ui-monospace,monospace;color:#8a857c">bullets hidden</span></div>
+</div>
+</div>
+
+<div style="position:absolute;right:30px;top:20px;display:flex;gap:12px;align-items:center;flex-direction:row-reverse">
+<div style="width:56px;height:56px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c;text-align:center">char<br>art</div>
+<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+<div style="font-size:17px;line-height:1">Chuck Reloadington</div>
+<div style="display:flex;gap:5px;align-items:center"><span style="font:9px ui-monospace,monospace;color:#8a857c;margin-right:4px">hearts 3/3</span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span><span style="width:13px;height:13px;background:#c9483a;border-radius:3px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:6px;align-items:center"><span style="font:9px ui-monospace,monospace;color:#8a857c">chose already</span><span style="border:2px solid #2a78d6;border-radius:20px;padding:1px 8px;font-size:13px;color:#2a78d6">locked in</span></div>
+</div>
+</div>
+
+<div style="position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px">
+<div style="display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:15px;height:15px;border-radius:50%;background:#2a78d6"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span><span style="width:9px;height:9px;border-radius:50%;background:#d9d5cd"></span></div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c;text-align:center">no numbers — the whole frame breathes<br>on the 2s beat (decide / resolve)</div>
+</div>
+
+<div style="position:absolute;left:214px;top:150px;width:120px;height:0;border-top:2px dashed #cfcbc2;transform:rotate(-32deg)"></div>
+<div style="position:absolute;right:214px;top:150px;width:120px;height:0;border-top:2px dashed #cfcbc2;transform:rotate(32deg)"></div>
+
+<div style="position:absolute;left:214px;top:300px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-20deg)">
+<div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px"></div>
+<div style="font-size:13px;line-height:1">FIRE ◀</div>
+</div>
+<div style="position:absolute;left:275px;top:265px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-10deg)">
+<div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px 4px 11px 11px"></div>
+<div style="font-size:13px;line-height:1">BLOCK</div>
+</div>
+<div style="position:absolute;left:343px;top:253px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:50%"></div>
+<div style="font-size:13px;line-height:1">RELOAD</div>
+</div>
+<div style="position:absolute;left:411px;top:265px;width:74px;height:74px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(10deg)">
+<div style="width:22px;height:22px;border:2px solid #b8b4ac;transform:rotate(45deg)"></div>
+<div style="font-size:13px;line-height:1">POWER</div>
+</div>
+<div style="position:absolute;left:472px;top:300px;width:74px;height:74px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(20deg)">
+<div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px"></div>
+<div style="font-size:13px;line-height:1">FIRE ▶</div>
+</div>
+
+<div style="position:absolute;left:30px;bottom:22px;display:flex;flex-direction:column;gap:7px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">MY HUD</div>
+<div style="display:flex;gap:6px"><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span><span style="width:18px;height:18px;background:#c9483a;border-radius:4px;transform:rotate(45deg)"></span></div>
+<div style="display:flex;gap:5px;align-items:center;margin-top:6px"><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="font-size:15px;margin-left:4px">2 shots</span></div>
+</div>
+
+<div style="position:absolute;right:30px;bottom:22px;width:180px;font:9px ui-monospace,monospace;color:#8a857c;text-align:right;line-height:1.5">POWER greyed = spent<br>this round. FIRE greys<br>out the instant ammo = 0.</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Two-thumb split. Landscape means both thumbs are already at the edges — defensive moves live under the left thumb, offensive under the right. No reaching across the screen.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:0;top:0;right:0;height:92px;border-bottom:2px dashed #d9d5cd;display:flex;align-items:center;justify-content:space-between;padding:0 26px;box-sizing:border-box">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:50px;height:50px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div><div><div style="font-size:16px">Rival L</div><div style="display:flex;gap:4px;margin-top:3px"><span style="width:11px;height:11px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:11px;height:11px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:11px;height:11px;border:2px dashed #b8b4ac;transform:rotate(45deg);border-radius:2px"></span></div></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span><span style="width:14px;height:14px;border-radius:50%;background:#2a78d6"></span><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span></div><div style="font:9px ui-monospace,monospace;color:#8a857c">beat pulse</div></div>
+<div style="display:flex;gap:10px;align-items:center;flex-direction:row-reverse"><div style="width:50px;height:50px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div><div style="text-align:right"><div style="font-size:16px">Rival R</div><div style="display:flex;gap:4px;margin-top:3px;justify-content:flex-end"><span style="width:11px;height:11px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:11px;height:11px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:11px;height:11px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span></div></div></div>
+</div>
+
+<div style="position:absolute;left:50%;top:120px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px">
+<div style="width:74px;height:74px;border:2px solid #1a1a1a;border-radius:12px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">me</div>
+<div style="display:flex;gap:6px"><span style="width:16px;height:16px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:16px;height:16px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:16px;height:16px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span></div>
+<div style="display:flex;gap:4px;align-items:center"><span style="width:10px;height:18px;border:2px solid #1a1a1a;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px dashed #b8b4ac;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px dashed #b8b4ac;border-radius:3px 3px 5px 5px"></span><span style="font-size:14px;margin-left:3px">1 shot</span></div>
+</div>
+
+<div style="position:absolute;left:34px;bottom:26px;display:flex;gap:14px;align-items:flex-end">
+<div style="width:78px;height:78px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px 4px 11px 11px"></div><div style="font-size:13px">BLOCK</div></div>
+<div style="width:78px;height:78px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;margin-bottom:34px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:13px">RELOAD</div></div>
+</div>
+<div style="position:absolute;left:38px;bottom:6px;font:9px ui-monospace,monospace;color:#8a857c">left thumb — safe moves</div>
+
+<div style="position:absolute;right:34px;bottom:26px;display:flex;gap:14px;align-items:flex-end;flex-direction:row-reverse">
+<div style="width:78px;height:78px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px"></div><div style="font-size:12px;line-height:1">FIRE ▶</div><div style="font:8px ui-monospace,monospace;color:#8a857c">Rival R</div></div>
+<div style="width:78px;height:78px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;margin-bottom:34px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px"></div><div style="font-size:12px;line-height:1">◀ FIRE</div><div style="font:8px ui-monospace,monospace;color:#8a857c">Rival L</div></div>
+<div style="width:64px;height:64px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:76px;margin-right:-6px"><div style="width:18px;height:18px;border:2px solid #b8b4ac;transform:rotate(45deg)"></div><div style="font-size:11px">POWER</div></div>
+</div>
+<div style="position:absolute;right:38px;bottom:6px;font:9px ui-monospace,monospace;color:#8a857c">right thumb — attacks, ordered L→R to match the top row</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Lanes. The screen is cut into one vertical lane per rival; that rival's FIRE circle sits at the foot of their lane, so targeting is a place, not a label. Shared moves live in the neutral centre strip.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:250px;top:0;bottom:0;width:0;border-left:2px dashed #ddd9d1"></div>
+<div style="position:absolute;left:510px;top:0;bottom:0;width:0;border-left:2px dashed #ddd9d1"></div>
+<div style="position:absolute;left:0;top:0;width:250px;height:380px;background:rgba(42,120,214,.04)"></div>
+<div style="position:absolute;right:0;top:0;width:250px;height:380px;background:rgba(201,72,58,.04)"></div>
+
+<div style="position:absolute;left:0;top:22px;width:250px;display:flex;flex-direction:column;align-items:center;gap:7px">
+<div style="width:62px;height:62px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:17px">Sir Blocksalot</div>
+<div style="display:flex;gap:5px"><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;border:2px dashed #b8b4ac;transform:rotate(45deg);border-radius:2px"></span></div>
+</div>
+<div style="position:absolute;right:0;top:22px;width:250px;display:flex;flex-direction:column;align-items:center;gap:7px">
+<div style="width:62px;height:62px;border:2px solid #1a1a1a;border-radius:10px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="font-size:17px">Chuck Reloadington</div>
+<div style="display:flex;gap:5px"><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span></div>
+</div>
+
+<div style="position:absolute;left:112px;top:130px;width:0;height:150px;border-left:2px dashed #b9c9de"></div>
+<div style="position:absolute;right:112px;top:130px;width:0;height:150px;border-left:2px dashed #e0bcb6"></div>
+
+<div style="position:absolute;left:75px;bottom:26px;width:76px;height:76px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px"></div><div style="font-size:13px">FIRE</div></div>
+<div style="position:absolute;left:52px;bottom:6px;width:124px;text-align:center;font:9px ui-monospace,monospace;color:#8a857c">hits whoever is in this lane</div>
+
+<div style="position:absolute;right:75px;bottom:26px;width:76px;height:76px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:22px;height:22px;border:2px solid #b8b4ac;border-radius:4px"></div><div style="font-size:13px">FIRE</div></div>
+<div style="position:absolute;right:52px;bottom:6px;width:124px;text-align:center;font:9px ui-monospace,monospace;color:#8a857c">greyed only when ammo = 0</div>
+
+<div style="position:absolute;left:250px;top:24px;width:260px;display:flex;flex-direction:column;align-items:center;gap:5px">
+<div style="display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span><span style="width:14px;height:14px;border-radius:50%;background:#2a78d6"></span><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span></div>
+<div style="font:9px ui-monospace,monospace;color:#8a857c">beat</div>
+</div>
+
+<div style="position:absolute;left:250px;top:96px;width:260px;display:flex;flex-direction:column;align-items:center;gap:12px">
+<div style="display:flex;gap:14px">
+<div style="width:70px;height:70px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:20px;height:20px;border:2px solid #1a1a1a;border-radius:4px 4px 10px 10px"></div><div style="font-size:12px">BLOCK</div></div>
+<div style="width:70px;height:70px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:20px;height:20px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:12px">RELOAD</div></div>
+</div>
+<div style="width:70px;height:70px;border-radius:50%;border:2px solid #2a78d6;color:#2a78d6;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:20px;height:20px;border:2px solid #2a78d6;transform:rotate(45deg)"></div><div style="font-size:12px">POWER</div></div>
+<div style="display:flex;gap:14px;align-items:center;margin-top:2px">
+<div style="display:flex;gap:5px"><span style="width:15px;height:15px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:15px;height:15px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:15px;height:15px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span></div>
+<div style="display:flex;gap:4px;align-items:center"><span style="width:10px;height:18px;border:2px solid #1a1a1a;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px dashed #b8b4ac;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px dashed #b8b4ac;border-radius:3px 3px 5px 5px"></span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Flick-to-aim. Only 3 circles ever — hold FIRE and the rivals light up as targets; flick toward one. Cleanest thumb-reach, but adds a gesture to learn and costs part of your 1-second decide window.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:60px;top:24px;display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:96px;height:74px;border:3px solid #2a78d6;border-radius:12px;background:rgba(42,120,214,.08);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#2a78d6;text-align:center">TARGET<br>highlighted</div>
+<div style="display:flex;gap:5px"><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;border:2px dashed #b8b4ac;transform:rotate(45deg);border-radius:2px"></span></div>
+<div style="font-size:15px">Sir Blocksalot</div>
+</div>
+<div style="position:absolute;right:60px;top:24px;display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="width:96px;height:74px;border:2px solid #1a1a1a;border-radius:12px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px)"></div>
+<div style="display:flex;gap:5px"><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span><span style="width:12px;height:12px;background:#c9483a;transform:rotate(45deg);border-radius:2px"></span></div>
+<div style="font-size:15px">Chuck Reloadington</div>
+</div>
+
+<div style="position:absolute;left:50%;top:30px;transform:translateX(-50%);display:flex;gap:7px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span><span style="width:14px;height:14px;border-radius:50%;background:#2a78d6"></span><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span></div>
+
+<div style="position:absolute;left:255px;top:170px;width:150px;height:0;border-top:3px dashed #2a78d6;transform:rotate(-38deg)"></div>
+<div style="position:absolute;left:250px;top:118px;font:10px ui-monospace,monospace;color:#2a78d6">flick →</div>
+<div style="position:absolute;right:255px;top:170px;width:150px;height:0;border-top:2px dashed #d6d2c9;transform:rotate(38deg)"></div>
+
+<div style="position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:22px;align-items:flex-end">
+<div style="width:80px;height:80px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:24px;height:24px;border:2px solid #1a1a1a;border-radius:4px 4px 12px 12px"></div><div style="font-size:13px">BLOCK</div></div>
+<div style="width:92px;height:92px;border-radius:50%;border:3px solid #2a78d6;color:#2a78d6;background:#fff;box-shadow:0 0 0 8px rgba(42,120,214,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:26px;height:26px;border:3px solid #2a78d6;border-radius:5px"></div><div style="font-size:14px">FIRE</div><div style="font:8px ui-monospace,monospace">held</div></div>
+<div style="width:80px;height:80px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:24px;height:24px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:13px">RELOAD</div></div>
+<div style="width:66px;height:66px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee;color:#b8b4ac;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="width:18px;height:18px;border:2px solid #b8b4ac;transform:rotate(45deg)"></div><div style="font-size:11px">POWER</div></div>
+</div>
+
+<div style="position:absolute;left:34px;bottom:26px;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;gap:5px"><span style="width:16px;height:16px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:16px;height:16px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:16px;height:16px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span></div>
+<div style="display:flex;gap:4px;align-items:center"><span style="width:10px;height:18px;border:2px solid #1a1a1a;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px solid #1a1a1a;border-radius:3px 3px 5px 5px"></span><span style="width:10px;height:18px;border:2px dashed #b8b4ac;border-radius:3px 3px 5px 5px"></span></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>The 2-player collapse of <a class="dv-oid" href="#1a">1a</a> — the two FIRE circles merge into one centred, larger one and the arc tightens to 4. Same muscle memory, fewer choices.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden">
+<div style="position:absolute;left:0;top:0;right:0;height:130px;border-bottom:2px dashed #d9d5cd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+<div style="width:96px;height:62px;border:2px solid #1a1a1a;border-radius:12px;background:repeating-linear-gradient(45deg,#f2f0eb 0 5px,#fff 5px 10px);display:flex;align-items:center;justify-content:center;font:9px ui-monospace,monospace;color:#8a857c">the AI (medium)</div>
+<div style="display:flex;gap:14px;align-items:center">
+<div style="display:flex;gap:5px"><span style="width:14px;height:14px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:14px;height:14px;background:#c9483a;transform:rotate(45deg);border-radius:3px"></span><span style="width:14px;height:14px;border:2px dashed #b8b4ac;transform:rotate(45deg);border-radius:3px"></span></div>
+<span style="border:2px solid #1a1a1a;border-radius:20px;padding:1px 9px;font-size:13px">ammo ?</span>
+</div>
+</div>
+<div style="position:absolute;right:26px;top:20px;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="display:flex;gap:6px;align-items:center;animation:beat 1s ease-in-out infinite"><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span><span style="width:13px;height:13px;border-radius:50%;background:#2a78d6"></span><span style="width:8px;height:8px;border-radius:50%;background:#d9d5cd"></span></div><div style="font:9px ui-monospace,monospace;color:#8a857c">beat</div></div>
+
+<div style="position:absolute;left:236px;top:288px;width:76px;height:76px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(-14deg)"><div style="width:22px;height:22px;border:2px solid #1a1a1a;border-radius:4px 4px 11px 11px"></div><div style="font-size:13px">BLOCK</div></div>
+<div style="position:absolute;left:312px;top:258px;width:84px;height:84px;border-radius:50%;border:3px solid #1a1a1a;background:#fff;box-shadow:0 0 0 6px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:24px;height:24px;border:2px solid #1a1a1a;border-radius:4px"></div><div style="font-size:14px">FIRE</div></div>
+<div style="position:absolute;left:398px;top:258px;width:84px;height:84px;border-radius:50%;border:2px solid #1a1a1a;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><div style="width:24px;height:24px;border:2px solid #1a1a1a;border-radius:50%"></div><div style="font-size:14px">RELOAD</div></div>
+<div style="position:absolute;left:482px;top:288px;width:76px;height:76px;border-radius:50%;border:2px solid #2a78d6;color:#2a78d6;background:#fff;box-shadow:0 0 0 5px rgba(42,120,214,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transform:rotate(14deg)"><div style="width:22px;height:22px;border:2px solid #2a78d6;transform:rotate(45deg)"></div><div style="font-size:13px">POWER</div></div>
+
+<div style="position:absolute;left:30px;bottom:26px;display:flex;flex-direction:column;gap:7px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">MY HUD</div>
+<div style="display:flex;gap:6px"><span style="width:18px;height:18px;background:#c9483a;transform:rotate(45deg);border-radius:4px"></span><span style="width:18px;height:18px;background:#c9483a;transform:rotate(45deg);border-radius:4px"></span><span style="width:18px;height:18px;background:#c9483a;transform:rotate(45deg);border-radius:4px"></span></div>
+<div style="display:flex;gap:5px;align-items:center;margin-top:4px"><span style="width:11px;height:20px;border:2px solid #1a1a1a;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="width:11px;height:20px;border:2px dashed #b8b4ac;border-radius:3px 3px 6px 6px"></span><span style="font-size:15px;margin-left:4px">1 shot</span></div>
+</div>
+<div style="position:absolute;right:30px;bottom:26px;width:190px;font:9px ui-monospace,monospace;color:#8a857c;text-align:right;line-height:1.5">3P → 2P after an elimination:<br>circles animate into this arc<br>rather than snapping.</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1f"><div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>The resolve beat — how the second half of every 2s cycle reads. Icons flip face-up first, then outcomes animate. Same for all four layouts above.</div>
+<div class="dv-card" style="width:760px">
+<div style="position:relative;width:760px;height:380px;background:#fdfcfa;font-family:'Patrick Hand',cursive;color:#1a1a1a;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;height:100%">
+<div style="flex:1;border-right:2px dashed #ddd9d1;padding:20px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">BEAT 1 · 0.0–1.0s · DECIDE</div>
+<div style="font-size:19px;line-height:1.15">Circles live. Nothing above you moves. A rival who has already tapped gets a small "locked in" pill — no hint of what.</div>
+<div style="margin-top:auto;display:flex;gap:10px">
+<div style="width:56px;height:56px;border-radius:50%;border:2px solid #1a1a1a;box-shadow:0 0 0 4px rgba(42,120,214,.16)"></div>
+<div style="width:56px;height:56px;border-radius:50%;border:2px solid #1a1a1a;box-shadow:0 0 0 4px rgba(42,120,214,.16)"></div>
+<div style="width:56px;height:56px;border-radius:50%;border:2px dashed #b8b4ac;background:#f4f2ee"></div>
+</div>
+</div>
+<div style="flex:1;border-right:2px dashed #ddd9d1;padding:20px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">BEAT 2a · 1.0–1.4s · REVEAL</div>
+<div style="font-size:19px;line-height:1.15">Every player's chosen icon flips face-up over their head, all at once. Circles go dark — no input accepted.</div>
+<div style="margin-top:auto;display:flex;gap:10px;align-items:center">
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px">FIRE</div>
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px">BLOCK</div>
+<div style="width:52px;height:52px;border:2px solid #1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px">RELOAD</div>
+</div>
+</div>
+<div style="flex:1;padding:20px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px">
+<div style="font:9px ui-monospace,monospace;color:#8a857c">BEAT 2b · 1.4–2.0s · OUTCOME</div>
+<div style="font-size:19px;line-height:1.15">Shots travel, shields flash, a heart cracks off the reloader. The beat pulse carries straight into the next decide window — no pause, no "next round" tap.</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:#1a1a1a;border-radius:50%"></span><span style="flex:1;height:0;border-top:2px dashed #1a1a1a"></span><span style="width:26px;height:26px;border:2px solid #2a78d6;border-radius:4px 4px 13px 13px"></span><span style="font:9px ui-monospace,monospace;color:#2a78d6">blocked</span></div>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:#1a1a1a;border-radius:50%"></span><span style="flex:1;height:0;border-top:2px solid #c9483a"></span><span style="width:20px;height:20px;background:#c9483a;transform:rotate(45deg);border-radius:4px"></span><span style="font:9px ui-monospace,monospace;color:#c9483a">−1 heart</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "go with <a class="dv-oid" href="#1b">1b</a>, show me 3 riffs on the attack circles" · "combine <a class="dv-oid" href="#1a">1a</a>'s fan with <a class="dv-oid" href="#1c">1c</a>'s lane tinting" · "now wireframe character select + lobby"</p>
+</section>
+</x-dc>
+</body>
+</html>
