@@ -1,10 +1,10 @@
 {
-  "name": "Quick Draw Prototype",
+  "name": "Quick Draw",
   "short_name": "Quick Draw",
   "description": "A two-second bluffing battle game for two or three players.",
   "start_url": "./",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#f8f3e8",
-  "theme_color": "#17181c"
+  "background_color": "#10142c",
+  "theme_color": "#10142c"
 }

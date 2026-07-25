@@ -1,4 +1,14 @@
-import { ACTIONS, chooseRobotAction, createFighter, resolveTurn } from "./engine.js";
+(() => {
+const {
+  ACTIONS,
+  POWER_IDS,
+  canUsePower,
+  chooseRobotAction,
+  createFighter,
+  powerIdFor,
+  powerNeedsTarget,
+  resolveTurn,
+} = window.QuickDrawEngine;
 
 const DECIDE_MS = 1000;
 const REVEAL_MS = 360;
@@ -13,7 +23,7 @@ const CHARACTERS = Object.freeze([
     powerName: "Double Shield",
     powerDescription: "Blocks this beat and the next one automatically.",
     color: "#2878d0",
-    image: "./assets/characters/sir-blocksalot.webp",
+    image: "./assets/characters/sir-blocksalot-8bit.png",
     available: true,
   },
   {
@@ -24,7 +34,7 @@ const CHARACTERS = Object.freeze([
     powerName: "Fast Hands",
     powerDescription: "One reload gives him two shots in a single beat.",
     color: "#cf7b2a",
-    image: "./assets/characters/chuck-reloadington.webp",
+    image: "./assets/characters/chuck-reloadington-8bit.png",
     available: true,
   },
   {
@@ -35,8 +45,8 @@ const CHARACTERS = Object.freeze([
     powerName: "Peek",
     powerDescription: "See one rival’s move the instant they lock it in.",
     color: "#9b54c6",
-    image: null,
-    available: false,
+    image: "./assets/characters/peeka-boo-8bit.png",
+    available: true,
   },
   {
     id: "ricochet-rita",
@@ -46,8 +56,8 @@ const CHARACTERS = Object.freeze([
     powerName: "Bounce",
     powerDescription: "A blocked shot bounces toward the other rival.",
     color: "#268c8a",
-    image: null,
-    available: false,
+    image: "./assets/characters/ricochet-rita-8bit.png",
+    available: true,
   },
   {
     id: "nurse-nudge",
@@ -57,8 +67,8 @@ const CHARACTERS = Object.freeze([
     powerName: "Patch Up",
     powerDescription: "Win back one lost heart, never above three.",
     color: "#d8525f",
-    image: null,
-    available: false,
+    image: "./assets/characters/nurse-nudge-8bit.png",
+    available: true,
   },
   {
     id: "sticky-sam",
@@ -68,8 +78,8 @@ const CHARACTERS = Object.freeze([
     powerName: "Jam",
     powerDescription: "One rival can’t reload on the next beat.",
     color: "#699342",
-    image: null,
-    available: false,
+    image: "./assets/characters/sticky-sam-8bit.png",
+    available: true,
   },
 ]);
 
@@ -193,7 +203,7 @@ function startMatch() {
     createFighter({
       id: "you",
       name: "You",
-      color: "#2878d0",
+      color: selectedCharacter.color,
       avatar: selectedCharacter.shortName.slice(0, 1),
       isHuman: true,
       characterId: selectedCharacter.id,
@@ -267,7 +277,7 @@ function renderCharacterSelect() {
       button.setAttribute("aria-pressed", String(character.id === selected.id));
       button.setAttribute(
         "aria-label",
-        `${character.name}, ${character.available ? "available" : "art coming soon"}`,
+        `${character.name}, ${character.powerName}${character.image ? "" : ", placeholder art"}`,
       );
       button.innerHTML = character.image
         ? `
@@ -281,7 +291,7 @@ function renderCharacterSelect() {
           <span class="roster-placeholder" aria-hidden="true">${character.shortName.slice(0, 1)}</span>
           <span class="character-card-copy">
             <strong>${character.name}</strong>
-            <span>coming soon</span>
+            <span>${character.powerName}</span>
           </span>
         `;
       button.addEventListener("click", () => {
@@ -308,7 +318,7 @@ function renderCharacterSelect() {
     ui.heroCharacterImage.alt = "";
   }
   ui.ready.disabled = !selected.available;
-  ui.ready.textContent = selected.available ? "I’M READY" : "ART COMING SOON";
+  ui.ready.textContent = selected.available ? "LOCK IN" : "ART COMING SOON";
 }
 
 function startCountdown(token) {
@@ -321,6 +331,7 @@ function startCountdown(token) {
   ui.eventBanner.textContent = "First beat begins after the count";
   ui.reveals.replaceChildren();
   ui.combat.classList.remove("phase-decide", "phase-resolve", "impact");
+  ui.combat.classList.add("phase-countdown");
   ui.countdownOverlay.hidden = false;
   renderActionFan();
 
@@ -386,7 +397,7 @@ function startBeat(token) {
       ? "Double Shield protects this beat"
       : "Choose your move";
   ui.reveals.replaceChildren();
-  ui.combat.classList.remove("phase-resolve", "impact");
+  ui.combat.classList.remove("phase-countdown", "phase-resolve", "impact");
   ui.combat.classList.add("phase-decide");
   ui.rules.disabled = false;
   renderAll();
@@ -450,10 +461,23 @@ function finishBeat(token, selections) {
 function chooseAction(action) {
   if (phase !== "decide" || !getPlayer().alive || action.disabled || selectedAction?.forced) return;
   selectedAction = { type: action.type, targetId: action.targetId };
-  ui.eventBanner.textContent =
-    action.type === ACTIONS.FIRE
-      ? `Targeting ${fighterById(action.targetId).name}`
-      : `${actionLabel(action.type)} locked in`;
+  const player = getPlayer();
+  const target = action.targetId ? fighterById(action.targetId) : null;
+  const powerId = powerIdFor(player);
+
+  if (action.type === ACTIONS.POWER && powerId === POWER_IDS.PEEK && target) {
+    const rivalAction = robotSelections.get(target.id) ?? { type: ACTIONS.WAIT };
+    ui.eventBanner.textContent = `PEEK: ${target.name} chose ${actionLabel(rivalAction.type)}`;
+  } else if (action.type === ACTIONS.POWER) {
+    ui.eventBanner.textContent = target
+      ? `${powerNameFor(player)} targets ${target.name}`
+      : `${powerNameFor(player)} locked in`;
+  } else {
+    ui.eventBanner.textContent =
+      action.type === ACTIONS.FIRE
+        ? `Targeting ${target.name}`
+        : `${actionLabel(action.type)} locked in`;
+  }
   renderActionFan();
 }
 
@@ -481,7 +505,13 @@ function renderRivals() {
           <div class="rival-hearts">${heartMarkup(fighter.hearts)}</div>
           <span class="secret-ammo">${fighter.name} · ammo ?</span>
         </div>
-        <span class="locked-pill">${phase === "decide" && fighter.alive ? "locked in" : ""}</span>
+        <span class="locked-pill">${
+          fighter.alive && fighter.jammedTurns > 0
+            ? "reload jammed"
+            : phase === "decide" && fighter.alive
+              ? "locked in"
+              : ""
+        }</span>
       `;
       return card;
     }),
@@ -505,20 +535,46 @@ function renderPlayerHud() {
 function renderActionFan() {
   const player = getPlayer();
   if (!player) return;
-  const rivals = fighters.filter((fighter) => fighter.alive && !fighter.isHuman);
+  const rivals = fighters.filter((fighter) => !fighter.isHuman);
+  const livingRivals = rivals.filter((fighter) => fighter.alive);
+  const playerPowerId = powerIdFor(player);
+  const powerTarget = powerNeedsTarget(playerPowerId)
+    ? defaultPowerTarget(player, livingRivals)
+    : null;
+  const powerAction = {
+    type: ACTIONS.POWER,
+    targetId: powerTarget?.id ?? null,
+  };
+  const powerActions =
+    playerPowerId === POWER_IDS.JAM && rivals.length > 1
+      ? rivals.map((rival, index) => ({
+          type: ACTIONS.POWER,
+          targetId: rival.id,
+          edge: index === 0 ? "left" : "right",
+        }))
+      : [powerAction];
   const actions =
     rivals.length === 1
       ? [
           { type: ACTIONS.BLOCK },
           { type: ACTIONS.FIRE, targetId: rivals[0].id },
           { type: ACTIONS.RELOAD },
-          { type: ACTIONS.POWER },
+          powerAction,
         ]
+      : playerPowerId === POWER_IDS.JAM && powerActions.length > 1
+        ? [
+            { type: ACTIONS.FIRE, targetId: rivals[0]?.id, edge: "left" },
+            powerActions[0],
+            { type: ACTIONS.BLOCK },
+            { type: ACTIONS.RELOAD },
+            powerActions[1],
+            { type: ACTIONS.FIRE, targetId: rivals[1]?.id, edge: "right" },
+          ]
       : [
           { type: ACTIONS.FIRE, targetId: rivals[0]?.id, edge: "left" },
           { type: ACTIONS.BLOCK },
           { type: ACTIONS.RELOAD },
-          { type: ACTIONS.POWER },
+          ...powerActions,
           { type: ACTIONS.FIRE, targetId: rivals[1]?.id, edge: "right" },
         ];
 
@@ -530,11 +586,12 @@ function renderActionFan() {
         phase !== "decide" ||
         !player.alive ||
         Boolean(selectedAction?.forced) ||
+        (Boolean(action.targetId) && !target?.alive) ||
         (action.type === ACTIONS.FIRE && (player.ammo < 1 || !target)) ||
-        (action.type === ACTIONS.POWER && player.powerUsed);
+        (action.type === ACTIONS.POWER && !canUsePower(player, fighters, action));
       const selected =
         selectedAction?.type === action.type &&
-        (action.type !== ACTIONS.FIRE || selectedAction.targetId === action.targetId);
+        (!action.targetId || selectedAction.targetId === action.targetId);
       const button = document.createElement("button");
       button.type = "button";
       button.className = [
@@ -552,12 +609,18 @@ function renderActionFan() {
       button.style.setProperty("--action-index", index);
       button.setAttribute(
         "aria-label",
-        target ? `Fire at ${target.name}` : actionLabel(action.type),
+        action.type === ACTIONS.FIRE
+          ? `Fire at ${target?.name ?? "rival"}`
+          : action.type === ACTIONS.POWER
+            ? target
+              ? `${powerNameFor(player)} on ${target.name}`
+              : powerNameFor(player)
+            : actionLabel(action.type),
       );
       button.innerHTML = `
         <span class="action-icon" aria-hidden="true">${actionIcon(action.type)}</span>
         <strong>${action.type === ACTIONS.FIRE ? "FIRE" : actionLabel(action.type)}</strong>
-        <small>${target ? target.name : actionHint(action.type, player)}</small>
+        <small>${actionButtonHint(action, player, target)}</small>
       `;
       button.addEventListener("click", () => chooseAction({ ...action, disabled }));
       return button;
@@ -575,7 +638,7 @@ function renderReveals(selections) {
       chip.style.setProperty("--fighter-color", fighter.color);
       chip.innerHTML = `
         <span>${fighter.name}</span>
-        <strong>${actionIcon(action.type)} ${actionLabel(action.type)}</strong>
+        <strong>${actionIcon(action.type)} ${actionLabelForFighter(action, fighter)}</strong>
       `;
       return chip;
     }),
@@ -591,12 +654,14 @@ function renderTerritories() {
 
 function animateEvents(events) {
   for (const event of events) {
-    if (event.type !== "hit" && event.type !== "blocked") continue;
+    const hitEvent = event.type === "hit" || event.type === "ricochet";
+    const blockEvent = event.type === "blocked" || event.type === "ricochetBlocked";
+    if (!hitEvent && !blockEvent) continue;
     const target =
       event.targetId === "you"
         ? ui.combat
         : ui.rivals.querySelector(`[data-fighter-id="${event.targetId}"]`);
-    target?.classList.add(event.type === "hit" ? "takes-hit" : "blocks-hit");
+    target?.classList.add(hitEvent ? "takes-hit" : "blocks-hit");
     window.setTimeout(
       () => target?.classList.remove("takes-hit", "blocks-hit"),
       OUTCOME_MS - 50,
@@ -621,15 +686,30 @@ function describeReveal(selections) {
 
 function describeOutcome(events) {
   if (events.some((event) => event.type === "lastStand")) return "Double knockout — last heart holds!";
-  const playerHit = events.some((event) => event.type === "hit" && event.targetId === "you");
-  const playerBlocked = events.some((event) => event.type === "blocked" && event.targetId === "you");
-  const playerLanded = events.some((event) => event.type === "hit" && event.actorId === "you");
+  const playerPower = events.find((event) => event.type === "power" && event.actorId === "you");
+  const playerJammed = events.some((event) => event.type === "jammed" && event.actorId === "you");
+  const ricochet = events.find(
+    (event) => event.type === "ricochet" && event.actorId === "you",
+  );
+  const playerHit = events.some(
+    (event) =>
+      (event.type === "hit" || event.type === "ricochet") && event.targetId === "you",
+  );
+  const playerBlocked = events.some(
+    (event) =>
+      (event.type === "blocked" || event.type === "ricochetBlocked") &&
+      event.targetId === "you",
+  );
+  const playerLanded = events.some(
+    (event) =>
+      (event.type === "hit" || event.type === "ricochet") && event.actorId === "you",
+  );
+  if (playerJammed) return "JAMMED — your reload fizzled!";
+  if (ricochet) return `BOUNCE hit ${fighterById(ricochet.targetId).name}!`;
+  if (playerPower) return powerOutcomeMessage(playerPower);
   if (playerHit) return "Ouch — you lost a heart!";
   if (playerLanded) return "Direct hit!";
   if (playerBlocked) return "Blocked!";
-  if (events.some((event) => event.type === "power" && event.actorId === "you")) {
-    return "Double Shield — one more beat!";
-  }
   if (events.some((event) => event.type === "reload" && event.actorId === "you")) {
     return "Loaded +1 shot";
   }
@@ -736,12 +816,44 @@ function actionLabel(action) {
   }[action];
 }
 
-function actionHint(action, player) {
+function actionLabelForFighter(action, fighter) {
+  return action.type === ACTIONS.POWER ? powerNameFor(fighter) : actionLabel(action.type);
+}
+
+function actionButtonHint(action, player, target) {
+  if (action.type === ACTIONS.FIRE) return target?.name ?? "no target";
+  if (action.type === ACTIONS.POWER) {
+    if (player.powerUsed) return "used";
+    const powerId = powerIdFor(player);
+    if (powerId === POWER_IDS.BOUNCE && player.ammo < 1) return "needs 1 shot";
+    if (powerId === POWER_IDS.PATCH_UP && player.hearts >= 3) return "at full hearts";
+    if (target) return target.name;
+    return powerNameFor(player);
+  }
   return {
     [ACTIONS.BLOCK]: "safe",
     [ACTIONS.RELOAD]: "+1 shot",
-    [ACTIONS.POWER]: player.powerUsed ? "used" : "once",
-  }[action] ?? "";
+  }[action.type] ?? "";
+}
+
+function powerNameFor(fighter) {
+  return characterById(fighter.characterId).powerName;
+}
+
+function defaultPowerTarget(player, rivals) {
+  return rivals.find((fighter) => fighter.alive && fighter.id !== player.id) ?? null;
+}
+
+function powerOutcomeMessage(event) {
+  const target = event.targetId ? fighterById(event.targetId) : null;
+  return {
+    [POWER_IDS.DOUBLE_SHIELD]: "DOUBLE SHIELD — one more protected beat!",
+    [POWER_IDS.FAST_HANDS]: "FAST HANDS — loaded 2 shots!",
+    [POWER_IDS.PEEK]: target ? `PEEKED at ${target.name}’s move!` : "PEEK!",
+    [POWER_IDS.BOUNCE]: "BOUNCE shot fired!",
+    [POWER_IDS.PATCH_UP]: "PATCH UP — recovered 1 heart!",
+    [POWER_IDS.JAM]: target ? `JAMMED ${target.name}’s next reload!` : "JAM!",
+  }[event.powerId] ?? "Power used!";
 }
 
 function actionIcon(action) {
@@ -768,3 +880,4 @@ window.__QUICK_DRAW_PROTOTYPE__ = {
     };
   },
 };
+})();
