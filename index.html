@@ -6,12 +6,18 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
     />
-    <meta name="theme-color" content="#17181c" />
+    <meta name="theme-color" content="#10142c" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Quick Draw — Playable Prototype</title>
+    <title>Quick Draw — Two-Second Showdown</title>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=8" />
   </head>
   <body>
     <main id="app">
@@ -20,52 +26,15 @@
         <div class="home-orbit home-orbit-two"></div>
 
         <div class="brand-block">
-          <svg class="western-art bandana-art" viewBox="0 0 220 170" aria-hidden="true">
-            <path
-              class="bandana-knot"
-              d="M42 49C22 37 10 42 5 59c14 3 27 12 38 28l22-18Z"
-            />
-            <path
-              class="bandana-knot"
-              d="M174 49c21-12 33-7 38 10-14 3-27 12-38 28l-22-18Z"
-            />
-            <path
-              class="bandana-body"
-              d="M37 38c32-19 114-19 146 0l-13 49-60 74-60-74Z"
-            />
-            <path class="bandana-fold" d="M39 38c36 17 106 17 142 0l-7 32c-38 14-90 14-128 0Z" />
-            <g class="bandana-print">
-              <path d="M78 83c12 2 16 13 8 22-9-4-14-14-8-22Z" />
-              <path d="M132 88c10 3 13 13 5 20-8-4-12-12-5-20Z" />
-              <path d="M105 116c9 2 12 10 6 17-8-3-11-10-6-17Z" />
-              <circle cx="111" cy="61" r="5" />
-              <circle cx="60" cy="58" r="4" />
-              <circle cx="159" cy="60" r="4" />
-            </g>
-          </svg>
-
-          <div class="eyebrow">PLAYABLE PROTOTYPE</div>
+          <div class="pixel-sparks" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="eyebrow">TWO-SECOND SHOWDOWN</div>
           <h1 id="gameTitle">
-            <span>Quick</span>
-            <span class="brand-draw">Draw!</span>
+            <span class="brand-quick">QUICK</span>
+            <span class="brand-draw">DRAW!</span>
           </h1>
-          <p>Two seconds to decide. Three hearts. One winner.</p>
-
-          <svg class="western-art holster-art" viewBox="0 0 170 220" aria-hidden="true">
-            <path class="holster-belt" d="M10 24h150v37H10z" />
-            <path class="holster-loop" d="M55 9h62v76H55z" />
-            <path
-              class="holster-body"
-              d="M45 55c28-15 65-14 91 3l-12 40c-6 19-11 43-12 79l-45 30-24-21c15-39 16-84 2-131Z"
-            />
-            <path class="holster-mouth" d="M48 56c28-13 59-12 85 2l-5 24c-27-14-53-14-78-1Z" />
-            <path class="holster-stitch" d="M58 91c13 32 10 66-1 92m56-88c-8 29-12 54-12 78" />
-            <circle class="holster-rivet" cx="56" cy="74" r="5" />
-            <path
-              class="holster-star"
-              d="m94 108 5 11 12 2-9 8 3 12-11-6-11 6 3-12-9-8 12-2Z"
-            />
-          </svg>
+          <p>2 SECONDS TO DECIDE · 3 HEARTS · 1 WINNER</p>
         </div>
 
         <div class="setup-card">
@@ -95,10 +64,10 @@
           </div>
 
           <button class="primary-button" id="startButton" type="button">
-            <span>PLAY A ROBOT</span>
+            <span>PLAY</span>
             <span class="button-arrow" aria-hidden="true">→</span>
           </button>
-          <p class="setup-note">Special power in this prototype: Double Shield</p>
+          <p class="setup-note">ARCADE MODE · ROBOT RIVALS</p>
         </div>
       </section>
 
@@ -110,12 +79,12 @@
         <header class="character-header">
           <button class="icon-button" id="backToHomeButton" type="button" aria-label="Back to home">←</button>
           <div>
-            <div class="eyebrow">YOUR FIGHTER</div>
-            <h2 id="characterSelectTitle">Pick your character</h2>
+            <div class="eyebrow">QUICK DRAW ROSTER</div>
+            <h2 id="characterSelectTitle">SELECT YOUR FIGHTER</h2>
           </div>
           <div class="roster-status">
             <span class="status-dot"></span>
-            <span>2 ready · 4 arriving soon</span>
+            <span>6 fighters ready</span>
           </div>
         </header>
 
@@ -128,7 +97,7 @@
               <img id="heroCharacterImage" alt="" />
               <div class="coming-soon-hero" id="comingSoonHero" hidden>
                 <span>✦</span>
-                <strong>ART COMING SOON</strong>
+                <strong>PIXEL ART IN PROGRESS</strong>
               </div>
             </div>
 
@@ -144,11 +113,11 @@
               </div>
 
               <p class="prototype-power-note">
-                Current prototype matches still use Double Shield for every fighter.
+                Every fighter’s power is active once per round.
               </p>
 
               <button class="primary-button ready-button" id="readyButton" type="button">
-                I'M READY
+                LOCK IN
               </button>
             </div>
           </article>
@@ -243,7 +212,7 @@
           <div><span class="mini-action">⬡</span><p><strong>BLOCK</strong> stops every incoming shot.</p></div>
           <div><span class="mini-action">∞</span><p><strong>RELOAD</strong> adds one shot, but leaves you open.</p></div>
           <div><span class="mini-action">✦</span><p><strong>FIRE</strong> costs one shot. Pick your target.</p></div>
-          <div><span class="mini-action">★</span><p><strong>POWER</strong> blocks this beat and the next.</p></div>
+          <div><span class="mini-action">★</span><p><strong>POWER</strong> uses your fighter’s unique once-per-round move.</p></div>
         </div>
         <p class="rule-footnote">
           You get one second to choose, then one second to watch every move resolve.
@@ -257,6 +226,7 @@
       <span>This game is built for landscape play.</span>
     </div>
 
-    <script type="module" src="./src/game.js"></script>
+    <script defer src="./src/engine.js?v=5"></script>
+    <script defer src="./src/game.js?v=9"></script>
   </body>
 </html>

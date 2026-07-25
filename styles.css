@@ -1546,3 +1546,1207 @@ button:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   QUICK DRAW / 8-BIT ARCADE SYSTEM
+   Visual direction adapted from the supplied NES redesign boards.
+   -------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  --ink: #eaf0ff;
+  --paper: #10142c;
+  --sand: #10142c;
+  --muted: #8b96c9;
+  --blue: #37c0f0;
+  --orange: #ffcc22;
+  --purple: #b07cff;
+  --heart: #e5405c;
+  --arcade-navy: #10142c;
+  --arcade-black: #0a0d20;
+  --arcade-panel: #1b2249;
+  --arcade-line: #4a5aa8;
+  --arcade-green: #4fd45a;
+  --arcade-red: #e5405c;
+  --arcade-yellow: #ffcc22;
+  --arcade-cyan: #37c0f0;
+  --pixel-shadow: 6px 6px 0 var(--arcade-black);
+}
+
+* {
+  image-rendering: pixelated;
+}
+
+html,
+body {
+  background: var(--arcade-navy);
+  color: var(--ink);
+}
+
+body::after {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgb(255 255 255 / 0.018) 0 2px,
+    rgb(0 0 0 / 0.035) 2px 4px
+  );
+  content: "";
+  pointer-events: none;
+}
+
+button {
+  border-radius: 0 !important;
+}
+
+button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+
+.eyebrow,
+.setup-label,
+.beat-number,
+.character-header h2,
+.character-details h3,
+.power-card strong,
+.event-banner,
+.action-button strong,
+.result-content h2,
+.rules-modal h2,
+.primary-button,
+.secondary-button {
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.home-screen,
+.character-screen,
+.combat-screen,
+.result-screen {
+  background:
+    repeating-linear-gradient(0deg, #141935 0 4px, var(--arcade-navy) 4px 8px);
+}
+
+.home-orbit {
+  display: none;
+}
+
+/* Home */
+
+.home-screen {
+  justify-content: center;
+  gap: clamp(48px, 10vw, 150px);
+  padding:
+    max(24px, env(safe-area-inset-top))
+    max(34px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom))
+    max(34px, env(safe-area-inset-left));
+}
+
+.brand-block {
+  position: relative;
+  width: min(46vw, 500px);
+  text-align: left;
+}
+
+.brand-block .eyebrow {
+  margin: 0 0 16px 4px;
+  color: var(--arcade-yellow);
+  font-size: clamp(0.54rem, 1vw, 0.7rem);
+  line-height: 1.5;
+}
+
+.brand-block h1 {
+  display: flex;
+  width: fit-content;
+  margin: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--arcade-navy);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: clamp(2.1rem, 5.1vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  filter: none;
+}
+
+.brand-block h1 span {
+  display: block;
+  padding: 12px 16px 10px;
+  background: var(--arcade-cyan);
+  box-shadow: 7px 7px 0 var(--arcade-black);
+  transform: none;
+}
+
+.brand-block h1 .brand-draw {
+  margin-left: clamp(20px, 3vw, 42px);
+  padding-left: 16px;
+  background: var(--arcade-red);
+  color: #fff;
+  transform: none;
+}
+
+.brand-block p {
+  max-width: none;
+  margin: 24px 0 0 4px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: clamp(0.62rem, 1.1vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.pixel-sparks span {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--arcade-yellow);
+  box-shadow: 8px 0 var(--arcade-yellow), 0 8px var(--arcade-yellow);
+}
+
+.pixel-sparks span:nth-child(1) {
+  top: 8%;
+  right: 9%;
+}
+
+.pixel-sparks span:nth-child(2) {
+  top: 74%;
+  left: -22px;
+  background: var(--arcade-cyan);
+  box-shadow: 8px 0 var(--arcade-cyan), 0 8px var(--arcade-cyan);
+}
+
+.pixel-sparks span:nth-child(3) {
+  right: 3%;
+  bottom: 5%;
+  background: var(--arcade-red);
+  box-shadow: 8px 0 var(--arcade-red), 0 8px var(--arcade-red);
+}
+
+.pixel-sparks span:nth-child(4) {
+  display: none;
+}
+
+.western-art {
+  display: none;
+}
+
+.setup-card {
+  width: min(38vw, 380px);
+  padding: clamp(16px, 2.6vw, 26px);
+  border: 4px solid var(--arcade-line);
+  border-radius: 0;
+  background: var(--arcade-panel);
+  box-shadow: var(--pixel-shadow);
+}
+
+.setup-group + .setup-group {
+  margin-top: 18px;
+}
+
+.setup-label {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--muted);
+  font-size: 0.56rem;
+}
+
+.segmented {
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.segment {
+  min-height: 50px;
+  border: 3px solid #2f3a78;
+  border-radius: 0;
+  background: #151a38;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.segment small {
+  margin-top: 3px;
+  color: inherit;
+  font-size: 0.58rem;
+}
+
+.segment.is-selected {
+  border-color: var(--arcade-yellow);
+  background: #2a2650;
+  color: var(--arcade-yellow);
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.primary-button,
+.secondary-button {
+  min-height: 54px;
+  border: 4px solid #fff;
+  border-radius: 0;
+  background: var(--arcade-green);
+  color: #0a2b10;
+  box-shadow: 6px 6px 0 var(--arcade-black);
+  font-size: clamp(0.72rem, 1.2vw, 0.92rem);
+  letter-spacing: 0;
+}
+
+.primary-button:not(:disabled):active,
+.secondary-button:not(:disabled):active {
+  box-shadow: 2px 2px 0 var(--arcade-black);
+  transform: translate(4px, 4px);
+}
+
+.setup-card .primary-button {
+  margin-top: 22px;
+  animation: arcade-blink 1.6s steps(2, end) infinite;
+}
+
+.button-arrow {
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.setup-note {
+  margin-top: 15px;
+  color: #5d68a0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.09em;
+}
+
+/* Fighter select */
+
+.character-screen {
+  padding:
+    max(14px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(14px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+}
+
+.character-header {
+  min-height: 56px;
+  border-bottom: 3px solid #2f3a78;
+}
+
+.character-header h2 {
+  margin-top: 7px;
+  color: var(--arcade-yellow);
+  font-size: clamp(0.7rem, 1.6vw, 1rem);
+}
+
+.character-header .eyebrow {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.56rem;
+}
+
+.icon-button,
+.modal-close {
+  border: 3px solid var(--arcade-line);
+  border-radius: 0;
+  background: var(--arcade-panel);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.roster-status {
+  border: 2px solid var(--arcade-line);
+  border-radius: 0;
+  background: var(--arcade-panel);
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.status-dot {
+  border-radius: 0;
+  background: var(--arcade-green);
+  box-shadow: none;
+}
+
+.character-layout {
+  grid-template-columns: minmax(250px, 0.82fr) minmax(410px, 1.5fr);
+  gap: clamp(18px, 3vw, 34px);
+  margin-top: 18px;
+}
+
+.character-roster {
+  gap: 12px;
+}
+
+.character-card {
+  min-height: 112px;
+  border: 3px solid var(--arcade-line);
+  border-radius: 0;
+  background: var(--arcade-panel);
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.character-card::after {
+  display: none;
+}
+
+.character-card.is-selected {
+  border-color: var(--arcade-yellow);
+  background: #2a2650;
+  box-shadow: 5px 5px 0 var(--arcade-black);
+  transform: translate(-2px, -2px);
+}
+
+.character-card.is-coming {
+  opacity: 0.62;
+}
+
+.character-card img,
+.roster-placeholder {
+  border-radius: 0;
+  background:
+    repeating-conic-gradient(#2b3570 0% 25%, #1a2049 0% 50%) 50% / 10px 10px;
+}
+
+.character-card img {
+  padding: 4px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.character-card-copy strong {
+  color: var(--ink);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: clamp(0.42rem, 0.72vw, 0.58rem);
+  line-height: 1.5;
+}
+
+.character-card-copy span {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+}
+
+.character-feature {
+  border: 4px solid var(--arcade-yellow);
+  border-radius: 0;
+  background: #181d3f;
+  box-shadow: var(--pixel-shadow);
+}
+
+.character-stage {
+  border-right: 3px solid #2f3a78;
+  background:
+    repeating-conic-gradient(#242a52 0% 25%, #171c3c 0% 50%) 50% / 12px 12px;
+}
+
+.character-glow {
+  border-radius: 0;
+  background: color-mix(in srgb, var(--character-color) 25%, transparent);
+  filter: none;
+}
+
+#heroCharacterImage {
+  filter: contrast(1.05) saturate(0.95);
+}
+
+.coming-soon-hero {
+  border: 3px dashed var(--arcade-line);
+  border-radius: 0;
+  color: var(--muted);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.your-color {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.character-details h3 {
+  color: var(--arcade-yellow);
+  font-size: clamp(0.85rem, 1.7vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.character-tagline {
+  color: #c6cef0;
+}
+
+.power-card {
+  border: 0;
+  border-top: 3px solid #2f3a78;
+  border-bottom: 3px solid #2f3a78;
+  border-radius: 0;
+  background: transparent;
+}
+
+.power-card span {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.power-card strong {
+  color: var(--arcade-green);
+  font-size: 0.72rem;
+}
+
+.power-card p,
+.prototype-power-note {
+  color: #c6cef0;
+}
+
+.ready-button:disabled {
+  border-color: #3f4877;
+  background: #1a2042;
+  color: #5d68a0;
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+/* Combat */
+
+.combat-screen {
+  background:
+    linear-gradient(90deg, rgb(55 192 240 / 0.055), transparent 36%, transparent 64%, rgb(229 64 92 / 0.055)),
+    repeating-linear-gradient(0deg, #141935 0 4px, var(--arcade-navy) 4px 8px);
+}
+
+.territory {
+  opacity: 0.08;
+  filter: none;
+}
+
+.combat-header {
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+.beat-status {
+  min-width: 200px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.beat-number {
+  color: var(--arcade-yellow);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.beat-status strong {
+  color: var(--arcade-green);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: clamp(0.72rem, 1.4vw, 0.98rem);
+}
+
+.beat-track {
+  height: 14px;
+  border: 3px solid var(--arcade-line);
+  border-radius: 0;
+  background: #2a3169;
+}
+
+.beat-progress {
+  border-radius: 0;
+  background: var(--arcade-green);
+}
+
+.rivals {
+  top: clamp(56px, 11vh, 78px);
+  gap: clamp(18px, 18vw, 280px);
+}
+
+.rival-card {
+  width: min(30vw, 230px);
+  min-height: 76px;
+  border: 3px solid var(--fighter-color);
+  border-radius: 0;
+  background: #181d3f;
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.rival-card.is-out {
+  border-color: #454b6e;
+  filter: grayscale(1);
+}
+
+.rival-avatar {
+  border: 2px solid var(--fighter-color);
+  border-radius: 0;
+  background:
+    repeating-conic-gradient(#2b3570 0% 25%, #1a2049 0% 50%) 50% / 8px 8px;
+}
+
+.rival-avatar img,
+.you-avatar img,
+.winner-medallion img {
+  padding: 2px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.rival-copy strong {
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: clamp(0.48rem, 0.8vw, 0.65rem);
+  line-height: 1.4;
+}
+
+.heart {
+  color: var(--arcade-red);
+  filter: none;
+  text-shadow: 3px 3px 0 #8e1f34;
+}
+
+.heart.is-empty {
+  color: #2a3169;
+  text-shadow: none;
+}
+
+.secret-ammo,
+.locked-pill {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+}
+
+.locked-pill {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--arcade-green);
+}
+
+.arena-center {
+  top: 37%;
+}
+
+.event-banner {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--arcade-green);
+  box-shadow: none;
+  font-size: clamp(0.64rem, 1.4vw, 0.9rem);
+  line-height: 1.5;
+}
+
+.reveal-chip {
+  border: 3px solid var(--fighter-color);
+  border-radius: 0;
+  background: #181d3f;
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.reveal-chip span {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.reveal-chip strong {
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: 0.62rem;
+}
+
+.action-dock {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.player-hud {
+  border: 3px solid var(--arcade-cyan);
+  border-radius: 0;
+  background: #132244;
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.you-pill,
+.ammo-pill {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.you-pill {
+  color: var(--arcade-cyan);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  font-size: 0.62rem;
+}
+
+.you-avatar {
+  border: 2px solid var(--arcade-cyan);
+  border-radius: 0;
+  background:
+    repeating-conic-gradient(#2b4a80 0% 25%, #1a3057 0% 50%) 50% / 8px 8px;
+}
+
+.ammo-pill {
+  color: var(--arcade-yellow);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.ammo-icon {
+  width: 7px;
+  height: 18px;
+  border-radius: 0;
+  background: var(--arcade-yellow);
+  box-shadow: none;
+}
+
+.action-fan {
+  gap: clamp(7px, 1.5vw, 16px);
+  align-items: flex-end;
+}
+
+.action-button {
+  width: clamp(72px, 12vw, 116px);
+  height: clamp(62px, 15vh, 98px);
+  border: 3px solid #fff;
+  border-radius: 0;
+  background: var(--arcade-yellow);
+  color: #2b2200;
+  box-shadow: 4px 4px 0 var(--arcade-black);
+  transform: none;
+}
+
+.action-button:not(:disabled):active {
+  box-shadow: 1px 1px 0 var(--arcade-black);
+  transform: translate(3px, 3px);
+}
+
+.action-fan[data-count="5"] .action-button,
+.action-fan[data-count="4"] .action-button,
+.action-fan[data-count="6"] .action-button {
+  transform: none;
+}
+
+.action-fan[data-count="5"] .action-button:nth-child(1),
+.action-fan[data-count="5"] .action-button:nth-child(5),
+.action-fan[data-count="6"] .action-button:nth-child(1),
+.action-fan[data-count="6"] .action-button:nth-child(6) {
+  transform: translateY(14px);
+}
+
+.action-fan[data-count="5"] .action-button:nth-child(2),
+.action-fan[data-count="5"] .action-button:nth-child(4),
+.action-fan[data-count="6"] .action-button:nth-child(2),
+.action-fan[data-count="6"] .action-button:nth-child(5),
+.action-fan[data-count="4"] .action-button:nth-child(1),
+.action-fan[data-count="4"] .action-button:nth-child(4) {
+  transform: translateY(7px);
+}
+
+.action-fan[data-count="6"] .action-button {
+  width: clamp(68px, 10.5vw, 100px);
+}
+
+.action-button.is-selected {
+  outline: 4px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 6px 6px 0 var(--arcade-black);
+  filter: brightness(1.15);
+}
+
+.action-button:disabled {
+  border-color: #2a3169;
+  background: #171c3c;
+  color: #3f4877;
+  box-shadow: none;
+}
+
+.action-reload {
+  background: var(--arcade-green);
+  color: #0a2b10;
+}
+
+.action-power {
+  background: var(--purple);
+  color: #1c0a38;
+}
+
+.action-power[data-target] {
+  border-color: var(--target-color);
+  background: color-mix(in srgb, var(--purple) 68%, var(--target-color) 32%);
+  box-shadow:
+    4px 4px 0 var(--arcade-black),
+    inset 0 -5px 0 color-mix(in srgb, var(--target-color) 34%, transparent);
+}
+
+.action-fire,
+.action-fire:not(:disabled) {
+  background: var(--target-color, var(--arcade-red));
+  color: #fff;
+}
+
+.action-button strong {
+  font-size: clamp(0.52rem, 0.9vw, 0.68rem);
+  line-height: 1.4;
+}
+
+.action-button small {
+  color: currentColor;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.55rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.action-icon {
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.countdown-overlay {
+  background: rgb(10 13 32 / 0.93);
+  backdrop-filter: none;
+  padding-bottom: clamp(116px, 32vh, 160px);
+  pointer-events: none;
+}
+
+.countdown-rings {
+  border: 4px dashed var(--arcade-line);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.countdown-copy span,
+.countdown-copy small {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.countdown-copy strong {
+  color: var(--arcade-yellow);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  text-shadow: 7px 7px 0 var(--arcade-black);
+}
+
+.combat-screen .countdown-overlay {
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(10 13 32 / 0.9) 0%,
+      rgb(10 13 32 / 0.78) 58%,
+      rgb(10 13 32 / 0.36) 82%,
+      rgb(10 13 32 / 0.08) 100%
+    );
+}
+
+.combat-screen .action-dock {
+  position: relative;
+  z-index: 13;
+}
+
+.combat-screen.phase-countdown .action-button:disabled {
+  border-style: solid;
+  filter: none;
+  opacity: 0.74;
+}
+
+.combat-screen.phase-countdown .action-block:disabled {
+  border-color: #fff;
+  background: var(--arcade-yellow);
+  color: #2b2200;
+}
+
+.combat-screen.phase-countdown .action-reload:disabled {
+  border-color: #fff;
+  background: var(--arcade-green);
+  color: #0a2b10;
+}
+
+.combat-screen.phase-countdown .action-power:disabled {
+  border-color: #fff;
+  background: var(--purple);
+  color: #1c0a38;
+}
+
+.combat-screen.phase-countdown .action-power[data-target]:disabled {
+  border-color: var(--target-color);
+  background: color-mix(in srgb, var(--purple) 68%, var(--target-color) 32%);
+}
+
+.combat-screen.phase-countdown .action-fire:disabled {
+  border-color: #fff;
+  background: var(--target-color, var(--arcade-red));
+  color: #fff;
+}
+
+/* Result and rules */
+
+.result-burst {
+  background:
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--winner-color) 12%, transparent) 0 12px, transparent 12px 24px);
+  filter: none;
+}
+
+.winner-medallion {
+  border: 4px solid var(--winner-color);
+  border-radius: 0;
+  background:
+    repeating-conic-gradient(#2b3570 0% 25%, #1a2049 0% 50%) 50% / 10px 10px;
+  box-shadow: 6px 6px 0 var(--arcade-black);
+}
+
+.result-content h2 {
+  color: var(--arcade-cyan);
+  font-size: clamp(1.2rem, 4vw, 2.8rem);
+  text-shadow: 6px 6px 0 var(--arcade-black);
+}
+
+.result-content > p {
+  color: #c6cef0;
+}
+
+.round-stats {
+  gap: 10px;
+}
+
+.round-stats div {
+  min-width: 110px;
+  border: 3px solid var(--arcade-line);
+  border-radius: 0;
+  background: #0e1b38;
+  box-shadow: 4px 4px 0 var(--arcade-black);
+}
+
+.round-stats strong {
+  color: var(--arcade-yellow);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.round-stats span {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+}
+
+.result-actions .secondary-button,
+.secondary-button {
+  border-color: var(--arcade-line);
+  background: var(--arcade-panel);
+  color: var(--muted);
+}
+
+.modal-backdrop {
+  background: rgb(10 13 32 / 0.9);
+  backdrop-filter: none;
+}
+
+.rules-modal {
+  border: 4px solid var(--arcade-yellow);
+  border-radius: 0;
+  background: #181d3f;
+  box-shadow: 8px 8px 0 var(--arcade-black);
+}
+
+.rules-modal h2 {
+  color: var(--arcade-yellow);
+  font-size: clamp(0.8rem, 2vw, 1.25rem);
+  line-height: 1.7;
+}
+
+.rule-grid > div {
+  border: 3px solid var(--arcade-line);
+  border-radius: 0;
+  background: var(--arcade-panel);
+}
+
+.mini-action {
+  border-radius: 0;
+  background: var(--arcade-yellow);
+  color: #2b2200;
+  font-family: "Press Start 2P", ui-monospace, monospace;
+}
+
+.rule-grid p,
+.rule-footnote {
+  color: #c6cef0;
+}
+
+.rule-footnote {
+  border-top-color: #2f3a78;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.portrait-lock {
+  background:
+    repeating-linear-gradient(0deg, #141935 0 4px, var(--arcade-navy) 4px 8px);
+  color: var(--ink);
+}
+
+.portrait-lock strong {
+  color: var(--arcade-yellow);
+  font-family: "Press Start 2P", ui-monospace, monospace;
+  line-height: 1.5;
+}
+
+.portrait-lock span {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.takes-hit {
+  animation: pixel-hit 0.28s steps(2, end);
+}
+
+.blocks-hit {
+  animation: pixel-block 0.28s steps(2, end);
+}
+
+@keyframes arcade-blink {
+  0%,
+  49%,
+  100% {
+    filter: brightness(1);
+  }
+  50%,
+  74% {
+    filter: brightness(0.72);
+  }
+}
+
+@keyframes pixel-hit {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  33% {
+    transform: translateX(-5px);
+    filter: brightness(2);
+  }
+  66% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes pixel-block {
+  0%,
+  100% {
+    filter: none;
+  }
+  50% {
+    filter: brightness(2) saturate(0);
+  }
+}
+
+@media (max-width: 820px) {
+  .home-screen {
+    gap: 30px;
+  }
+
+  .brand-block {
+    width: 43vw;
+  }
+
+  .setup-card {
+    width: 45vw;
+    padding: 14px;
+  }
+
+  .brand-block h1 {
+    font-size: clamp(1.65rem, 5vw, 2.6rem);
+  }
+
+  .character-layout {
+    grid-template-columns: minmax(230px, 0.92fr) minmax(340px, 1.4fr);
+    gap: 12px;
+  }
+}
+
+@media (max-height: 430px) {
+  .home-screen {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .brand-block .eyebrow {
+    margin-bottom: 9px;
+  }
+
+  .brand-block h1 {
+    gap: 5px;
+  }
+
+  .brand-block h1 span {
+    padding: 8px 12px 7px;
+  }
+
+  .brand-block p {
+    margin-top: 16px;
+  }
+
+  .setup-group + .setup-group {
+    margin-top: 10px;
+  }
+
+  .segment {
+    min-height: 40px;
+  }
+
+  .setup-card .primary-button {
+    min-height: 44px;
+    margin-top: 13px;
+  }
+
+  .setup-note {
+    margin-top: 10px;
+  }
+
+  .rivals {
+    top: 52px;
+  }
+
+  .rival-card {
+    min-height: 65px;
+  }
+
+  .arena-center {
+    top: 34%;
+  }
+
+  .action-button {
+    height: 76px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .setup-card .primary-button {
+    animation: none;
+  }
+}
+
+/* Landscape phone spacing: keep interactive UI clear of rounded corners,
+   camera cutouts, the home indicator, and the physical screen edge. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .combat-header {
+    padding-right: max(22px, calc(env(safe-area-inset-right) + 10px));
+    padding-left: max(22px, calc(env(safe-area-inset-left) + 10px));
+  }
+
+  .beat-track {
+    width: min(300px, 44vw);
+  }
+
+  .rivals {
+    padding-right: max(26px, calc(env(safe-area-inset-right) + 14px));
+    padding-left: max(26px, calc(env(safe-area-inset-left) + 14px));
+  }
+
+  .rival-card {
+    width: min(32vw, 205px);
+  }
+
+  .arena-center {
+    padding-right: max(22px, calc(env(safe-area-inset-right) + 10px));
+    padding-left: max(22px, calc(env(safe-area-inset-left) + 10px));
+  }
+
+  .action-dock {
+    width: auto;
+    margin-right: max(20px, calc(env(safe-area-inset-right) + 8px));
+    margin-bottom: max(14px, env(safe-area-inset-bottom));
+    margin-left: max(20px, calc(env(safe-area-inset-left) + 8px));
+    padding: 7px 12px 9px;
+    border: 3px solid #2f3a78;
+    background: rgb(14 18 42 / 0.94);
+    box-shadow: 5px 5px 0 var(--arcade-black);
+  }
+
+  .player-hud {
+    width: fit-content;
+    max-width: 100%;
+    min-height: 34px;
+    margin: 0 auto 3px;
+    padding: 0 8px;
+  }
+
+  .action-fan {
+    width: 100%;
+    height: clamp(74px, 22vh, 92px);
+    gap: clamp(6px, 1.25vw, 10px);
+  }
+
+  .action-fan[data-count="6"] {
+    gap: clamp(4px, 0.9vw, 7px);
+  }
+
+  .action-button,
+  .combat-screen .action-fan[data-count="4"] .action-fire {
+    width: clamp(68px, 13vw, 84px);
+    height: clamp(58px, 18vh, 72px);
+    min-height: 58px;
+  }
+
+  .action-fan[data-count="6"] .action-button {
+    width: clamp(62px, 11.5vw, 78px);
+  }
+
+  .action-fan[data-count="5"] .action-button:nth-child(1),
+  .action-fan[data-count="5"] .action-button:nth-child(5),
+  .action-fan[data-count="6"] .action-button:nth-child(1),
+  .action-fan[data-count="6"] .action-button:nth-child(6) {
+    transform: translateY(6px);
+  }
+
+  .action-fan[data-count="5"] .action-button:nth-child(2),
+  .action-fan[data-count="5"] .action-button:nth-child(4),
+  .action-fan[data-count="6"] .action-button:nth-child(2),
+  .action-fan[data-count="6"] .action-button:nth-child(5),
+  .action-fan[data-count="4"] .action-button:nth-child(1),
+  .action-fan[data-count="4"] .action-button:nth-child(4) {
+    transform: translateY(3px);
+  }
+
+  .action-icon {
+    font-size: clamp(1rem, 3vw, 1.45rem);
+  }
+
+  .action-button strong {
+    font-size: clamp(0.48rem, 1.15vw, 0.6rem);
+  }
+
+  .action-button small {
+    font-size: clamp(0.46rem, 1vw, 0.54rem);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 380px) {
+  .combat-header {
+    padding-top: max(6px, env(safe-area-inset-top));
+  }
+
+  .rivals {
+    min-height: 62px;
+  }
+
+  .rival-card {
+    min-height: 58px;
+  }
+
+  .arena-center {
+    top: 32%;
+  }
+
+  .action-dock {
+    margin-bottom: max(10px, env(safe-area-inset-bottom));
+    padding-top: 5px;
+    padding-bottom: 7px;
+  }
+
+  .player-hud {
+    min-height: 30px;
+  }
+
+  .action-fan {
+    height: 70px;
+  }
+
+  .action-button,
+  .combat-screen .action-fan[data-count="4"] .action-fire {
+    height: 58px;
+  }
+}
