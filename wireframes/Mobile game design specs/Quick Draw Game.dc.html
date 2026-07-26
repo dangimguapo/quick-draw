@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#241408;overflow:hidden}
+a{color:#f4c95d}a:hover{color:#ffe9b3}
+button{font-family:'VT323',monospace}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+@keyframes pulseGold{0%,100%{box-shadow:0 0 0 3px rgba(244,201,93,.25)}50%{box-shadow:0 0 0 7px rgba(244,201,93,.6)}}
+</style>
+</helmet>
+<div style="position:fixed;inset:0;background:radial-gradient(circle at 50% 120%, #3a2210, #1d0f06);display:flex;align-items:center;justify-content:center;overflow:hidden">
+<div data-screen-label="Quick Draw stage" style="width:860px;height:400px;position:relative;flex:none;transform:scale({{stageScale}});font-family:'VT323',monospace;color:#ffe9b3;border-radius:10px;overflow:hidden;background:radial-gradient(circle at 50% 16%, rgba(255,242,200,.75) 0 7%, transparent 20%), linear-gradient(#f2a53f 0%, #e08a2d 52%, #b96f2e 53%, #a86227 100%)">
+
+<sc-if value="{{onTitle}}" hint-placeholder-val="{{true}}">
+<div data-screen-label="Title" style="position:absolute;inset:0;background-image:url('assets/title-bg.png');background-size:100% 100%">
+<button onClick="{{goSelectFn}}" aria-label="Let's duel" style="position:absolute;left:18.5%;top:60.5%;width:29%;height:18%;background:transparent;border:3px solid transparent;border-radius:12px;cursor:pointer" style-hover="border-color:#f4c95d;box-shadow:0 0 22px rgba(244,201,93,.75)"></button>
+<button onClick="{{openSettingsFn}}" aria-label="Settings" style="position:absolute;left:52%;top:60.5%;width:29%;height:18%;background:transparent;border:3px solid transparent;border-radius:12px;cursor:pointer" style-hover="border-color:#f4c95d;box-shadow:0 0 22px rgba(244,201,93,.75)"></button>
+</div>
+<sc-if value="{{settingsOn}}" hint-placeholder-val="{{false}}">
+<div style="position:absolute;inset:0;background:rgba(20,10,4,.55);display:flex;align-items:center;justify-content:center">
+<div style="background:#6b3f21;border:4px solid #3a1f0e;border-radius:8px;box-shadow:inset 0 3px 0 rgba(255,233,179,.25), 0 8px 24px rgba(0,0,0,.5);padding:18px 26px;text-align:center;min-width:300px">
+<div style="font-family:'Rye';font-size:20px;margin-bottom:12px">SETTINGS</div>
+<div style="font-size:18px;margin-bottom:6px">GAME SPEED</div>
+<div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px">
+<button onClick="{{setStdFn}}" style="min-height:44px;padding:6px 16px;font-size:18px;background:#8a5a2b;color:#ffe9b3;border:3px solid {{speedStdBd}};border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.15)">STANDARD</button>
+<button onClick="{{setRlxFn}}" style="min-height:44px;padding:6px 16px;font-size:18px;background:#8a5a2b;color:#ffe9b3;border:3px solid {{speedRlxBd}};border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.15)">RELAXED</button>
+</div>
+<button onClick="{{closeSettingsFn}}" style="min-height:44px;padding:6px 24px;font-size:18px;background:#4a2c17;color:#ffe9b3;border:3px solid #3a1f0e;border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.2)">CLOSE</button>
+</div></div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{onSelect}}" hint-placeholder-val="{{false}}">
+<div data-screen-label="Character select" style="position:absolute;inset:0;padding:14px 18px">
+<div style="font-family:'Rye';font-size:24px;text-shadow:2px 2px 0 #4a2c17;text-align:center">CHOOSE YOUR GUNSLINGER</div>
+<div style="position:absolute;top:58px;left:18px;display:grid;grid-template-columns:1fr 1fr;gap:8px;width:250px">
+<sc-for list="{{charsVm}}" as="ch" hint-placeholder-count="6">
+<button onClick="{{ch.pick}}" style="min-height:44px;padding:4px 8px;font-size:18px;background:#6b3f21;color:#ffe9b3;border:3px solid {{ch.bd}};border-radius:6px;cursor:pointer;box-shadow:inset 0 2px 0 rgba(255,233,179,.2)" style-hover="filter:brightness(1.15)">{{ch.name}}</button>
+</sc-for>
+</div>
+<div style="position:absolute;top:58px;left:300px;width:190px;display:flex;flex-direction:column;align-items:center;gap:8px">
+<div style="width:120px;height:120px;border-radius:50%;background:{{selAvBg}};border:5px solid {{selAvTrim}};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.35)"><span style="font-family:'Rye';font-size:52px;color:#ffe9b3;text-shadow:2px 2px 0 rgba(0,0,0,.35)">{{selInit}}</span></div>
+<div style="font-family:'Rye';font-size:20px">{{selName}}</div>
+</div>
+<div style="position:absolute;top:58px;right:18px;width:280px;background:#6b3f21;border:3px solid #3a1f0e;border-radius:8px;padding:12px 14px;box-shadow:inset 0 2px 0 rgba(255,233,179,.2)">
+<div style="font-size:20px;color:#f4c95d">★ {{selSpecial}}</div>
+<div style="font-size:18px;line-height:1.25;margin-top:4px">{{selDesc}}</div>
+<div style="display:inline-block;margin-top:8px;font-size:14px;background:#4a2c17;padding:2px 8px;border-radius:4px;color:#f4c95d">ONE USE PER DUEL</div>
+</div>
+<button onClick="{{goTitleFn}}" style="position:absolute;bottom:14px;left:18px;min-height:44px;padding:6px 20px;font-size:18px;background:#4a2c17;color:#ffe9b3;border:3px solid #3a1f0e;border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.2)">◂ BACK</button>
+<button onClick="{{readyFn}}" style="position:absolute;bottom:14px;right:18px;min-height:48px;padding:8px 34px;font-size:24px;font-family:'Rye';background:#8a5a2b;color:#ffe9b3;border:4px solid #f4c95d;border-radius:8px;cursor:pointer;box-shadow:0 4px 0 #3a1f0e" style-hover="filter:brightness(1.15)" style-active="transform:translateY(3px);box-shadow:0 1px 0 #3a1f0e">READY ▸</button>
+</div>
+</sc-if>
+
+<sc-if value="{{onDifficulty}}" hint-placeholder-val="{{false}}">
+<div data-screen-label="Difficulty" style="position:absolute;inset:0;padding:14px 18px">
+<div style="font-family:'Rye';font-size:24px;text-shadow:2px 2px 0 #4a2c17;text-align:center">PICK YOUR OPPONENT</div>
+<div style="position:absolute;top:56px;left:0;right:0;display:flex;justify-content:center;gap:22px">
+<sc-for list="{{diffsVm}}" as="d" hint-placeholder-count="3">
+<button onClick="{{d.pick}}" style="width:150px;height:190px;background:#efdcb2;color:#4a2c17;border:4px solid {{d.bd}};border-radius:4px;cursor:pointer;font-family:'VT323',monospace;box-shadow:0 5px 12px rgba(0,0,0,.3);padding-top:10px" style-hover="filter:brightness(1.05);transform:translateY(-3px)">
+<div style="font-size:18px;letter-spacing:3px">WANTED</div>
+<div style="width:56px;height:46px;border:3px solid #4a2c17;border-radius:50% 50% 45% 45%;margin:8px auto;display:flex;align-items:center;justify-content:center;font-size:19px">{{d.face}}</div>
+<div style="font-size:24px">{{d.label}}</div>
+<div style="font-size:18px;color:#a8622a">{{d.stars}}</div>
+</button>
+</sc-for>
+</div>
+<div style="position:absolute;bottom:16px;left:18px;display:flex;gap:10px;align-items:center">
+<span style="font-size:18px">OUTLAWS:</span>
+<button onClick="{{setAi1Fn}}" style="min-height:44px;padding:4px 14px;font-size:18px;background:#6b3f21;color:#ffe9b3;border:3px solid {{ai1Bd}};border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.15)">1 (DUEL)</button>
+<button onClick="{{setAi2Fn}}" style="min-height:44px;padding:4px 14px;font-size:18px;background:#6b3f21;color:#ffe9b3;border:3px solid {{ai2Bd}};border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.15)">2 (3-WAY)</button>
+</div>
+<button onClick="{{backSelectFn}}" style="position:absolute;top:14px;left:18px;min-height:44px;padding:4px 16px;font-size:18px;background:#4a2c17;color:#ffe9b3;border:3px solid #3a1f0e;border-radius:6px;cursor:pointer" style-hover="filter:brightness(1.2)">◂ BACK</button>
+<button onClick="{{startFn}}" style="position:absolute;bottom:14px;right:18px;min-height:48px;padding:8px 30px;font-size:24px;font-family:'Rye';background:#8a5a2b;color:#ffe9b3;border:4px solid #f4c95d;border-radius:8px;cursor:pointer;box-shadow:0 4px 0 #3a1f0e" style-hover="filter:brightness(1.15)" style-active="transform:translateY(3px);box-shadow:0 1px 0 #3a1f0e">START DUEL ▸</button>
+</div>
+</sc-if>
+
+<sc-if value="{{onDuel}}" hint-placeholder-val="{{false}}">
+<div data-screen-label="Duel" style="position:absolute;inset:0">
+<sc-if value="{{freezeOn}}" hint-placeholder-val="{{false}}"><div style="position:absolute;inset:0;background:rgba(140,190,255,.14);pointer-events:none"></div></sc-if>
+<div style="position:absolute;top:10px;left:14px;background:#6b3f21;border:3px solid #3a1f0e;border-radius:6px;padding:3px 12px;box-shadow:inset 0 2px 0 rgba(255,233,179,.2)">
+<div style="font-size:20px">{{phaseLabel}}</div>
+<div style="width:120px;height:8px;background:#3a1f0e;border-radius:4px;margin:2px 0 4px"><div style="height:8px;background:#f4c95d;border-radius:4px;width:{{timerPct}}%"></div></div>
+</div>
+<div style="position:absolute;top:10px;right:14px;display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+<div style="background:#6b3f21;border:3px solid #3a1f0e;border-radius:6px;padding:5px 12px;font-size:18px">ROUND {{round}}</div>
+<button onClick="{{quitFn}}" style="min-height:32px;padding:2px 12px;font-size:15px;background:#4a2c17;color:#ffe9b3;border:3px solid #3a1f0e;border-radius:6px;cursor:pointer;opacity:.85" style-hover="filter:brightness(1.25);opacity:1">✕ QUIT</button>
+</div>
+<div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;gap:120px;pointer-events:none">
+<sc-for list="{{enemies}}" as="e" hint-placeholder-count="1">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto">
+<div onClick="{{e.tap}}" style="width:170px;background:#6b3f21;border:3px solid {{e.bd}};border-radius:8px;padding:8px 10px;opacity:{{e.op}};animation:{{e.anim}};cursor:{{e.cursor}};box-shadow:inset 0 2px 0 rgba(255,233,179,.2);text-align:center">
+<div style="display:flex;align-items:center;gap:8px;justify-content:center">
+<div style="width:42px;height:42px;border-radius:50%;background:{{e.avBg}};border:3px solid {{e.avTrim}};display:flex;align-items:center;justify-content:center;flex:none"><span style="font-family:'Rye';font-size:19px;color:#ffe9b3">{{e.init}}</span></div>
+<div style="text-align:left"><div style="font-size:17px;line-height:1">{{e.name}}</div>
+<div style="font-size:17px"><span style="color:#ff6b52;letter-spacing:2px">{{e.hearts}}</span> <span style="color:#f4c95d">●×{{e.bullets}}</span></div></div>
+</div>
+<sc-if value="{{e.bubbleOn}}" hint-placeholder-val="{{false}}"><div style="margin-top:5px;background:#f4c95d;color:#3a1f0e;font-size:16px;padding:1px 8px;border-radius:4px;display:inline-block;animation:pop .25s ease-out">{{e.bubble}}</div></sc-if>
+<sc-if value="{{e.dead}}" hint-placeholder-val="{{false}}"><div style="margin-top:5px;font-size:16px;color:#ffb199">☠ OUT</div></sc-if>
+<sc-if value="{{e.peekOn}}" hint-placeholder-val="{{false}}"><div style="margin-top:4px;font-size:13px;color:#ffe9b3;opacity:.7">AI: {{e.peek}}</div></sc-if>
+</div>
+<sc-if value="{{isThree}}" hint-placeholder-val="{{false}}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:1px">
+<button onClick="{{e.atk}}" style="width:48px;height:48px;border-radius:50%;background:#6b3f21;color:#ffe9b3;border:3px solid {{e.atkBd}};opacity:{{e.atkOp}};box-shadow:{{e.atkGlow}};font-size:20px;cursor:pointer" style-hover="filter:brightness(1.2)">✸</button>
+<span style="font-size:13px;text-shadow:1px 1px 0 #4a2c17">SHOOT</span>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="position:absolute;top:196px;left:40px;right:40px;text-align:center;font-size:19px;line-height:1.2;min-height:44px;text-shadow:1px 1px 0 #4a2c17">{{msg}}</div>
+<sc-if value="{{targetingOn}}" hint-placeholder-val="{{false}}"><div style="position:absolute;top:170px;left:0;right:0;text-align:center;font-size:20px;color:#f4c95d;text-shadow:1px 1px 0 #4a2c17;animation:pop .2s">★ TAP AN OUTLAW'S CARD TO TARGET THEM</div></sc-if>
+<sc-if value="{{myBubbleOn}}" hint-placeholder-val="{{false}}"><div style="position:absolute;bottom:108px;left:50%;transform:translateX(-50%);background:#f4c95d;color:#3a1f0e;font-size:17px;padding:2px 10px;border-radius:4px;animation:pop .25s ease-out">{{myBubble}}</div></sc-if>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:16px;align-items:flex-end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-2px) rotate(-8deg)">
+<button onClick="{{pickBlockFn}}" style="width:62px;height:62px;border-radius:50%;background:#6b3f21;color:#ffe9b3;border:3px solid {{fanBlockBd}};opacity:{{fanBlockOp}};box-shadow:{{fanBlockGlow}};display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="filter:brightness(1.2)"><svg width="24" height="26" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="rgba(255,233,179,.25)" stroke="#ffe9b3" stroke-width="2"></path></svg></button>
+<span style="font-size:15px;text-shadow:1px 1px 0 #4a2c17">BLOCK</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-12px) rotate(-3deg)">
+<button onClick="{{pickReloadFn}}" style="width:62px;height:62px;border-radius:50%;background:#6b3f21;color:#ffe9b3;border:3px solid {{fanReloadBd}};opacity:{{fanReloadOp}};box-shadow:{{fanReloadGlow}};font-size:30px;cursor:pointer;line-height:1" style-hover="filter:brightness(1.2)">∞</button>
+<span style="font-size:15px;text-shadow:1px 1px 0 #4a2c17">RELOAD</span></div>
+<sc-if value="{{isTwo}}" hint-placeholder-val="{{true}}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-12px) rotate(3deg)">
+<button onClick="{{pickAttackFn}}" style="width:62px;height:62px;border-radius:50%;background:#6b3f21;color:#ffe9b3;border:3px solid {{fanAttackBd}};opacity:{{fanAttackOp}};box-shadow:{{fanAttackGlow}};font-size:26px;cursor:pointer;line-height:1" style-hover="filter:brightness(1.2)">✸</button>
+<span style="font-size:15px;text-shadow:1px 1px 0 #4a2c17">ATTACK</span></div>
+</sc-if>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-2px) rotate(8deg)">
+<button onClick="{{pickSpecialFn}}" style="width:62px;height:62px;border-radius:50%;background:#6b3f21;color:#f4c95d;border:3px solid {{fanSpecialBd}};opacity:{{fanSpecialOp}};box-shadow:{{fanSpecialGlow}};font-size:28px;cursor:pointer;line-height:1" style-hover="filter:brightness(1.2)">★</button>
+<span style="font-size:15px;text-shadow:1px 1px 0 #4a2c17">SPECIAL</span></div>
+</div>
+<div style="position:absolute;bottom:86px;right:16px;width:130px;text-align:right;font-size:14px;color:#ffe9b3;opacity:.8;text-shadow:1px 1px 0 #4a2c17">{{fanNote}}</div>
+<div style="position:absolute;bottom:12px;left:14px;background:#6b3f21;border:3px solid #3a1f0e;border-radius:6px;padding:5px 12px;font-size:18px;box-shadow:inset 0 2px 0 rgba(255,233,179,.2)">{{myCharName}} <span style="color:#ff6b52;letter-spacing:2px">{{myHearts}}</span></div>
+<div style="position:absolute;bottom:12px;right:14px;background:#6b3f21;border:3px solid #3a1f0e;border-radius:6px;padding:5px 12px;font-size:18px;box-shadow:inset 0 2px 0 rgba(255,233,179,.2);color:#f4c95d">● ×{{myBullets}}</div>
+</div>
+</sc-if>
+
+<sc-if value="{{onEnd}}" hint-placeholder-val="{{false}}">
+<div data-screen-label="Round end" style="position:absolute;inset:0;text-align:center">
+<div style="font-family:'Rye';font-size:34px;margin-top:26px;text-shadow:3px 3px 0 #4a2c17">{{endTitle}}</div>
+<sc-if value="{{winnerOn}}" hint-placeholder-val="{{false}}">
+<div style="width:96px;height:96px;border-radius:50%;background:{{winAvBg}};border:5px solid {{winAvTrim}};display:flex;align-items:center;justify-content:center;margin:16px auto 6px;box-shadow:0 6px 16px rgba(0,0,0,.35)"><span style="font-family:'Rye';font-size:42px;color:#ffe9b3;text-shadow:2px 2px 0 rgba(0,0,0,.35)">{{winInit}}</span></div>
+<div style="font-size:22px">{{winName}}</div>
+</sc-if>
+<div style="font-size:19px;margin-top:14px;opacity:.9">{{endStats}}</div>
+<div style="position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:16px">
+<button onClick="{{rematchFn}}" style="min-height:48px;padding:8px 24px;font-size:22px;font-family:'Rye';background:#8a5a2b;color:#ffe9b3;border:4px solid #f4c95d;border-radius:8px;cursor:pointer;box-shadow:0 4px 0 #3a1f0e" style-hover="filter:brightness(1.15)" style-active="transform:translateY(3px);box-shadow:0 1px 0 #3a1f0e">REMATCH</button>
+<button onClick="{{changeFn}}" style="min-height:48px;padding:8px 20px;font-size:18px;background:#6b3f21;color:#ffe9b3;border:3px solid #3a1f0e;border-radius:8px;cursor:pointer" style-hover="filter:brightness(1.2)">CHANGE CHARACTER</button>
+<button onClick="{{exitFn}}" style="min-height:48px;padding:8px 20px;font-size:18px;background:#4a2c17;color:#ffe9b3;border:3px solid #3a1f0e;border-radius:8px;cursor:pointer" style-hover="filter:brightness(1.2)">EXIT</button>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;pickSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2,&quot;min&quot;:1,&quot;max&quot;:4,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Gameplay&quot;},&quot;startHearts&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:1,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Gameplay&quot;},&quot;aiPeek&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Debug&quot;}}">
+class Component extends DCLogic {
+  state = { screen:'title', scale:1, showSettings:false, speed:'standard',
+    selId:'quickdraw', diff:'medium', aiCount:1,
+    players:[], round:1, phase:'pick', phaseEnd:0, phaseDur:2000, now:0,
+    humanPick:null, freezePick:null, targeting:false,
+    bubbles:{}, flashes:{}, msg:'', winnerId:undefined, history:[] };
+
+  CHARS = [
+    {id:'quickdraw', name:'Quickdraw', init:'Q', avBg:'#2e2a26', avTrim:'#c0392b', special:'Quickdraw', desc:'Reload and shoot in the same beat — even as your very first move.', needsTarget:true},
+    {id:'boulder', name:'Body Boulder', init:'B', avBg:'#8a5a2b', avTrim:'#4a2c17', special:'Harden', desc:'Skin turns to stone: gain an extra heart. Breaks the first time you get shot.'},
+    {id:'sheriff', name:'Sheriff', init:'S', avBg:'#3b5b86', avTrim:'#f4c95d', special:'6 in the Chamber', desc:'Load 6 bullets in a single turn instead of 1.'},
+    {id:'mirror', name:'Mirror', init:'M', avBg:'#9aa2ab', avTrim:'#e8eef3', special:'Mirror', desc:'Copy one outlaw: reflect their shot back, copy their reload, or share their block. Two Mirrors mirroring each other = infinite void!', needsTarget:true},
+    {id:'freeze', name:'Time Freeze', init:'T', avBg:'#efe9d6', avTrim:'#cfc7ae', special:'Time Freeze', desc:'Freeze time: see everyone stuck mid-move, then pick yours with 4 extra seconds.'},
+    {id:'maniac', name:'Maniac', init:'!', avBg:'#7d2b20', avTrim:'#3a120c', special:'Maniac', desc:'Shoot EVERYONE at once. Needs bullets equal to the number of duelists — and if they all block, the last bullet is his own…'}
+  ];
+
+  componentDidMount(){
+    this._resize = () => this.setState({scale: Math.min(window.innerWidth/884, window.innerHeight/424, 1.7)});
+    this._resize(); window.addEventListener('resize', this._resize);
+    this._tick = setInterval(() => { if(this.state.screen==='duel') this.setState({now:Date.now()}); }, 80);
+  }
+  componentWillUnmount(){ window.removeEventListener('resize', this._resize); clearInterval(this._tick); clearTimeout(this._to); }
+
+  char(id){ return this.CHARS.find(c=>c.id===id); }
+  pickMs(){ const b=(this.props.pickSeconds??2)*1000; return this.state.speed==='relaxed'? b*1.5 : b; }
+  resolveMs(){ return this.state.speed==='relaxed'? 2600 : 2000; }
+  maxHearts(){ return this.props.startHearts??3; }
+
+  startDuel(){
+    const hearts=this.maxHearts();
+    const mk=(cid,isAI,name,i)=>({id:i,charId:cid,isAI,name,hearts,bullets:0,alive:true,specialUsed:false,hardened:false,fired:0,hits:0,blocks:0});
+    const ids=this.CHARS.map(c=>c.id), ais=[];
+    for(let k=0;k<this.state.aiCount;k++){ const pool=ids.filter(id=>!ais.includes(id)); ais.push(pool[Math.floor(Math.random()*pool.length)]); }
+    const players=[mk(this.state.selId,false,'YOU',0), ...ais.map((cid,k)=>mk(cid,true,this.char(cid).name.toUpperCase(),k+1))];
+    this._humanFroze=false; this._aiPicks={};
+    this.setState({players,round:1,screen:'duel',winnerId:undefined,msg:'',bubbles:{},flashes:{},history:[]}, ()=>this.beginPick());
+  }
+
+  beginPick(){
+    const picks={};
+    this.state.players.forEach(p=>{ if(p.isAI&&p.alive) picks[p.id]=this.aiPick(p); });
+    this._aiPicks=picks; this._humanFroze=false;
+    const dur=this.pickMs();
+    const meAlive=this.state.players[0]&&this.state.players[0].alive;
+    this.setState({phase:'pick',phaseEnd:Date.now()+dur,phaseDur:dur,humanPick:null,freezePick:null,targeting:false,bubbles:{},flashes:{},msg: meAlive? 'ROUND '+this.state.round+' — PICK YOUR MOVE!' : "☠ YOU'RE OUT — watching the duel…"});
+    clearTimeout(this._to); this._to=setTimeout(()=>this.endPick(),dur);
+  }
+
+  endPick(){
+    const me=this.state.players[0], hp=this.state.humanPick;
+    if(me.alive && hp && hp.type==='special' && me.charId==='freeze'){
+      this._humanFroze=true;
+      const ps=this.state.players.map(p=>p.id===0?{...p,specialUsed:true}:p);
+      this.setState({players:ps,phase:'freeze',phaseEnd:Date.now()+4000,phaseDur:4000,freezePick:null,targeting:false,msg:'TIME FROZEN — they are stuck mid-move. Pick yours!'});
+      clearTimeout(this._to); this._to=setTimeout(()=>this.resolveBeat(),4000);
+    } else this.resolveBeat();
+  }
+
+  choose(type,target){
+    const st=this.state, me=st.players[0];
+    if(!me||!me.alive) return;
+    if(st.phase==='freeze'){
+      if(type==='special') return;
+      if(type==='attack'&&me.bullets<=0) return;
+      this.setState({freezePick:{type,target}}, ()=>{ clearTimeout(this._to); this.resolveBeat(); });
+      return;
+    }
+    if(st.phase!=='pick') return;
+    if(type==='attack'&&me.bullets<=0) return;
+    if(type==='special'&&!this.specialValid(me)) return;
+    this.setState({humanPick:{type,target},targeting:false});
+  }
+
+  pickSpecial(){
+    const st=this.state, me=st.players[0];
+    if(st.phase!=='pick'||!me.alive||!this.specialValid(me)) return;
+    const c=this.char(me.charId), foes=this.targetsOf(me);
+    if(c.needsTarget){
+      if(foes.length===1) this.choose('special',foes[0].id);
+      else this.setState({targeting:!st.targeting});
+    } else this.choose('special');
+  }
+
+  targetsOf(p){ return this.state.players.filter(q=>q.alive&&q.id!==p.id); }
+  weakest(fs){ return fs.slice().sort((a,b)=>a.hearts-b.hearts)[0]; }
+  specialValid(p){
+    if(p.specialUsed) return false;
+    if(p.charId==='maniac'){ const n=this.state.players.filter(q=>q.alive).length; return p.bullets>=n; }
+    return true;
+  }
+  specialAct(p){ const need=['quickdraw','mirror'].includes(p.charId); return {type:'special',target:need?this.weakest(this.targetsOf(p)).id:undefined}; }
+
+  aiPick(p){
+    const d=this.state.diff, foes=this.targetsOf(p), me=this.state.players[0];
+    const rnd=Math.random, pickR=a=>a[Math.floor(rnd()*a.length)];
+    const canAtk=p.bullets>0, sp=this.specialValid(p);
+    if(sp){
+      const c=p.charId;
+      if(d==='easy'){ if(rnd()<0.12) return this.specialAct(p); }
+      else if(d==='medium'){
+        if(c==='sheriff'&&p.bullets===0&&rnd()<0.5) return this.specialAct(p);
+        if(c==='boulder'&&p.hearts<=2) return this.specialAct(p);
+        if(c==='maniac') return this.specialAct(p);
+        if(c==='mirror'&&foes.some(f=>f.bullets>0)&&rnd()<0.35) return this.specialAct(p);
+        if(c==='quickdraw'&&rnd()<0.2) return this.specialAct(p);
+        if(c==='freeze'&&foes.some(f=>f.bullets>0)&&rnd()<0.4) return this.specialAct(p);
+      } else {
+        if(c==='sheriff'&&this.state.round===1) return this.specialAct(p);
+        if(c==='boulder'&&p.hearts<=2&&foes.some(f=>f.bullets>0)) return this.specialAct(p);
+        if(c==='maniac') return this.specialAct(p);
+        if(c==='mirror'&&foes.some(f=>f.bullets>0)&&rnd()<0.6) return this.specialAct(p);
+        if(c==='quickdraw'&&me.alive&&me.bullets===0&&rnd()<0.6) return this.specialAct(p);
+        if(c==='freeze'&&foes.some(f=>f.bullets>0)) return this.specialAct(p);
+      }
+    }
+    if(this.state.round>12){ if(canAtk&&rnd()<0.8) return {type:'attack',target:this.weakest(foes).id}; if(!canAtk&&rnd()<0.7) return {type:'reload'}; }
+    if(d==='easy'){
+      const o=['block','reload']; if(canAtk) o.push('attack','attack');
+      const t=pickR(o); return t==='attack'?{type:'attack',target:pickR(foes).id}:{type:t};
+    }
+    if(d==='medium'){
+      const threat=foes.some(f=>f.bullets>0);
+      if(!canAtk){ if(threat) return rnd()<0.5?{type:'block'}:{type:'reload'}; return rnd()<0.8?{type:'reload'}:{type:'block'}; }
+      if(threat){ const r=rnd(); if(r<0.45) return {type:'attack',target:this.weakest(foes).id}; if(r<0.8) return {type:'block'}; return {type:'reload'}; }
+      return rnd()<0.65?{type:'attack',target:this.weakest(foes).id}:{type:'reload'};
+    }
+    const hist=this.state.history;
+    if(rnd()<0.15){ const o=['block','reload']; if(canAtk) o.push('attack'); const t=pickR(o); return t==='attack'?{type:'attack',target:pickR(foes).id}:{type:t}; }
+    const humanFoe=foes.find(f=>!f.isAI);
+    if(humanFoe){
+      let pred;
+      if(humanFoe.bullets===0) pred='reload';
+      else { const last=hist[hist.length-1]; pred = last==='attack' ? (rnd()<0.5?'reload':'attack') : (rnd()<0.6?'attack':'block'); }
+      if(pred==='reload'&&canAtk) return {type:'attack',target:humanFoe.id};
+      if(pred==='attack') return {type:'block'};
+    }
+    if(canAtk){ const rl=foes.find(f=>f.bullets===0); if(rl) return {type:'attack',target:rl.id}; return rnd()<0.5?{type:'attack',target:this.weakest(foes).id}:{type:'block'}; }
+    return foes.some(f=>f.bullets>0)&&rnd()<0.5?{type:'block'}:{type:'reload'};
+  }
+
+  freezeResponse(p,acts){
+    const foes=this.targetsOf(p);
+    const shootMe=foes.some(f=>{ const a=acts[f.id]; if(!a) return false;
+      return (a.type==='attack'&&a.target===p.id)||(a.type==='special'&&f.charId==='maniac')||(a.type==='special'&&f.charId==='quickdraw'&&a.target===p.id); });
+    if(shootMe) return {type:'block',froze:true};
+    if(p.bullets>0){ const open=foes.find(f=>{ const a=acts[f.id]; return !a||a.type!=='block'; }); if(open) return {type:'attack',target:open.id,froze:true}; }
+    return {type:'reload',froze:true};
+  }
+
+  actWord(p,a,byId){
+    if(!a||a.type==='idle') return '…IDLE';
+    if(a.type==='block') return 'BLOCK';
+    if(a.type==='reload') return 'RELOAD';
+    if(a.type==='attack') return a.froze ? '★ BANG! → '+(byId[a.target]||{}).name : 'BANG! → '+(byId[a.target]||{}).name;
+    if(a.type==='special'){
+      if(p.charId==='quickdraw') return '★ RELOAD+BANG!';
+      if(p.charId==='sheriff') return '★ 6 IN THE CHAMBER';
+      if(p.charId==='boulder') return '★ HARDEN +♥';
+      if(p.charId==='mirror') return '★ MIRROR → '+(byId[a.target]||{}).name;
+      if(p.charId==='maniac') return '★ SHOOTS EVERYONE!';
+      return '★ SPECIAL';
+    }
+    return a.type.toUpperCase();
+  }
+
+  resolveBeat(){
+    const st=this.state;
+    const ps=st.players.map(p=>({...p}));
+    const byId={}; ps.forEach(p=>byId[p.id]=p);
+    const acts={};
+    ps.forEach(p=>{ if(!p.alive) return;
+      if(!p.isAI) acts[p.id]= this._humanFroze ? (st.freezePick||{type:'idle',froze:true}) : (st.humanPick||{type:'idle'});
+      else acts[p.id]=this._aiPicks[p.id]||{type:'idle'};
+    });
+    ps.forEach(p=>{ const a=acts[p.id]; if(a&&a.type==='special') p.specialUsed=true; });
+    ps.filter(p=>p.isAI&&p.alive&&acts[p.id]&&acts[p.id].type==='special'&&p.charId==='freeze').forEach(p=>{ acts[p.id]=this.freezeResponse(p,acts); });
+    const msgs=[], bubbles={}, flashes={};
+    const mirrors=ps.filter(p=>p.alive&&acts[p.id]&&acts[p.id].type==='special'&&p.charId==='mirror');
+    let voided=false;
+    mirrors.forEach(m=>{ const t=byId[acts[m.id].target];
+      if(t&&t.charId==='mirror'&&acts[t.id]&&acts[t.id].type==='special'&&acts[t.id].target===m.id&&!voided){ voided=true; m.hearts=0; t.hearts=0; msgs.push('TWO MIRRORS LOCK EYES — INFINITE VOID! Both vanish!'); } });
+    const isBlocking=v=>{ const a=acts[v.id]; if(!a) return false;
+      if(a.type==='block') return true;
+      if(a.type==='special'&&v.charId==='mirror'){ const t=byId[a.target]; return !!(t&&acts[t.id]&&acts[t.id].type==='block'); }
+      return false; };
+    ps.forEach(p=>{ if(!p.alive) return; const a=acts[p.id]; if(!a) return;
+      if(a.type==='reload'){ p.bullets++; }
+      if(a.type==='special'){
+        if(p.charId==='sheriff') p.bullets+=6;
+        if(p.charId==='boulder'){ p.hearts=Math.min(p.hearts+1,this.maxHearts()+1); p.hardened=true; }
+        if(p.charId==='mirror'){ const t=byId[a.target]; if(t&&acts[t.id]&&acts[t.id].type==='reload') p.bullets++; }
+      }
+    });
+    const shots=[];
+    ps.forEach(p=>{ if(!p.alive||p.hearts<=0) return; const a=acts[p.id]; if(!a) return;
+      if(a.type==='attack'&&p.bullets>0){ p.bullets--; shots.push({a:p,v:byId[a.target]}); }
+      else if(a.type==='special'&&p.charId==='quickdraw'){ shots.push({a:p,v:byId[a.target]}); }
+      else if(a.type==='special'&&p.charId==='maniac'){
+        const foes=ps.filter(q=>q.alive&&q.id!==p.id&&q.hearts>0);
+        p.bullets=Math.max(0,p.bullets-(foes.length+1));
+        foes.forEach(v=>shots.push({a:p,v}));
+        if(foes.length&&foes.every(v=>isBlocking(v))){ p.hearts=0; msgs.push(p.name+' fires wild — everyone blocked, so the last bullet is his own! ☠'); }
+      }
+    });
+    shots.forEach(s=>{ const a=s.a, v=s.v; if(!v) return; a.fired++;
+      const va=acts[v.id];
+      if(isBlocking(v)){ v.blocks++; msgs.push(a.name+' shoots '+v.name+' — BLOCKED!'); }
+      else if(va&&va.type==='special'&&v.charId==='mirror'&&va.target===a.id){ a.hearts--; a.hardened=false; flashes[a.id]=1; msgs.push(v.name+' MIRRORS the shot back at '+a.name+'! −1 ♥'); }
+      else { v.hearts--; if(v.hardened){ v.hardened=false; msgs.push(a.name+' shoots '+v.name+' — the stone skin SHATTERS! −1 ♥'); } else msgs.push(a.name+' shoots '+v.name+' — HIT! −1 ♥'); a.hits++; flashes[v.id]=1; }
+    });
+    ps.forEach(p=>{ if(p.alive&&p.hearts<=0){ p.alive=false; p.hearts=0; msgs.push(p.name+' is OUT! ☠'); } });
+    ps.forEach(p=>{ const a=acts[p.id]; if(a) bubbles[p.id]=this.actWord(p,a,byId); });
+    if(!msgs.length) msgs.push('Dust blows across the street…');
+    const alive=ps.filter(p=>p.alive);
+    const over=alive.length<=1;
+    const dur=this.resolveMs();
+    this.setState({players:ps,phase:'resolve',phaseEnd:Date.now()+dur,phaseDur:dur,bubbles,flashes,targeting:false,msg:msgs.join('  •  '),history:[...st.history,(acts[0]||{type:'idle'}).type]});
+    clearTimeout(this._to);
+    this._to=setTimeout(()=>{
+      if(over) this.setState({screen:'end',winnerId:alive.length?alive[0].id:-1});
+      else this.setState({round:this.state.round+1},()=>this.beginPick());
+    },dur);
+  }
+
+  renderVals(){
+    const st=this.state, P=this.props;
+    const me=st.players[0]||{hearts:0,bullets:0,charId:st.selId,alive:false};
+    const sel=this.char(st.selId);
+    const gold='#f4c95d', dark='#3a1f0e';
+    const heartsStr=p=>{ const mx=Math.max(this.maxHearts(),p.hearts); return '♥'.repeat(p.hearts)+'♡'.repeat(Math.max(0,mx-p.hearts)); };
+    const glow='0 0 0 4px rgba(244,201,93,.4), 0 0 14px rgba(244,201,93,.5)';
+    const pickable=st.phase==='pick', frozen=st.phase==='freeze';
+    const curPick = frozen ? st.freezePick : st.humanPick;
+    const canAct = me.alive && (pickable||frozen);
+    const canAtkNow = canAct && me.bullets>0;
+    const canSpecNow = me.alive && pickable && this.specialValid(me);
+    const fanFor=(usable,selOn)=>({bd: selOn?gold:dark, op: usable?1:0.35, glow: selOn?glow:(usable?'0 0 10px rgba(244,201,93,.35)':'none')});
+    const fb=fanFor(canAct, curPick&&curPick.type==='block');
+    const fr=fanFor(canAct, curPick&&curPick.type==='reload');
+    const fa=fanFor(canAtkNow, curPick&&curPick.type==='attack');
+    const fs2=fanFor(canSpecNow, (st.humanPick&&st.humanPick.type==='special')||st.targeting);
+    const enemiesP=st.players.slice(1);
+    const wordFor=(p,a)=>{ if(!a) return '…'; if(a.type==='special'&&p.charId==='quickdraw') return 'RELOAD'; if(a.type==='special') return '★ …'; if(a.type==='attack'){const t=st.players.find(q=>q.id===a.target); return 'BANG! → '+(t?t.name:'?');} return a.type.toUpperCase(); };
+    const enemies=enemiesP.map(p=>{
+      const flash=st.flashes[p.id]&&st.phase==='resolve';
+      const targetable=st.targeting&&pickable&&p.alive;
+      const atkSel=curPick&&curPick.type==='attack'&&curPick.target===p.id;
+      const showBubble=(st.phase==='resolve'&&!!st.bubbles[p.id])||(frozen&&p.alive);
+      const bubble=st.phase==='resolve'? st.bubbles[p.id] : (frozen? wordFor(p,this._aiPicks[p.id]) : '');
+      return { key:'e'+p.id, name:p.name, init:this.char(p.charId).init, avBg:this.char(p.charId).avBg, avTrim:this.char(p.charId).avTrim,
+        hearts:heartsStr(p), bullets:p.bullets, dead:!p.alive,
+        op:p.alive?1:0.45, anim:flash?'shake .45s':'none',
+        bd: flash?'#ff5c47':(targetable?gold:(atkSel?gold:dark)),
+        cursor: targetable?'pointer':'default',
+        bubbleOn:showBubble&&p.alive, bubble,
+        peekOn: !!(P.aiPeek&&pickable&&p.alive), peek: wordFor(p,this._aiPicks?this._aiPicks[p.id]:null),
+        tap: ()=>{ if(st.targeting) this.choose('special',p.id); },
+        atk: (ev)=>{ if(ev&&ev.stopPropagation) ev.stopPropagation(); this.choose('attack',p.id); },
+        atkBd: atkSel?gold:dark, atkOp: canAtkNow&&p.alive?1:0.35, atkGlow: atkSel?glow:(canAtkNow&&p.alive?'0 0 10px rgba(244,201,93,.35)':'none'),
+        anim2:targetable?'pulseGold 1s infinite':'none' };
+    });
+    const left=Math.max(0,st.phaseEnd-st.now);
+    const timerPct=st.phaseDur? Math.min(100,Math.max(0,left/st.phaseDur*100)) : 0;
+    const aliveN=st.players.filter(p=>p.alive).length;
+    let fanNote='';
+    if(me.alive&&me.charId==='maniac'&&!me.specialUsed&&me.bullets<aliveN) fanNote='★ needs ●×'+aliveN;
+    else if(me.specialUsed) fanNote='★ special spent';
+    const win=st.winnerId>=0? st.players.find(p=>p.id===st.winnerId) : null;
+    const winC=win? this.char(win.charId) : null;
+    const meP=st.players[0];
+    return {
+      stageScale: st.scale,
+      onTitle: st.screen==='title', onSelect: st.screen==='select', onDifficulty: st.screen==='difficulty', onDuel: st.screen==='duel', onEnd: st.screen==='end',
+      goSelectFn: ()=>this.setState({screen:'select'}),
+      goTitleFn: ()=>this.setState({screen:'title'}),
+      openSettingsFn: ()=>this.setState({showSettings:true}),
+      closeSettingsFn: ()=>this.setState({showSettings:false}),
+      settingsOn: st.showSettings,
+      setStdFn: ()=>this.setState({speed:'standard'}), setRlxFn: ()=>this.setState({speed:'relaxed'}),
+      speedStdBd: st.speed==='standard'?gold:dark, speedRlxBd: st.speed==='relaxed'?gold:dark,
+      charsVm: this.CHARS.map(c=>({key:c.id,name:c.name,bd:st.selId===c.id?gold:dark,pick:()=>this.setState({selId:c.id})})),
+      selName:sel.name, selInit:sel.init, selAvBg:sel.avBg, selAvTrim:sel.avTrim, selSpecial:sel.special, selDesc:sel.desc,
+      readyFn: ()=>this.setState({screen:'difficulty'}),
+      backSelectFn: ()=>this.setState({screen:'select'}),
+      diffsVm: [{id:'easy',label:'EASY',stars:'★☆☆',face:'·_·'},{id:'medium',label:'MEDIUM',stars:'★★☆',face:'-_-'},{id:'hard',label:'HARD',stars:'★★★',face:'ò_ó'}].map(d=>({key:d.id,label:d.label,stars:d.stars,face:d.face,bd:st.diff===d.id?gold:'#8a6a3a',pick:()=>this.setState({diff:d.id})})),
+      setAi1Fn: ()=>this.setState({aiCount:1}), setAi2Fn: ()=>this.setState({aiCount:2}),
+      ai1Bd: st.aiCount===1?gold:dark, ai2Bd: st.aiCount===2?gold:dark,
+      startFn: ()=>this.startDuel(),
+      quitFn: ()=>{ clearTimeout(this._to); this.setState({screen:'title'}); },
+      phaseLabel: st.phase==='pick'?'PICK!':(st.phase==='freeze'?'TIME FROZEN':'DRAW!'),
+      timerPct, round: st.round, msg: st.msg,
+      enemies, isThree: enemiesP.length>1, isTwo: enemiesP.length<=1,
+      targetingOn: st.targeting&&pickable,
+      freezeOn: frozen,
+      fanBlockBd:fb.bd, fanBlockOp:fb.op, fanBlockGlow:fb.glow,
+      fanReloadBd:fr.bd, fanReloadOp:fr.op, fanReloadGlow:fr.glow,
+      fanAttackBd:fa.bd, fanAttackOp:fa.op, fanAttackGlow:fa.glow,
+      fanSpecialBd:fs2.bd, fanSpecialOp:fs2.op, fanSpecialGlow:fs2.glow,
+      pickBlockFn: ()=>this.choose('block'),
+      pickReloadFn: ()=>this.choose('reload'),
+      pickAttackFn: ()=>{ const f=this.targetsOf(me); if(f.length) this.choose('attack',f[0].id); },
+      pickSpecialFn: ()=>this.pickSpecial(),
+      fanNote,
+      myCharName: me.alive||st.screen!=='duel' ? (sel&&meP?this.char(meP.charId).name.toUpperCase():'YOU') : '☠ YOU',
+      myHearts: meP?heartsStr(meP):'', myBullets: meP?meP.bullets:0,
+      myBubbleOn: st.phase==='resolve'&&!!st.bubbles[0], myBubble: st.bubbles[0]||'',
+      endTitle: st.winnerId===0?'YOU WIN THE DUEL!':(st.winnerId===-1?'DRAW — DUST SETTLES ON NO ONE':(win?win.name+' WINS!':'')),
+      winnerOn: !!win, winInit: winC?winC.init:'', winAvBg: winC?winC.avBg:'#000', winAvTrim: winC?winC.avTrim:'#000', winName: win? (win.id===0?'YOU — '+this.char(win.charId).name:this.char(win.charId).name) : '',
+      endStats: meP? 'Rounds: '+st.round+'  ·  Shots fired: '+meP.fired+'  ·  Hits: '+meP.hits+'  ·  Blocks: '+meP.blocks : '',
+      rematchFn: ()=>this.startDuel(),
+      changeFn: ()=>this.setState({screen:'select'}),
+      exitFn: ()=>this.setState({screen:'title'})
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#241408;font-family:'VT323',monospace;color:#ffe9b3}
+a{color:#f4c95d}a:hover{color:#ffe9b3}
+button{font-family:'VT323',monospace}
+.dv-turn{padding:38px 42px 30px;border-bottom:1px solid rgba(244,201,93,.18)}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 18px}
+.dv-tid{font:600 11px ui-monospace,Menlo,monospace;padding:3px 7px;background:#f4c95d;color:#3a1f0e;border-radius:4px;text-decoration:none}
+.dv-tname{font-size:20px;color:#ffe9b3}
+.dv-opts{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:8px;scroll-margin-top:16px}
+.dv-oid{font:600 11px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(244,201,93,.18);color:#f4c95d;border-radius:5px;text-decoration:none}
+.dv-olabel{display:block;font-size:17px;color:rgba(255,233,179,.72);max-width:600px;line-height:1.3}
+.dv-olabel .dv-oid{display:inline-block;vertical-align:baseline;margin-right:4px}
+.dv-opt:target .dv-oid{background:#f4c95d;color:#3a1f0e}
+.dv-next{margin:22px 0 0;font-size:17px;color:rgba(255,233,179,.55)}
+.stage{width:600px;height:290px;position:relative;flex:none;border-radius:8px;overflow:hidden;border:3px solid #3a1f0e;box-shadow:0 8px 22px rgba(0,0,0,.45);background:radial-gradient(circle at 50% 16%, rgba(255,242,200,.75) 0 7%, transparent 20%), linear-gradient(#f2a53f 0%, #e08a2d 52%, #b96f2e 53%, #a86227 100%)}
+.plank{background:#6b3f21;border:3px solid #3a1f0e;border-radius:6px;box-shadow:inset 0 2px 0 rgba(255,233,179,.2)}
+.circ{border-radius:50%;background:#6b3f21;color:#ffe9b3;border:3px solid #3a1f0e;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
+.on{border-color:#f4c95d;box-shadow:0 0 10px rgba(244,201,93,.35)}
+.off{opacity:.35}
+.lbl{font-size:14px;text-shadow:1px 1px 0 #4a2c17;text-align:center}
+.hp{color:#ff6b52;letter-spacing:2px}
+.am{color:#f4c95d}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Rye';color:#ffe9b3;flex:none}
+.note{position:absolute;font-size:14px;color:#4a2c17;background:rgba(255,233,179,.7);border-radius:4px;padding:1px 6px;line-height:1.2}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">The chosen wireframes, western skin applied — these are the screens in the playable prototype</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Duel, 2 players — themed <a class="dv-oid" href="#1b">1b</a>. Four-circle fan on the center axis; ATTACK is greyed because you're out of bullets.</div>
+<div class="stage">
+<div class="plank" style="position:absolute;top:10px;left:12px;padding:3px 12px;text-align:center">
+<div style="font-size:19px">PICK!</div>
+<div style="width:110px;height:8px;background:#3a1f0e;border-radius:4px;margin:2px 0 3px"><div style="width:74%;height:8px;background:#f4c95d;border-radius:4px"></div></div></div>
+<div class="plank" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 12px;display:flex;gap:9px;align-items:center">
+<div class="av" style="width:44px;height:44px;background:#2e2a26;border:3px solid #c0392b;font-size:20px">Q</div>
+<div><div style="font-size:18px;line-height:1">QUICKDRAW</div><div style="font-size:18px"><span class="hp">♥♥♡</span> <span class="am">●×2</span></div></div></div>
+<div class="plank" style="position:absolute;top:10px;right:12px;padding:5px 12px;font-size:18px">ROUND 4</div>
+<div style="position:absolute;top:112px;left:40px;right:40px;text-align:center;font-size:19px;text-shadow:1px 1px 0 #4a2c17">QUICKDRAW shoots YOU — BLOCKED!</div>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:16px;align-items:flex-end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-2px) rotate(-8deg)"><div class="circ on" style="width:62px;height:62px"><svg width="24" height="26" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="rgba(255,233,179,.25)" stroke="#ffe9b3" stroke-width="2"></path></svg></div><span class="lbl">BLOCK</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-12px) rotate(-3deg)"><div class="circ on" style="width:62px;height:62px;font-size:30px;border-color:#f4c95d;box-shadow:0 0 0 4px rgba(244,201,93,.4),0 0 14px rgba(244,201,93,.5)">∞</div><span class="lbl">RELOAD</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-12px) rotate(3deg)"><div class="circ off" style="width:62px;height:62px;font-size:26px">✸</div><span class="lbl">ATTACK</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-2px) rotate(8deg)"><div class="circ on" style="width:62px;height:62px;font-size:28px;color:#f4c95d">★</div><span class="lbl">SPECIAL</span></div>
+</div>
+<div class="plank" style="position:absolute;bottom:12px;left:12px;padding:5px 12px;font-size:18px">SHERIFF <span class="hp">♥♥♥</span></div>
+<div class="plank" style="position:absolute;bottom:12px;right:12px;padding:5px 12px;font-size:18px"><span class="am">● ×0</span></div>
+<div class="note" style="right:14px;bottom:124px;width:106px;text-align:right">no bullets → ATTACK dims; glow = your pick</div>
+</div></div>
+
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Duel, 3 players — themed <a class="dv-oid" href="#1e">1e</a>. A SHOOT circle sits under each outlaw, so the target is never ambiguous; the fan keeps only block / reload / special.</div>
+<div class="stage">
+<div style="position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;gap:104px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+<div class="plank" style="padding:6px 10px;display:flex;gap:8px;align-items:center;width:158px;box-sizing:border-box">
+<div class="av" style="width:40px;height:40px;background:#9aa2ab;border:3px solid #e8eef3;font-size:18px">M</div>
+<div><div style="font-size:17px;line-height:1">MIRROR</div><div style="font-size:17px"><span class="hp">♥♥♡</span> <span class="am">●×2</span></div></div></div>
+<div class="circ on" style="width:48px;height:48px;font-size:21px">✸</div><span class="lbl">SHOOT</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+<div class="plank" style="padding:6px 10px;display:flex;gap:8px;align-items:center;width:158px;box-sizing:border-box">
+<div class="av" style="width:40px;height:40px;background:#7d2b20;border:3px solid #3a120c;font-size:18px">!</div>
+<div><div style="font-size:17px;line-height:1">MANIAC</div><div style="font-size:17px"><span class="hp">♥♡♡</span> <span class="am">●×3</span></div></div></div>
+<div class="circ on" style="width:48px;height:48px;font-size:21px;border-color:#f4c95d;box-shadow:0 0 0 4px rgba(244,201,93,.4),0 0 14px rgba(244,201,93,.5)">✸</div><span class="lbl">SHOOT</span></div>
+</div>
+<div class="plank" style="position:absolute;top:152px;left:50%;transform:translateX(-50%);padding:3px 14px;display:flex;gap:10px;align-items:center">
+<span style="font-size:19px">PICK!</span>
+<span style="width:96px;height:8px;background:#3a1f0e;border-radius:4px;display:inline-block"><span style="width:46%;height:8px;background:#f4c95d;border-radius:4px;display:block"></span></span>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:20px;align-items:flex-end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-4px) rotate(-6deg)"><div class="circ on" style="width:60px;height:60px"><svg width="24" height="26" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="rgba(255,233,179,.25)" stroke="#ffe9b3" stroke-width="2"></path></svg></div><span class="lbl">BLOCK</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-11px)"><div class="circ on" style="width:60px;height:60px;font-size:29px">∞</div><span class="lbl">RELOAD</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-4px) rotate(6deg)"><div class="circ on" style="width:60px;height:60px;font-size:27px;color:#f4c95d">★</div><span class="lbl">SPECIAL</span></div>
+</div>
+<div class="plank" style="position:absolute;bottom:12px;left:12px;padding:5px 12px;font-size:18px">QUICKDRAW <span class="hp">♥♥♥</span></div>
+<div class="plank" style="position:absolute;bottom:12px;right:12px;padding:5px 12px;font-size:18px"><span class="am">● ×1</span> · R2</div>
+</div></div>
+
+<div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Character select — themed <a class="dv-oid" href="#1f">1f</a>. All six gunslingers at once, big portrait in the middle, special-move card on the right.</div>
+<div class="stage">
+<div style="position:absolute;top:10px;left:0;right:0;text-align:center;font-family:'Rye';font-size:22px;text-shadow:2px 2px 0 #4a2c17">CHOOSE YOUR GUNSLINGER</div>
+<div style="position:absolute;top:52px;left:16px;display:grid;grid-template-columns:1fr 1fr;gap:7px;width:230px">
+<div class="plank on" style="padding:4px 8px;font-size:17px;text-align:center">Quickdraw</div>
+<div class="plank" style="padding:4px 8px;font-size:17px;text-align:center">Body Boulder</div>
+<div class="plank" style="padding:4px 8px;font-size:17px;text-align:center">Sheriff</div>
+<div class="plank" style="padding:4px 8px;font-size:17px;text-align:center">Mirror</div>
+<div class="plank" style="padding:4px 8px;font-size:17px;text-align:center">Time Freeze</div>
+<div class="plank" style="padding:4px 8px;font-size:17px;text-align:center">Maniac</div>
+</div>
+<div style="position:absolute;top:56px;left:262px;width:114px;display:flex;flex-direction:column;align-items:center;gap:6px">
+<div class="av" style="width:100px;height:100px;background:#2e2a26;border:5px solid #c0392b;font-size:44px;box-shadow:0 6px 16px rgba(0,0,0,.35)">Q</div>
+<div style="font-family:'Rye';font-size:18px">QUICKDRAW</div>
+</div>
+<div class="plank" style="position:absolute;top:56px;right:16px;width:186px;box-sizing:border-box;padding:8px 12px">
+<div style="font-size:19px;color:#f4c95d;line-height:1.1">★ QUICKDRAW</div>
+<div style="font-size:17px;line-height:1.2;margin-top:3px">Reload and shoot in the same beat — even as your very first move.</div>
+<div style="display:inline-block;margin-top:6px;font-size:14px;background:#4a2c17;color:#f4c95d;padding:1px 7px;border-radius:4px">ONE USE PER DUEL</div>
+</div>
+<div class="plank" style="position:absolute;bottom:12px;left:16px;padding:4px 16px;font-size:18px;cursor:pointer">◂ BACK</div>
+<div style="position:absolute;bottom:12px;right:16px;font-family:'Rye';font-size:20px;background:#8a5a2b;border:4px solid #f4c95d;border-radius:8px;padding:5px 26px;box-shadow:0 4px 0 #3a1f0e;cursor:pointer">READY ▸</div>
+</div></div>
+
+<div class="dv-opt" id="3d"><div class="dv-olabel"><a class="dv-oid" href="#3d">3d</a>AI difficulty — themed <a class="dv-oid" href="#1h">1h</a>. Wanted posters; the outlaw count switches between a duel and a three-way.</div>
+<div class="stage">
+<div style="position:absolute;top:10px;left:0;right:0;text-align:center;font-family:'Rye';font-size:22px;text-shadow:2px 2px 0 #4a2c17">PICK YOUR OPPONENT</div>
+<div style="position:absolute;top:46px;left:0;right:0;height:158px;display:flex;justify-content:center;gap:20px;align-items:center">
+<div style="width:140px;height:152px;box-sizing:border-box;background:#efdcb2;border:4px solid #8a6a3a;border-radius:4px;box-shadow:0 5px 12px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+<div style="font-size:15px;letter-spacing:3px;color:#4a2c17;line-height:1;white-space:nowrap">WANTED</div>
+<div style="width:52px;height:44px;border:3px solid #4a2c17;border-radius:50% 50% 45% 45%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#4a2c17">·_·</div>
+<div style="font-family:'Rye';font-size:17px;color:#4a2c17;line-height:1">EASY</div>
+<div style="font-size:17px;color:#a8622a;line-height:1">★☆☆</div></div>
+<div style="width:140px;height:152px;box-sizing:border-box;background:#efdcb2;border:4px solid #f4c95d;border-radius:4px;box-shadow:0 5px 12px rgba(0,0,0,.3),0 0 14px rgba(244,201,93,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+<div style="font-size:15px;letter-spacing:3px;color:#4a2c17;line-height:1;white-space:nowrap">WANTED</div>
+<div style="width:52px;height:44px;border:3px solid #4a2c17;border-radius:50% 50% 45% 45%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#4a2c17">-_-</div>
+<div style="font-family:'Rye';font-size:17px;color:#4a2c17;line-height:1">MEDIUM</div>
+<div style="font-size:17px;color:#a8622a;line-height:1">★★☆</div></div>
+<div style="width:140px;height:152px;box-sizing:border-box;background:#efdcb2;border:4px solid #8a6a3a;border-radius:4px;box-shadow:0 5px 12px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+<div style="font-size:15px;letter-spacing:3px;color:#4a2c17;line-height:1;white-space:nowrap">WANTED</div>
+<div style="width:52px;height:44px;border:3px solid #4a2c17;border-radius:50% 50% 45% 45%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#4a2c17">ò_ó</div>
+<div style="font-family:'Rye';font-size:17px;color:#4a2c17;line-height:1">HARD</div>
+<div style="font-size:17px;color:#a8622a;line-height:1">★★★</div></div>
+</div>
+<div style="position:absolute;bottom:14px;left:16px;display:flex;gap:8px;align-items:center">
+<span style="font-size:18px">OUTLAWS:</span>
+<div class="plank on" style="padding:4px 12px;font-size:17px;cursor:pointer">1 (DUEL)</div>
+<div class="plank" style="padding:4px 12px;font-size:17px;cursor:pointer">2 (3-WAY)</div>
+</div>
+<div style="position:absolute;bottom:14px;right:16px;font-family:'Rye';font-size:19px;background:#8a5a2b;border:4px solid #f4c95d;border-radius:8px;padding:5px 20px;box-shadow:0 4px 0 #3a1f0e;cursor:pointer">START DUEL ▸</div>
+</div></div>
+
+<div class="dv-opt" id="3e"><div class="dv-olabel"><a class="dv-oid" href="#3e">3e</a>Round end — themed <a class="dv-oid" href="#1j">1j</a>. Winner, duel stats, and the rematch loop.</div>
+<div class="stage">
+<div style="position:absolute;top:20px;left:0;right:0;text-align:center;font-family:'Rye';font-size:30px;text-shadow:3px 3px 0 #4a2c17">YOU WIN THE DUEL!</div>
+<div style="position:absolute;top:74px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:5px">
+<div class="av" style="width:88px;height:88px;background:#3b5b86;border:5px solid #f4c95d;font-size:40px;box-shadow:0 6px 16px rgba(0,0,0,.35)">S</div>
+<div style="font-size:20px">YOU — SHERIFF</div>
+</div>
+<div style="position:absolute;top:198px;left:0;right:0;text-align:center;font-size:18px;opacity:.9">Rounds: 6 · Shots fired: 4 · Hits: 3 · Blocks: 2</div>
+<div style="position:absolute;bottom:16px;left:0;right:0;display:flex;justify-content:center;gap:14px;align-items:center">
+<div style="font-family:'Rye';font-size:20px;background:#8a5a2b;border:4px solid #f4c95d;border-radius:8px;padding:6px 22px;box-shadow:0 4px 0 #3a1f0e;cursor:pointer">REMATCH</div>
+<div class="plank" style="padding:7px 16px;font-size:17px;cursor:pointer">CHANGE CHARACTER</div>
+<div class="plank" style="padding:7px 16px;font-size:17px;cursor:pointer">EXIT</div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Try next: "make the 3-player SHOOT circles bigger in <a class="dv-oid" href="#3b">3b</a>" · "show the special-move card art in <a class="dv-oid" href="#3c">3c</a>" · "try <a class="dv-oid" href="#2b">2b</a>'s aim lines in the real game"</p>
+</section>
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">The three layouts not in the prototype, now with the western skin — same rules, different ergonomics</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Thumb arc (from <a class="dv-oid" href="#1c">1c</a>) — circles sweep up the right corner for one-thumb play; HUD stacks down the left. Bigger targets, no reach across the screen.</div>
+<div class="stage">
+<div class="plank" style="position:absolute;top:10px;left:12px;padding:6px 10px;display:flex;gap:8px;align-items:center">
+<div class="av" style="width:38px;height:38px;background:#7d2b20;border:3px solid #3a120c;font-size:17px">!</div>
+<div><div style="font-size:17px;line-height:1">MANIAC</div><div style="font-size:17px"><span class="hp">♥♥♡</span> <span class="am">●×2</span></div></div>
+</div>
+<div class="plank" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:3px 12px;text-align:center">
+<div style="font-size:19px">PICK!</div>
+<div style="width:110px;height:8px;background:#3a1f0e;border-radius:4px;margin:2px 0 3px"><div style="width:62%;height:8px;background:#f4c95d;border-radius:4px"></div></div>
+</div>
+<div class="plank" style="position:absolute;bottom:58px;left:12px;padding:4px 12px;font-size:18px">SHERIFF <span class="hp">♥♥♥</span></div>
+<div class="plank" style="position:absolute;bottom:12px;left:12px;padding:4px 12px;font-size:18px"><span class="am">● ×0</span></div>
+<div style="position:absolute;right:16px;bottom:146px;display:flex;flex-direction:column;align-items:center;gap:2px">
+<div class="circ on" style="width:60px;height:60px;font-size:28px;color:#f4c95d">★</div><span class="lbl">SPECIAL</span></div>
+<div style="position:absolute;right:74px;bottom:86px;display:flex;flex-direction:column;align-items:center;gap:2px">
+<div class="circ off" style="width:60px;height:60px;font-size:25px">✸</div><span class="lbl">ATTACK</span></div>
+<div style="position:absolute;right:152px;bottom:38px;display:flex;flex-direction:column;align-items:center;gap:2px">
+<div class="circ on" style="width:60px;height:60px;font-size:29px">∞</div><span class="lbl">RELOAD</span></div>
+<div style="position:absolute;right:244px;bottom:14px;display:flex;flex-direction:column;align-items:center;gap:2px">
+<div class="circ on" style="width:60px;height:60px"><svg width="24" height="26" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="rgba(255,233,179,.25)" stroke="#ffe9b3" stroke-width="2"></path></svg></div><span class="lbl">BLOCK</span></div>
+<div class="note" style="right:14px;bottom:232px;width:118px;text-align:right">thumb sweep · lefty flip in settings</div>
+</div></div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Aim lines, 3-player (from <a class="dv-oid" href="#1d">1d</a>) — two attack circles stay in the fan, each roped to its outlaw by a rifle-sight line. Everything stays in thumb range, unlike the prototype's under-portrait buttons.</div>
+<div class="stage">
+<svg style="position:absolute;inset:0" width="600" height="290"><line x1="248" y1="242" x2="126" y2="86" stroke="#4a2c17" stroke-width="3" stroke-dasharray="5 6" opacity=".55"></line><line x1="352" y1="242" x2="474" y2="86" stroke="#4a2c17" stroke-width="3" stroke-dasharray="5 6" opacity=".55"></line></svg>
+<div class="plank" style="position:absolute;top:10px;left:52px;padding:6px 10px;display:flex;gap:8px;align-items:center">
+<div class="av" style="width:38px;height:38px;background:#9aa2ab;border:3px solid #e8eef3;font-size:17px">M</div>
+<div><div style="font-size:17px;line-height:1">MIRROR</div><div style="font-size:17px"><span class="hp">♥♥♡</span> <span class="am">●×2</span></div></div></div>
+<div class="plank" style="position:absolute;top:10px;right:52px;padding:6px 10px;display:flex;gap:8px;align-items:center">
+<div class="av" style="width:38px;height:38px;background:#efe9d6;border:3px solid #cfc7ae;font-size:17px;color:#4a2c17">T</div>
+<div><div style="font-size:17px;line-height:1">TIME FREEZE</div><div style="font-size:17px"><span class="hp">♥♡♡</span> <span class="am">●×0</span></div></div></div>
+<div class="plank" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:3px 12px;text-align:center">
+<div style="font-size:19px">PICK!</div>
+<div style="width:100px;height:8px;background:#3a1f0e;border-radius:4px;margin:2px 0 3px"><div style="width:40%;height:8px;background:#f4c95d;border-radius:4px"></div></div></div>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:13px;align-items:flex-end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-2px) rotate(-9deg)"><div class="circ on" style="width:58px;height:58px"><svg width="23" height="25" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="rgba(255,233,179,.25)" stroke="#ffe9b3" stroke-width="2"></path></svg></div><span class="lbl">BLOCK</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-12px) rotate(-4deg)"><div class="circ on" style="width:58px;height:58px;font-size:28px">∞</div><span class="lbl">RELOAD</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-16px)"><div class="circ on" style="width:58px;height:58px;font-size:24px;border-color:#f4c95d;box-shadow:0 0 0 4px rgba(244,201,93,.4),0 0 14px rgba(244,201,93,.5)">✸</div><span class="lbl">↖ MIRROR</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-12px) rotate(4deg)"><div class="circ on" style="width:58px;height:58px;font-size:24px">✸</div><span class="lbl">FREEZE ↗</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-2px) rotate(9deg)"><div class="circ off" style="width:58px;height:58px;font-size:27px;color:#f4c95d">★</div><span class="lbl">SPECIAL</span></div>
+</div>
+<div class="plank" style="position:absolute;bottom:62px;left:12px;padding:3px 10px;font-size:17px;line-height:1.15">QUICKDRAW<br><span class="hp">♥♥♥</span> <span class="am">●×1</span></div>
+<div class="note" style="right:12px;bottom:112px;width:120px;text-align:right">left circle = left outlaw · sight line confirms the target</div>
+</div></div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Carousel select (from <a class="dv-oid" href="#1g">1g</a>) — one gunslinger at a time on a wanted poster, swipe through. Slower than the prototype's lineup but sells each character.</div>
+<div class="stage">
+<div style="position:absolute;top:10px;left:0;right:0;text-align:center;font-family:'Rye';font-size:22px;text-shadow:2px 2px 0 #4a2c17">CHOOSE YOUR GUNSLINGER</div>
+<div style="position:absolute;top:38px;left:0;right:0;height:104px;display:flex;justify-content:center;gap:18px;align-items:center">
+<div class="circ" style="width:42px;height:42px;font-size:24px">‹</div>
+<div style="width:160px;height:100px;box-sizing:border-box;background:#efdcb2;border:4px solid #8a5a2b;border-radius:4px;box-shadow:0 6px 14px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;overflow:hidden">
+<div style="font-size:14px;letter-spacing:3px;color:#4a2c17;line-height:1;white-space:nowrap">WANTED</div>
+<div class="av" style="width:44px;height:44px;background:#3b5b86;border:3px solid #f4c95d;font-size:21px">S</div>
+<div style="font-family:'Rye';font-size:15px;color:#4a2c17;line-height:1;white-space:nowrap">SHERIFF</div>
+</div>
+<div class="circ" style="width:42px;height:42px;font-size:24px">›</div>
+</div>
+<div class="plank" style="position:absolute;top:150px;left:50%;transform:translateX(-50%);width:400px;height:48px;padding:3px 12px;text-align:center;box-sizing:border-box">
+<div style="font-size:18px;color:#f4c95d;line-height:1.1">★ 6 IN THE CHAMBER</div>
+<div style="font-size:16px;line-height:1.1">Load 6 bullets in a single turn instead of 1.</div>
+</div>
+<div style="position:absolute;top:208px;left:0;right:0;text-align:center;letter-spacing:6px;font-size:15px;color:#4a2c17">○ ○ ● ○ ○ ○</div>
+<div style="position:absolute;top:238px;left:50%;transform:translateX(-50%);font-family:'Rye';font-size:19px;background:#8a5a2b;border:4px solid #f4c95d;border-radius:8px;padding:4px 26px;box-shadow:0 4px 0 #3a1f0e;cursor:pointer">READY ▸</div>
+</div></div>
+
+</div>
+<p class="dv-next">Try next: "swap the prototype's duel screen to <a class="dv-oid" href="#2b">2b</a>" · "use <a class="dv-oid" href="#2c">2c</a> for character select instead" · "make <a class="dv-oid" href="#2a">2a</a> the layout when there are 2 players"</p>
+</section>
+</x-dc>
+</body>
+</html>

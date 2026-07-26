@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+    />
+    <meta name="theme-color" content="#241408" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Quick Draw — Two-Second Showdown</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=14" />
+  </head>
+  <body>
+    <main id="app">
+      <section class="screen home-screen is-active" id="homeScreen" aria-labelledby="gameTitle">
+        <div class="brand-block">
+          <h1 id="gameTitle">Quick Draw</h1>
+          <p>One second to choose. Last gunslinger standing.</p>
+        </div>
+
+        <div class="title-menu" id="titleMenu">
+          <button id="openDuelSetupButton" type="button" aria-label="Let's duel"></button>
+          <button id="openTutorialButton" type="button" aria-label="How to play"></button>
+          <button id="openSettingsButton" type="button" aria-label="Settings">
+            <span aria-hidden="true">⚙</span>
+          </button>
+        </div>
+
+        <div class="setup-card western-dialog" id="setupCard" hidden>
+          <button class="dialog-close" id="closeSetupButton" type="button" aria-label="Close setup">×</button>
+          <h2>CHOOSE YOUR DUEL</h2>
+          <div class="setup-group">
+            <span class="setup-label">GAME MODE</span>
+            <div class="segmented" role="group" aria-label="Game mode">
+              <button class="segment is-selected" type="button" data-game-mode="local">
+                Arcade
+                <small>vs robots</small>
+              </button>
+              <button class="segment" type="button" data-game-mode="online">
+                Online
+                <small>real players</small>
+              </button>
+            </div>
+          </div>
+
+          <div id="localSetup">
+            <div class="setup-group">
+              <span class="setup-label">MATCH</span>
+              <div class="segmented" role="group" aria-label="Match size">
+                <button class="segment is-selected" type="button" data-player-count="2">
+                  Duel
+                  <small>1 robot</small>
+                </button>
+                <button class="segment" type="button" data-player-count="3">
+                  Trio
+                  <small>2 robots</small>
+                </button>
+              </div>
+            </div>
+
+            <div class="setup-group">
+              <span class="setup-label">ROBOT SKILL</span>
+              <div class="segmented difficulty-picker" role="group" aria-label="Robot difficulty">
+                <button class="segment" type="button" data-difficulty="easy">Easy</button>
+                <button class="segment is-selected" type="button" data-difficulty="medium">
+                  Medium
+                </button>
+                <button class="segment" type="button" data-difficulty="hard">Hard</button>
+              </div>
+            </div>
+
+            <button class="primary-button" id="startButton" type="button">
+              <span>PLAY</span>
+              <span class="button-arrow" aria-hidden="true">→</span>
+            </button>
+            <p class="setup-note">ARCADE MODE · ROBOT RIVALS</p>
+          </div>
+
+          <div class="online-setup" id="onlineSetup" hidden>
+            <label class="setup-field">
+              <span class="setup-label">PLAYER NAME</span>
+              <input id="onlinePlayerName" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" />
+            </label>
+
+            <div class="setup-group">
+              <span class="setup-label">ROOM SIZE</span>
+              <div class="segmented" role="group" aria-label="Online room size">
+                <button class="segment is-selected" type="button" data-online-player-count="2">
+                  Duel
+                  <small>2 players</small>
+                </button>
+                <button class="segment" type="button" data-online-player-count="3">
+                  Trio
+                  <small>3 players</small>
+                </button>
+              </div>
+            </div>
+
+            <button class="primary-button" id="createRoomButton" type="button">
+              <span>CREATE ROOM</span>
+              <span class="button-arrow" aria-hidden="true">→</span>
+            </button>
+
+            <div class="join-divider"><span>OR JOIN</span></div>
+            <div class="join-room-row">
+              <label class="setup-field room-code-field">
+                <span class="setup-label">ROOM CODE</span>
+                <input id="joinRoomCode" type="text" maxlength="6" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABC234" />
+              </label>
+              <button class="secondary-button join-room-button" id="joinRoomButton" type="button">JOIN</button>
+            </div>
+            <p class="online-status" id="onlineStatus" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="screen combat-screen tutorial-game-screen"
+        id="tutorialGameScreen"
+        data-layout="duel-thumb"
+        data-handedness="right"
+        aria-labelledby="tutorialCoachTitle"
+      >
+        <header class="combat-header">
+          <button class="icon-button tutorial-exit-button" id="exitTutorialButton" type="button" aria-label="Exit tutorial">×</button>
+          <div class="beat-status">
+            <span class="beat-number" id="tutorialStepLabel">TRAINING 1 OF 6</span>
+            <strong id="tutorialPhaseLabel">PAUSED</strong>
+          </div>
+        </header>
+
+        <div class="beat-track" aria-hidden="true">
+          <div class="beat-progress" id="tutorialBeatProgress"></div>
+        </div>
+
+        <div class="rivals">
+          <article class="rival-card tutorial-rival-card" style="--fighter-color: #d9483b">
+            <div class="rival-avatar" aria-hidden="true">R</div>
+            <div class="rival-copy">
+              <strong>RILEY</strong>
+              <div class="rival-hearts" id="tutorialRivalHearts">
+                <span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="arena-center" aria-live="polite">
+          <div class="event-banner" id="tutorialEventBanner">Training paused</div>
+        </div>
+
+        <section class="tutorial-coach" aria-live="polite">
+          <div class="eyebrow" id="tutorialCoachEyebrow">STEP 1 · THE DUEL</div>
+          <h2 id="tutorialCoachTitle">LEARN AT YOUR OWN PACE</h2>
+          <p id="tutorialCoachBody">
+            This training duel pauses before every move. A real beat gives you one second to choose and one second to watch the result.
+          </p>
+          <button class="primary-button" id="tutorialCoachButton" type="button">BEGIN TRAINING</button>
+        </section>
+
+        <div class="action-dock">
+          <div class="player-hud">
+            <div class="you-pill">
+              <span class="you-avatar" aria-hidden="true"><strong>T</strong></span>
+              <span>YOU</span>
+            </div>
+            <div class="my-hearts" id="tutorialPlayerHearts">
+              <span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span>
+            </div>
+            <div class="ammo-pill">
+              <span class="ammo-icon" aria-hidden="true"></span>
+              <strong id="tutorialAmmoCount">0</strong>
+              <span>shots</span>
+            </div>
+          </div>
+
+          <div class="action-fan" data-count="4" aria-label="Tutorial actions">
+            <button class="action-button action-block" type="button" data-tutorial-action="block">
+              <span class="action-icon" aria-hidden="true">⬡</span>
+              <strong>BLOCK</strong>
+              <small>stop shots</small>
+            </button>
+            <button class="action-button action-reload" type="button" data-tutorial-action="reload">
+              <span class="action-icon" aria-hidden="true">∞</span>
+              <strong>RELOAD</strong>
+              <small>gain 1</small>
+            </button>
+            <button class="action-button action-fire" type="button" data-tutorial-action="fire" style="--target-color: #d9483b">
+              <span class="action-icon" aria-hidden="true">✦</span>
+              <strong>FIRE</strong>
+              <small>hit Riley</small>
+            </button>
+            <button class="action-button action-power" type="button" data-tutorial-action="power">
+              <span class="action-icon" aria-hidden="true">★</span>
+              <strong>POWER</strong>
+              <small>once per duel</small>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="screen character-screen"
+        id="characterScreen"
+        aria-labelledby="characterSelectTitle"
+      >
+        <header class="character-header">
+          <button class="icon-button" id="backToHomeButton" type="button" aria-label="Back to home">←</button>
+          <div>
+            <div class="eyebrow">QUICK DRAW ROSTER</div>
+            <h2 id="characterSelectTitle">SELECT YOUR FIGHTER</h2>
+          </div>
+          <div class="roster-status">
+            <span class="status-dot"></span>
+            <span id="rosterStatusText">6 fighters ready</span>
+          </div>
+        </header>
+
+        <section class="online-lobby-bar" id="onlineLobbyBar" aria-label="Online room" hidden>
+          <div class="room-code-block">
+            <span>ROOM CODE</span>
+            <strong id="activeRoomCode">------</strong>
+            <button id="copyRoomCodeButton" type="button">COPY</button>
+          </div>
+          <div class="lobby-players" id="lobbyPlayers"></div>
+          <p class="lobby-message" id="lobbyMessage" aria-live="polite">Waiting for players…</p>
+        </section>
+
+        <div class="character-layout">
+          <div class="character-roster" id="characterGrid" aria-label="Character roster"></div>
+
+          <article class="character-feature">
+            <div class="character-stage">
+              <div class="character-glow" id="characterGlow"></div>
+              <img id="heroCharacterImage" alt="" />
+              <div class="coming-soon-hero" id="comingSoonHero" hidden>
+                <small>WANTED</small>
+                <span id="heroCharacterInitial">Q</span>
+                <strong>GUNSLINGER</strong>
+              </div>
+            </div>
+
+            <div class="character-details">
+              <div class="your-color">YOUR COLOR</div>
+              <h3 id="heroCharacterName">Sir Blocksalot</h3>
+              <p class="character-tagline" id="heroCharacterTagline"></p>
+
+              <div class="power-card">
+                <span>SPECIAL · ONCE PER DUEL</span>
+                <strong id="heroPowerName"></strong>
+                <p id="heroPowerDescription"></p>
+              </div>
+
+              <p class="prototype-power-note">
+                Every gunslinger’s special can be used once per duel.
+              </p>
+
+              <button class="primary-button ready-button" id="readyButton" type="button">
+                LOCK IN
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen combat-screen" id="combatScreen" aria-label="Combat">
+        <div class="territory territory-left" id="territoryLeft"></div>
+        <div class="territory territory-right" id="territoryRight"></div>
+
+        <header class="combat-header">
+          <button class="icon-button" id="quitButton" type="button" aria-label="Leave match">
+            ×
+          </button>
+          <div class="beat-status">
+            <span class="beat-number" id="beatNumber">BEAT 1</span>
+            <strong id="phaseLabel">DECIDE!</strong>
+          </div>
+          <button class="icon-button rules-button" id="rulesButton" type="button" aria-label="Rules">
+            ?
+          </button>
+        </header>
+
+        <div class="beat-track" aria-hidden="true">
+          <div class="beat-progress" id="beatProgress"></div>
+        </div>
+
+        <div class="rivals" id="rivals"></div>
+
+        <div class="arena-center" aria-live="polite">
+          <div class="event-banner" id="eventBanner">Choose your move</div>
+          <div class="reveals" id="reveals"></div>
+        </div>
+
+        <div class="action-dock">
+          <div class="player-hud">
+            <div class="you-pill">
+              <span class="you-avatar" aria-hidden="true">
+                <img id="playerAvatarImage" alt="" />
+                <strong id="playerAvatarInitial">Q</strong>
+              </span>
+              <span>YOU</span>
+            </div>
+            <div class="my-hearts" id="playerHearts" aria-label="Your hearts"></div>
+            <div class="ammo-pill" id="ammoPill">
+              <span class="ammo-icon" aria-hidden="true"></span>
+              <strong id="ammoCount">0</strong>
+              <span id="ammoLabel">shots</span>
+            </div>
+          </div>
+
+          <div class="action-fan" id="actionFan" aria-label="Choose an action"></div>
+        </div>
+
+        <div class="countdown-overlay" id="countdownOverlay" aria-live="assertive" hidden>
+          <div class="countdown-stage">
+            <div class="countdown-rings" aria-hidden="true"></div>
+            <strong class="countdown-number" id="countdownNumber">3</strong>
+            <div class="countdown-copy">
+              <span id="countdownLabel">GET READY</span>
+              <small>First beat starts after the count</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen result-screen" id="resultScreen" aria-labelledby="resultTitle">
+        <div class="result-burst" id="resultBurst"></div>
+        <div class="result-content">
+          <div class="eyebrow">LAST ONE STANDING</div>
+          <div class="winner-medallion" id="winnerMedallion" aria-hidden="true">Y</div>
+          <h2 id="resultTitle">You win!</h2>
+          <p id="resultSubtitle">Won on one heart. Brutal.</p>
+
+          <div class="round-stats">
+            <div><strong id="statBeats">0</strong><span>beats</span></div>
+            <div><strong id="statBlocks">0</strong><span>shots blocked</span></div>
+            <div><strong id="statReloads">0</strong><span>reloads</span></div>
+          </div>
+
+          <div class="result-actions">
+            <button class="secondary-button" id="changeMatchButton" type="button">CHANGE MATCH</button>
+            <button class="primary-button" id="rematchButton" type="button">REMATCH</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-backdrop" id="rulesModal" hidden>
+      <section class="rules-modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+        <button class="modal-close" id="closeRulesButton" type="button" aria-label="Close rules">×</button>
+        <div class="eyebrow">CHEAT SHEET</div>
+        <h2 id="rulesTitle">Load when they hide.<br />Hide when they’re loaded.</h2>
+        <div class="rule-grid">
+          <div><span class="mini-action">⬡</span><p><strong>BLOCK</strong> stops every incoming shot.</p></div>
+          <div><span class="mini-action">∞</span><p><strong>RELOAD</strong> adds one shot, but leaves you open.</p></div>
+          <div><span class="mini-action">✦</span><p><strong>FIRE</strong> costs one shot. Pick your target.</p></div>
+          <div><span class="mini-action">★</span><p><strong>POWER</strong> uses your fighter’s unique once-per-duel move.</p></div>
+        </div>
+        <p class="rule-footnote">
+          You get one second to choose, then one second to watch every move resolve.
+        </p>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="settingsModal" hidden>
+      <section class="rules-modal settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <button class="modal-close" id="closeSettingsButton" type="button" aria-label="Close settings">×</button>
+        <div class="eyebrow">SALOON RULES</div>
+        <h2 id="settingsTitle">SETTINGS</h2>
+        <div class="settings-row">
+          <span>GAME PACE</span>
+          <strong>QUICK · 1-SECOND PICK</strong>
+        </div>
+        <div class="settings-row">
+          <span>RIVAL AMMO</span>
+          <strong>PRIVATE</strong>
+        </div>
+        <div class="settings-row">
+          <span>CONTROL SIDE</span>
+          <button class="setting-toggle" id="handednessButton" type="button" aria-pressed="false">
+            RIGHT-HANDED
+          </button>
+        </div>
+        <p class="rule-footnote">These duel rules stay consistent in Arcade and Online modes.</p>
+      </section>
+    </div>
+
+    <div class="portrait-lock" aria-live="polite">
+      <div class="rotate-phone" aria-hidden="true">↻</div>
+      <strong>Turn your phone sideways</strong>
+      <span>This game is built for landscape play.</span>
+    </div>
+
+    <script defer src="./src/engine.js?v=6"></script>
+    <script defer src="./src/game.js?v=16"></script>
+  </body>
+</html>
