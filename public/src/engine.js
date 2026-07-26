@@ -14,7 +14,10 @@ const POWER_IDS = Object.freeze({
   MIRROR: "mirror",
   TIME_FREEZE: "time-freeze",
   MANIAC: "maniac",
+  CIVILIAN: "civilian-survive",
 });
+
+const CIVILIAN_POWER_GOAL = 5;
 
 const CHARACTER_POWERS = Object.freeze({
   quickdraw: POWER_IDS.QUICKDRAW,
@@ -23,6 +26,7 @@ const CHARACTER_POWERS = Object.freeze({
   mirror: POWER_IDS.MIRROR,
   "time-freeze": POWER_IDS.TIME_FREEZE,
   maniac: POWER_IDS.MANIAC,
+  civilian: POWER_IDS.CIVILIAN,
 });
 
 function createFighter({
@@ -34,6 +38,7 @@ function createFighter({
   characterId = null,
   characterName = null,
   image = null,
+  actionImages = null,
 }) {
   return {
     id,
@@ -44,13 +49,20 @@ function createFighter({
     characterId,
     characterName,
     image,
-    hearts: 3,
+    actionImages,
+    hearts: characterId === "civilian" ? 1 : 3,
     ammo: 0,
     alive: true,
     powerUsed: false,
+    powerUses: 0,
     hardened: false,
     lastAction: null,
   };
+}
+
+function outcomePoseFor(action, tookDamage = false) {
+  if (action?.type && action.type !== ACTIONS.WAIT) return action.type;
+  return tookDamage ? "hit" : "idle";
 }
 
 function powerIdFor(fighter) {
@@ -62,8 +74,12 @@ function powerNeedsTarget(powerId) {
 }
 
 function canUsePower(fighter, fighters, action = { type: ACTIONS.POWER }) {
-  if (!fighter?.alive || fighter.powerUsed) return false;
+  if (!fighter?.alive) return false;
   const powerId = powerIdFor(fighter);
+  if (powerId === POWER_IDS.CIVILIAN) {
+    return fighter.powerUses < CIVILIAN_POWER_GOAL;
+  }
+  if (fighter.powerUsed) return false;
   if (powerId === POWER_IDS.MANIAC) {
     return fighter.ammo >= fighters.filter((candidate) => candidate.alive).length;
   }
@@ -82,6 +98,16 @@ function resolveTurn(fighters, selections) {
     active.map((fighter) => {
       const requested = selections.get(fighter.id) ?? { type: ACTIONS.WAIT };
       let action = { ...requested };
+      const fighterPowerId = powerIdFor(fighter);
+
+      if (
+        fighterPowerId === POWER_IDS.CIVILIAN &&
+        action.type !== ACTIONS.BLOCK &&
+        action.type !== ACTIONS.POWER &&
+        action.type !== ACTIONS.WAIT
+      ) {
+        action = { type: ACTIONS.WAIT };
+      }
 
       if (action.type === ACTIONS.FIRE && fighter.ammo < 1) {
         action = { type: ACTIONS.WAIT };
@@ -184,12 +210,17 @@ function resolveTurn(fighters, selections) {
     }
 
     if (action.type !== ACTIONS.POWER) continue;
-    fighter.powerUsed = true;
+    if (action.powerId === POWER_IDS.CIVILIAN) {
+      fighter.powerUses += 1;
+    } else {
+      fighter.powerUsed = true;
+    }
     events.push({
       type: "power",
       actorId: fighter.id,
       targetId: action.targetId,
       powerId: action.powerId,
+      uses: fighter.powerUses,
     });
 
     if (action.powerId === POWER_IDS.SIX_CHAMBER) {
@@ -284,6 +315,7 @@ function resolveTurn(fighters, selections) {
   for (const fighter of active) {
     if (fighter.hearts === 0) {
       fighter.alive = false;
+      if (powerIdFor(fighter) === POWER_IDS.CIVILIAN) fighter.powerUses = 0;
       events.push({ type: "eliminated", actorId: fighter.id });
     }
   }
@@ -294,8 +326,23 @@ function resolveTurn(fighters, selections) {
       fighter.ammo = 0;
       fighter.alive = true;
       fighter.hardened = false;
+      if (powerIdFor(fighter) === POWER_IDS.CIVILIAN) fighter.powerUses = 0;
     }
     events.push({ type: "lastStand" });
+  }
+
+  const civilianWinner = fighters.find(
+    (fighter) =>
+      fighter.alive &&
+      powerIdFor(fighter) === POWER_IDS.CIVILIAN &&
+      fighter.powerUses >= CIVILIAN_POWER_GOAL,
+  );
+  if (civilianWinner) {
+    events.push({
+      type: "civilianVictory",
+      actorId: civilianWinner.id,
+      uses: civilianWinner.powerUses,
+    });
   }
 
   return { events, selections: normalized, damage, blockedShots, reloaded };
@@ -312,6 +359,13 @@ function chooseRobotAction(robot, fighters, difficulty = "medium", random = Math
     type: ACTIONS.POWER,
     targetId: powerNeedsTarget(powerId) ? target?.id : null,
   };
+
+  if (powerId === POWER_IDS.CIVILIAN) {
+    const usePower =
+      canUsePower(robot, fighters, powerAction) &&
+      random() < difficultyChance(difficulty, 0.52, 0.64, 0.76);
+    return usePower ? powerAction : { type: ACTIONS.BLOCK };
+  }
 
   if (!robot.powerUsed && random() < powerChance) {
     const shouldUse =
@@ -374,10 +428,12 @@ function difficultyChance(difficulty, easy, medium, hard) {
 
 window.QuickDrawEngine = Object.freeze({
   ACTIONS,
+  CIVILIAN_POWER_GOAL,
   POWER_IDS,
   canUsePower,
   chooseRobotAction,
   createFighter,
+  outcomePoseFor,
   powerIdFor,
   powerNeedsTarget,
   resolveTurn,

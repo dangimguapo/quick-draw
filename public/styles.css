@@ -3660,6 +3660,28 @@ button:focus-visible,
   font-size: 0.95rem;
 }
 
+.reveal-chip.has-target {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.reveal-target {
+  padding: 1px 5px;
+  border-left: 2px solid var(--western-ink);
+  color: var(--western-ink);
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.reveal-target.is-player-target {
+  border: 2px solid var(--western-ink);
+  background: #7d2b20;
+  color: var(--western-cream);
+  text-shadow: 1px 1px 0 var(--western-ink);
+}
+
 .action-dock {
   z-index: 11;
   padding-bottom: max(10px, env(safe-area-inset-bottom));
@@ -4382,7 +4404,7 @@ button:focus-visible,
 /* Keep every fighter summary and its Ready button inside the selection panel. */
 
 .character-layout {
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.5fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
 }
 
 .character-roster,
@@ -4392,8 +4414,79 @@ button:focus-visible,
   min-width: 0;
 }
 
+.character-roster {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: clamp(4px, 0.8vw, 8px);
+}
+
+.character-card {
+  border-width: 3px;
+}
+
+.character-card .wanted-label {
+  top: 4px;
+  font-size: clamp(0.42rem, 0.75vw, 0.62rem);
+}
+
+.character-card .roster-placeholder {
+  inset: 18% 0 28%;
+  font-size: clamp(1.35rem, 3.4vw, 2.7rem);
+}
+
+.character-card img {
+  inset: 12% 2% 24%;
+  width: 96%;
+  height: 64%;
+  padding: 0;
+  background: transparent;
+  object-fit: contain;
+  object-position: center;
+}
+
+.character-card .character-card-copy {
+  right: 2px;
+  bottom: 3px;
+  left: 2px;
+}
+
+.character-card .character-card-copy strong {
+  font-size: clamp(0.38rem, 0.62vw, 0.52rem);
+}
+
+.character-card .character-card-copy span {
+  margin-top: 0;
+  font-size: clamp(0.52rem, 0.85vw, 0.68rem);
+  line-height: 1;
+}
+
+.character-card.is-future {
+  border-style: dashed;
+  background: rgb(245 226 181 / 72%);
+  box-shadow: inset 0 0 0 2px rgb(74 44 23 / 10%);
+  cursor: default;
+  opacity: 0.62;
+}
+
+.character-card.is-future .roster-placeholder {
+  color: var(--western-wood-light);
+}
+
+.character-card.is-future .character-card-copy strong,
+.character-card.is-future .character-card-copy span {
+  color: #74461f;
+}
+
 .character-feature {
   grid-template-columns: minmax(0, 42%) minmax(0, 58%);
+}
+
+#heroCharacterImage {
+  inset: 0 2%;
+  width: 96%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .character-details {
@@ -4432,7 +4525,7 @@ button:focus-visible,
 
 @media (max-width: 820px) {
   .character-layout {
-    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.5fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
     gap: 10px;
   }
 }
@@ -4444,6 +4537,27 @@ button:focus-visible,
 
   .character-feature {
     grid-template-columns: minmax(0, 40%) minmax(0, 60%);
+  }
+
+  .character-roster {
+    gap: 4px;
+  }
+
+  .character-card .wanted-label {
+    top: 2px;
+    font-size: clamp(0.38rem, 1.5vh, 0.5rem);
+  }
+
+  .character-card .roster-placeholder {
+    font-size: clamp(1.15rem, 6vh, 1.8rem);
+  }
+
+  .character-card .character-card-copy strong {
+    font-size: clamp(0.34rem, 1.45vh, 0.46rem);
+  }
+
+  .character-card .character-card-copy span {
+    font-size: clamp(0.46rem, 1.8vh, 0.58rem);
   }
 
   .character-details {
@@ -4535,4 +4649,259 @@ button:focus-visible,
 
 .combat-screen[data-layout="three-target"] .rival-shoot-button:not(:disabled):active {
   transform: translateX(-50%);
+}
+
+/* Civilian: one-heart survival objective and two-action duel controls. */
+
+.ammo-pill.is-civilian-goal {
+  border-color: var(--western-gold);
+  background: #4a2c17;
+}
+
+.ammo-pill.is-civilian-goal .ammo-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--western-cream);
+  transform: rotate(45deg);
+}
+
+.civilian-progress {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 4px;
+  border: 1px solid var(--western-gold);
+  border-radius: 3px;
+  color: var(--western-gold);
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+.combat-screen[data-layout="duel-thumb"] .action-fan[data-count="2"] .action-button:nth-child(1) {
+  --arc-rotation: -6deg;
+  right: clamp(112px, 20vw, 170px);
+  bottom: max(18px, calc(env(safe-area-inset-bottom) + 8px));
+}
+
+.combat-screen[data-layout="duel-thumb"] .action-fan[data-count="2"] .action-button:nth-child(2) {
+  --arc-rotation: 7deg;
+  right: max(18px, calc(env(safe-area-inset-right) + 8px));
+  bottom: clamp(82px, 31vh, 132px);
+}
+
+.combat-screen[data-layout="duel-thumb"][data-handedness="left"] .action-fan[data-count="2"] .action-button:nth-child(1) {
+  --arc-rotation: 6deg;
+  right: auto;
+  left: clamp(112px, 20vw, 170px);
+}
+
+.combat-screen[data-layout="duel-thumb"][data-handedness="left"] .action-fan[data-count="2"] .action-button:nth-child(2) {
+  --arc-rotation: -7deg;
+  right: auto;
+  left: max(18px, calc(env(safe-area-inset-left) + 8px));
+}
+
+@media (orientation: landscape) and (max-height: 380px) {
+  .combat-screen[data-layout="duel-thumb"] .action-fan[data-count="2"] .action-button:nth-child(1) {
+    right: clamp(98px, 19vw, 142px);
+  }
+
+  .combat-screen[data-layout="duel-thumb"][data-handedness="left"] .action-fan[data-count="2"] .action-button:nth-child(1) {
+    right: auto;
+    left: clamp(98px, 19vw, 142px);
+  }
+}
+
+/* Outcome reenactment: one stable pose per fighter, with the result underneath. */
+
+.combat-screen.phase-resolve .arena-center {
+  z-index: 14;
+}
+
+.combat-screen.phase-resolve .action-dock {
+  opacity: 0.32;
+  transition: opacity 120ms ease;
+}
+
+.combat-screen.phase-resolve .event-banner {
+  padding: 2px 9px;
+  font-size: clamp(0.82rem, 1.7vw, 1rem);
+}
+
+.reveals.is-outcome {
+  width: min(72vw, 540px);
+  max-height: min(40vh, 184px);
+  align-items: flex-end;
+  gap: clamp(8px, 1.8vw, 16px);
+  margin-top: 2px;
+}
+
+.outcome-action-card {
+  --fighter-color: var(--western-gold);
+  position: relative;
+  display: grid;
+  width: clamp(82px, 14vw, 122px);
+  min-width: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  animation: outcome-card-pop 150ms steps(2, end) both;
+}
+
+.outcome-action-card.is-out {
+  filter: grayscale(0.35);
+}
+
+.outcome-action-visual {
+  position: relative;
+  display: grid;
+  min-height: clamp(58px, 18vh, 94px);
+  place-items: center;
+  background: transparent;
+}
+
+.outcome-action-visual img {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  object-fit: contain;
+  object-position: center bottom;
+  image-rendering: pixelated;
+  filter:
+    drop-shadow(2px 2px 0 rgb(74 44 23 / 48%))
+    drop-shadow(0 3px 4px rgb(0 0 0 / 18%));
+}
+
+.outcome-action-card[data-facing="left"] .outcome-action-visual img {
+  transform: scaleX(-1);
+}
+
+.outcome-action-card[data-pose="fire"] .outcome-action-visual img,
+.outcome-action-card[data-pose="power"] .outcome-action-visual img {
+  padding-right: 1px;
+  padding-left: 1px;
+}
+
+.outcome-action-placeholder {
+  display: grid;
+  width: clamp(46px, 7vw, 62px);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 4px solid var(--fighter-color);
+  border-radius: 50%;
+  background: #4a2c17;
+  color: var(--western-cream);
+  font-family: "Rye", Georgia, serif;
+  box-shadow: 3px 3px 0 var(--western-ink);
+}
+
+.outcome-action-placeholder span {
+  font-size: clamp(1.5rem, 4vw, 2.6rem);
+}
+
+.outcome-action-placeholder strong {
+  position: absolute;
+  right: 7px;
+  bottom: 5px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid var(--western-ink);
+  border-radius: 50%;
+  background: var(--western-gold);
+  color: var(--western-ink);
+  font-family: "VT323", ui-monospace, monospace;
+}
+
+.outcome-action-copy {
+  min-height: 36px;
+  padding: 2px 1px 0;
+  border: 0;
+  background: transparent;
+  color: var(--western-cream);
+  text-align: center;
+  text-shadow:
+    1px 1px 0 var(--western-ink),
+    -1px 1px 0 var(--western-ink),
+    1px -1px 0 var(--western-ink),
+    -1px -1px 0 var(--western-ink);
+}
+
+.outcome-action-copy strong {
+  display: block;
+  overflow: hidden;
+  color: var(--western-gold);
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: clamp(0.7rem, 1.15vw, 0.82rem);
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.outcome-action-copy p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 2px 0 0;
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: clamp(0.64rem, 1.02vw, 0.76rem);
+  line-height: 0.95;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.outcome-out-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1px 5px;
+  border: 2px solid var(--western-cream);
+  background: #7d2b20;
+  color: var(--western-cream);
+  font-family: "Rye", Georgia, serif;
+  font-size: 0.56rem;
+  text-shadow: 1px 1px 0 var(--western-ink);
+  transform: rotate(5deg);
+}
+
+@keyframes outcome-card-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 380px) {
+  .reveals.is-outcome {
+    width: min(68vw, 440px);
+    max-height: 38vh;
+    gap: 7px;
+  }
+
+  .outcome-action-card {
+    width: clamp(76px, 12vw, 106px);
+  }
+
+  .outcome-action-visual {
+    min-height: clamp(50px, 15vh, 68px);
+  }
+
+  .outcome-action-copy {
+    min-height: 32px;
+    padding-top: 1px;
+  }
+
+  .outcome-action-copy p {
+    margin-top: 1px;
+    font-size: clamp(0.6rem, 0.92vw, 0.7rem);
+  }
 }

@@ -1,18 +1,20 @@
 (() => {
 const {
   ACTIONS,
+  CIVILIAN_POWER_GOAL,
   POWER_IDS,
   canUsePower,
   chooseRobotAction,
   createFighter,
+  outcomePoseFor,
   powerIdFor,
   powerNeedsTarget,
   resolveTurn,
 } = window.QuickDrawEngine;
 
 const DECIDE_MS = 1000;
-const REVEAL_MS = 360;
-const OUTCOME_MS = 640;
+const REVEAL_MS = 0;
+const OUTCOME_MS = 1000;
 
 const CHARACTERS = Object.freeze([
   {
@@ -24,6 +26,16 @@ const CHARACTERS = Object.freeze([
     powerName: "Quickdraw",
     powerDescription: "Reload and shoot in the same beat — even as your first move.",
     color: "#c0392b",
+    image: "./assets/characters/quickdraw-icon-8bit.png",
+    fullBodyImage: "./assets/characters/quickdraw-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/quickdraw-fullbody-8bit.png",
+      block: "./assets/characters/quickdraw-block-8bit.png",
+      reload: "./assets/characters/quickdraw-reload-8bit.png",
+      fire: "./assets/characters/quickdraw-fire-8bit.png",
+      power: "./assets/characters/quickdraw-power-8bit.png",
+      hit: "./assets/characters/quickdraw-hit-8bit.png",
+    }),
     available: true,
   },
   {
@@ -81,7 +93,20 @@ const CHARACTERS = Object.freeze([
     color: "#7d2b20",
     available: true,
   },
+  {
+    id: "civilian",
+    name: "Civilian",
+    shortName: "Civilian",
+    initial: "C",
+    tagline: "No weapon. One heart. Five chances to survive.",
+    powerName: "Survive",
+    powerDescription: "Use Survive five times without being eliminated to win the duel.",
+    color: "#6f7a55",
+    available: true,
+  },
 ]);
+
+const ROSTER_SLOT_COUNT = 12;
 
 const TUTORIAL_STEPS = Object.freeze([
   {
@@ -116,7 +141,7 @@ const TUTORIAL_STEPS = Object.freeze([
   {
     eyebrow: "STEP 5 · YOUR ABILITY",
     title: "USE YOUR POWER",
-    body: "BLOCK protected every heart. Each character has a different POWER ability, and its button can only be used once per duel. Tap POWER.",
+    body: "BLOCK protected every heart. Each character has a different POWER ability. Most can be used once per duel; the Civilian’s survival power is repeatable. Tap POWER.",
     expected: "power",
     event: "Blocked · No hearts lost",
   },
@@ -186,6 +211,8 @@ const ui = {
   heroCharacterTagline: document.querySelector("#heroCharacterTagline"),
   heroPowerName: document.querySelector("#heroPowerName"),
   heroPowerDescription: document.querySelector("#heroPowerDescription"),
+  heroPowerRule: document.querySelector("#heroPowerRule"),
+  heroPowerNote: document.querySelector("#heroPowerNote"),
   rosterStatusText: document.querySelector("#rosterStatusText"),
   onlineLobbyBar: document.querySelector("#onlineLobbyBar"),
   activeRoomCode: document.querySelector("#activeRoomCode"),
@@ -202,6 +229,7 @@ const ui = {
   rivals: document.querySelector("#rivals"),
   actionFan: document.querySelector("#actionFan"),
   hearts: document.querySelector("#playerHearts"),
+  ammoPill: document.querySelector("#ammoPill"),
   ammoCount: document.querySelector("#ammoCount"),
   ammoLabel: document.querySelector("#ammoLabel"),
   playerAvatarImage: document.querySelector("#playerAvatarImage"),
@@ -217,6 +245,7 @@ const ui = {
   territoryLeft: document.querySelector("#territoryLeft"),
   territoryRight: document.querySelector("#territoryRight"),
   resultBurst: document.querySelector("#resultBurst"),
+  resultEyebrow: document.querySelector("#resultEyebrow"),
   winnerMedallion: document.querySelector("#winnerMedallion"),
   resultTitle: document.querySelector("#resultTitle"),
   resultSubtitle: document.querySelector("#resultSubtitle"),
@@ -797,6 +826,7 @@ function startMatch() {
     selectedCharacter,
     ...CHARACTERS.filter((character) => character.id !== selectedCharacter.id),
   ];
+  matchRoster.forEach(preloadActionImages);
   fighters = [
     createFighter({
       id: "you",
@@ -806,7 +836,8 @@ function startMatch() {
       isHuman: true,
       characterId: selectedCharacter.id,
       characterName: selectedCharacter.name,
-      image: null,
+      image: selectedCharacter.image ?? null,
+      actionImages: selectedCharacter.actionImages ?? null,
     }),
     createFighter({
       id: "mo",
@@ -815,7 +846,8 @@ function startMatch() {
       avatar: matchRoster[1].initial,
       characterId: matchRoster[1].id,
       characterName: matchRoster[1].name,
-      image: null,
+      image: matchRoster[1].image ?? null,
+      actionImages: matchRoster[1].actionImages ?? null,
     }),
   ];
   if (config.playerCount === 3) {
@@ -827,7 +859,8 @@ function startMatch() {
         avatar: matchRoster[2].initial,
         characterId: matchRoster[2].id,
         characterName: matchRoster[2].name,
-        image: null,
+        image: matchRoster[2].image ?? null,
+        actionImages: matchRoster[2].actionImages ?? null,
       }),
     );
   }
@@ -845,6 +878,13 @@ function startMatch() {
   showScreen(ui.combat);
   renderAll();
   phaseTimer = window.setTimeout(() => startCountdown(matchToken), 180);
+}
+
+function preloadActionImages(character) {
+  Object.values(character.actionImages ?? {}).forEach((source) => {
+    const image = new Image();
+    image.src = source;
+  });
 }
 
 function openCharacterSelect() {
@@ -906,7 +946,11 @@ function renderCharacterSelect() {
       );
       button.innerHTML = `
         <span class="wanted-label" aria-hidden="true">WANTED</span>
-        <span class="roster-placeholder" aria-hidden="true">${character.initial}</span>
+        ${
+          character.image
+            ? `<img src="${character.image}" alt="" />`
+            : `<span class="roster-placeholder" aria-hidden="true">${character.initial}</span>`
+        }
         <span class="character-card-copy">
           <strong>${character.name}</strong>
           <span>${character.powerName}</span>
@@ -926,6 +970,24 @@ function renderCharacterSelect() {
       });
       return button;
     }),
+    ...Array.from(
+      { length: Math.max(0, ROSTER_SLOT_COUNT - CHARACTERS.length) },
+      (_, index) => {
+        const slotNumber = CHARACTERS.length + index + 1;
+        const slot = document.createElement("div");
+        slot.className = "character-card is-coming is-future";
+        slot.setAttribute("aria-label", `Future fighter slot ${slotNumber}`);
+        slot.innerHTML = `
+          <span class="wanted-label" aria-hidden="true">WANTED</span>
+          <span class="roster-placeholder" aria-hidden="true">?</span>
+          <span class="character-card-copy">
+            <strong>UNKNOWN</strong>
+            <span>COMING SOON</span>
+          </span>
+        `;
+        return slot;
+      },
+    ),
   );
 
   ui.characterFeature.style.setProperty("--character-color", selected.color);
@@ -934,9 +996,29 @@ function renderCharacterSelect() {
   ui.heroCharacterTagline.textContent = selected.tagline;
   ui.heroPowerName.textContent = selected.powerName;
   ui.heroPowerDescription.textContent = selected.powerDescription;
-  ui.heroCharacterImage.hidden = true;
-  ui.comingSoonHero.hidden = false;
-  ui.heroCharacterInitial.textContent = selected.initial;
+  ui.heroPowerRule.textContent =
+    selected.id === "civilian"
+      ? "SPECIAL · REPEATABLE TO 5"
+      : "SPECIAL · ONCE PER DUEL";
+  ui.heroPowerNote.textContent =
+    selected.id === "civilian"
+      ? "Reach five uses and survive the fifth beat to win."
+      : "Every gunslinger’s special can be used once per duel.";
+  const heroImage = selected.fullBodyImage ?? selected.image;
+  if (heroImage) {
+    ui.heroCharacterImage.src = heroImage;
+    ui.heroCharacterImage.alt = selected.fullBodyImage
+      ? `${selected.name} full-body character`
+      : `${selected.name} portrait`;
+    ui.heroCharacterImage.hidden = false;
+    ui.comingSoonHero.hidden = true;
+  } else {
+    ui.heroCharacterImage.removeAttribute("src");
+    ui.heroCharacterImage.alt = "";
+    ui.heroCharacterImage.hidden = true;
+    ui.comingSoonHero.hidden = false;
+    ui.heroCharacterInitial.textContent = selected.initial;
+  }
   const player = onlinePlayer();
   const onlineDisconnected =
     config.mode === "online" &&
@@ -955,7 +1037,7 @@ function renderCharacterSelect() {
   ui.rosterStatusText.textContent =
     config.mode === "online"
       ? `${multiplayer.room?.playerCount ?? 0}/${multiplayer.room?.maxPlayers ?? config.onlinePlayerCount} players`
-      : "6 fighters ready";
+      : `${CHARACTERS.filter((character) => character.available).length} of ${ROSTER_SLOT_COUNT} fighters ready`;
 }
 
 function renderOnlineLobby() {
@@ -1037,6 +1119,7 @@ function startCountdown(token) {
   ui.phase.textContent = "GET READY";
   ui.eventBanner.textContent = "First beat begins after the count";
   ui.reveals.replaceChildren();
+  ui.reveals.classList.remove("is-outcome");
   ui.combat.classList.remove("phase-decide", "phase-resolve", "impact");
   ui.combat.classList.add("phase-countdown");
   ui.countdownOverlay.hidden = false;
@@ -1098,6 +1181,7 @@ function startBeat(token) {
     ? "You’re out — last robot standing wins"
     : "Choose your move";
   ui.reveals.replaceChildren();
+  ui.reveals.classList.remove("is-outcome");
   ui.combat.classList.remove("phase-countdown", "phase-resolve", "impact");
   ui.combat.classList.add("phase-decide");
   ui.rules.disabled = false;
@@ -1147,12 +1231,22 @@ function beginReveal(token) {
 
 function beginTimeFreeze(token) {
   const player = getPlayer();
+  const livingFighters = fighters.filter((fighter) => fighter.alive);
+  const incomingShots = [...robotSelections].filter(([fighterId, action]) => {
+    const fighter = fighterById(fighterId);
+    return fighter && actionThreatensPlayer(action, fighter, player);
+  });
   player.powerUsed = true;
   phase = "freeze";
   selectedAction = null;
   targetingPower = false;
   ui.phase.textContent = "TIME FROZEN";
-  ui.eventBanner.textContent = "Their moves are frozen — choose your answer";
+  ui.eventBanner.textContent =
+    livingFighters.length > 2
+      ? incomingShots.length > 0
+        ? `${incomingShots.length} ${incomingShots.length === 1 ? "shot is" : "shots are"} aimed at you — choose your answer`
+        : "No shots are aimed at you — choose your answer"
+      : "Their moves are frozen — choose your answer";
   ui.reveals.replaceChildren();
   renderReveals(robotSelections);
   deadlineDuration = 4000;
@@ -1177,10 +1271,18 @@ function finishBeat(token, selections) {
   ui.eventBanner.textContent = describeOutcome(result.events);
   ui.combat.classList.add("impact");
   renderAll();
+  renderOutcomeActions(result);
   animateEvents(result.events);
   pulseDevice(result.damage.size ? [25, 35, 45] : 14);
 
   phaseTimer = window.setTimeout(() => {
+    const civilianVictory = result.events.find(
+      (event) => event.type === "civilianVictory",
+    );
+    if (civilianVictory) {
+      endMatch(fighterById(civilianVictory.actorId), "civilian-goal");
+      return;
+    }
     const alive = fighters.filter((fighter) => fighter.alive);
     if (alive.length === 1) {
       endMatch(alive[0]);
@@ -1262,15 +1364,22 @@ function renderRivals() {
       card.style.setProperty("--fighter-color", fighter.color);
       card.innerHTML = `
         <div class="rival-avatar" aria-hidden="true">
-          ${fighter.avatar}
+          ${fighter.image ? `<img src="${fighter.image}" alt="" />` : fighter.avatar}
         </div>
         <div class="rival-copy">
           <strong>${fighter.name}</strong>
-          <div class="rival-hearts">${heartMarkup(fighter.hearts)}</div>
+          <div class="rival-hearts">
+            ${heartMarkup(fighter.hearts, heartSlotCount(fighter))}
+            ${
+              powerIdFor(fighter) === POWER_IDS.CIVILIAN
+                ? `<span class="civilian-progress">${fighter.powerUses}/${CIVILIAN_POWER_GOAL}</span>`
+                : ""
+            }
+          </div>
         </div>
       `;
 
-      if (rivals.length > 1) {
+      if (rivals.length > 1 && powerIdFor(player) !== POWER_IDS.CIVILIAN) {
         const shoot = document.createElement("button");
         const isSelected =
           selectedAction?.type === ACTIONS.FIRE &&
@@ -1328,9 +1437,23 @@ function renderRivals() {
 
 function renderPlayerHud() {
   const player = getPlayer();
-  ui.hearts.innerHTML = heartMarkup(player.hearts);
-  ui.ammoCount.textContent = String(player.ammo);
-  ui.ammoLabel.textContent = player.ammo === 1 ? "shot" : "shots";
+  const isCivilian = powerIdFor(player) === POWER_IDS.CIVILIAN;
+  ui.hearts.innerHTML = heartMarkup(player.hearts, heartSlotCount(player));
+  ui.ammoPill.classList.toggle("is-civilian-goal", isCivilian);
+  ui.ammoPill.setAttribute(
+    "aria-label",
+    isCivilian
+      ? `${player.powerUses} of ${CIVILIAN_POWER_GOAL} survival uses`
+      : `${player.ammo} ${player.ammo === 1 ? "shot" : "shots"}`,
+  );
+  ui.ammoCount.textContent = isCivilian
+    ? `${player.powerUses}/${CIVILIAN_POWER_GOAL}`
+    : String(player.ammo);
+  ui.ammoLabel.textContent = isCivilian
+    ? "survived"
+    : player.ammo === 1
+      ? "shot"
+      : "shots";
   if (player.image) {
     ui.playerAvatarImage.src = player.image;
     ui.playerAvatarImage.hidden = false;
@@ -1355,7 +1478,12 @@ function renderActionFan() {
     targetId: powerTarget?.id ?? null,
   };
   const actions =
-    rivals.length === 1
+    playerPowerId === POWER_IDS.CIVILIAN
+      ? [
+          { type: ACTIONS.BLOCK },
+          powerAction,
+        ]
+      : rivals.length === 1
       ? [
           { type: ACTIONS.BLOCK },
           { type: ACTIONS.RELOAD },
@@ -1420,22 +1548,183 @@ function renderActionFan() {
 }
 
 function renderReveals(selections) {
+  ui.reveals.classList.remove("is-outcome");
   const active = fighters.filter(
     (fighter) => fighter.alive && (phase !== "freeze" || selections.has(fighter.id)),
   );
+  const showTargets =
+    phase === "freeze" && fighters.filter((fighter) => fighter.alive).length > 2;
   ui.reveals.replaceChildren(
     ...active.map((fighter) => {
       const action = selections.get(fighter.id) ?? { type: ACTIONS.WAIT };
+      const target = showTargets ? freezeRevealTarget(action, fighter) : null;
       const chip = document.createElement("div");
       chip.className = "reveal-chip";
       chip.style.setProperty("--fighter-color", fighter.color);
-      chip.innerHTML = `
-        <span>${fighter.name}</span>
-        <strong>${actionIcon(action.type)} ${actionLabelForFighter(action, fighter)}</strong>
-      `;
+      const fighterName = document.createElement("span");
+      fighterName.textContent = fighter.name;
+      const move = document.createElement("strong");
+      move.textContent = `${actionIcon(action.type)} ${actionLabelForFighter(action, fighter)}`;
+      chip.append(fighterName, move);
+      if (target) {
+        chip.classList.add("has-target");
+        const targetLabel = document.createElement("small");
+        targetLabel.className = [
+          "reveal-target",
+          target.isPlayerTarget ? "is-player-target" : "",
+        ].filter(Boolean).join(" ");
+        targetLabel.textContent = `→ ${target.label}`;
+        chip.append(targetLabel);
+      }
       return chip;
     }),
   );
+}
+
+function renderOutcomeActions(result) {
+  const participants = outcomeFighterOrder(result.selections);
+  ui.reveals.classList.add("is-outcome");
+  ui.reveals.replaceChildren(
+    ...participants.map((fighter, index) => {
+      const action = result.selections.get(fighter.id) ?? { type: ACTIONS.WAIT };
+      const poseKey = outcomePoseFor(action, result.damage.has(fighter.id));
+      const poseImage =
+        fighter.actionImages?.[poseKey] ??
+        fighter.actionImages?.idle ??
+        fighter.image;
+      const targetIndex = participants.findIndex(
+        (candidate) => candidate.id === action.targetId,
+      );
+      const facesLeft =
+        targetIndex >= 0
+          ? targetIndex < index
+          : index >= Math.ceil(participants.length / 2);
+      const card = document.createElement("article");
+      const caption = describeFighterOutcome(fighter, action, result);
+      card.className = [
+        "outcome-action-card",
+        fighter.alive ? "" : "is-out",
+      ].filter(Boolean).join(" ");
+      card.dataset.fighterId = fighter.id;
+      card.dataset.pose = poseKey;
+      card.dataset.facing = facesLeft ? "left" : "right";
+      card.style.setProperty("--fighter-color", fighter.color);
+      card.setAttribute("aria-label", caption);
+
+      const visual = document.createElement("div");
+      visual.className = "outcome-action-visual";
+      if (poseImage) {
+        const image = document.createElement("img");
+        image.src = poseImage;
+        image.alt = "";
+        visual.append(image);
+      } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "outcome-action-placeholder";
+        placeholder.innerHTML = `
+          <span>${fighter.avatar}</span>
+          <strong>${actionIcon(action.type)}</strong>
+        `;
+        visual.append(placeholder);
+      }
+
+      const copy = document.createElement("div");
+      copy.className = "outcome-action-copy";
+      const heading = document.createElement("strong");
+      heading.textContent = `${fighter.isHuman ? "YOU" : fighter.name} · ${actionLabelForFighter(action, fighter)}`;
+      const statement = document.createElement("p");
+      statement.textContent = caption;
+      copy.append(heading, statement);
+      if (!fighter.alive) {
+        const out = document.createElement("span");
+        out.className = "outcome-out-badge";
+        out.textContent = "OUT";
+        visual.append(out);
+      }
+      card.append(visual, copy);
+      return card;
+    }),
+  );
+}
+
+function outcomeFighterOrder(selections) {
+  const participants = fighters.filter((fighter) => selections.has(fighter.id));
+  const player = participants.find((fighter) => fighter.isHuman);
+  const rivals = participants.filter((fighter) => !fighter.isHuman);
+  if (!player) return rivals;
+  if (rivals.length < 2) return [...rivals, player];
+  return [rivals[0], player, ...rivals.slice(1)];
+}
+
+function describeFighterOutcome(fighter, action, result) {
+  const subject = fighter.isHuman ? "You" : fighter.name;
+  const thirdPerson = !fighter.isHuman;
+  const target = fighterById(action.targetId);
+  const targetName = target?.isHuman ? "you" : target?.name;
+  const damage = result.damage.get(fighter.id) ?? 0;
+  const blockedShots = result.blockedShots.get(fighter.id) ?? 0;
+  const landedShot = result.events.some(
+    (event) => event.type === "hit" && event.actorId === fighter.id,
+  );
+  const shotWasBlocked = result.events.some(
+    (event) => event.type === "blocked" && event.actorId === fighter.id,
+  );
+  const shotWasReflected = result.events.some(
+    (event) =>
+      event.type === "reflected" &&
+      event.targetId === fighter.id &&
+      event.reflectedFromId,
+  );
+  const eliminated = result.events.some(
+    (event) => event.type === "eliminated" && event.actorId === fighter.id,
+  );
+  let statement;
+
+  if (action.type === ACTIONS.BLOCK) {
+    statement = blockedShots
+      ? `${subject} ${thirdPerson ? "blocks" : "block"} ${blockedShots === 1 ? "the shot" : `${blockedShots} shots`}.`
+      : `${subject} ${thirdPerson ? "holds" : "hold"} a block.`;
+  } else if (action.type === ACTIONS.RELOAD) {
+    statement = `${subject} ${thirdPerson ? "reloads" : "reload"}.`;
+  } else if (action.type === ACTIONS.FIRE) {
+    const resultText = landedShot
+      ? " — hit!"
+      : shotWasBlocked
+        ? " — blocked!"
+        : shotWasReflected
+          ? " — reflected!"
+          : ".";
+    statement = `${subject} ${thirdPerson ? "fires" : "fire"}${targetName ? ` at ${targetName}` : ""}${resultText}`;
+  } else if (action.type === ACTIONS.POWER) {
+    const powerId = powerIdFor(fighter);
+    const resultText =
+      powerId === POWER_IDS.QUICKDRAW
+        ? landedShot
+          ? " — hit!"
+          : shotWasBlocked
+            ? " — blocked!"
+            : shotWasReflected
+              ? " — reflected!"
+              : "."
+        : ".";
+    const powerTarget =
+      powerId === POWER_IDS.MANIAC
+        ? " on everyone"
+        : targetName
+          ? ` on ${targetName}`
+          : "";
+    statement = `${subject} ${thirdPerson ? "uses" : "use"} ${powerNameFor(fighter)}${powerTarget}${resultText}`;
+  } else {
+    statement = damage
+      ? `${subject} couldn’t act. ${subject} ${thirdPerson ? "takes" : "take"} ${damage === 1 ? "a hit" : `${damage} hits`}.`
+      : `${subject} ${thirdPerson ? "makes" : "make"} no move.`;
+  }
+
+  if (action.type !== ACTIONS.WAIT && damage) {
+    statement += ` ${subject} ${thirdPerson ? "takes" : "take"} ${damage === 1 ? "a hit" : `${damage} hits`}.`;
+  }
+  if (eliminated) statement += ` ${subject} ${thirdPerson ? "is" : "are"} out!`;
+  return statement;
 }
 
 function renderTerritories() {
@@ -1503,6 +1792,10 @@ function describeReveal(selections) {
 }
 
 function describeOutcome(events) {
+  const civilianVictory = events.find(
+    (event) => event.type === "civilianVictory" && event.actorId === "you",
+  );
+  if (civilianVictory) return "SURVIVED FIVE — civilian victory!";
   if (events.some((event) => event.type === "lastStand")) return "Double knockout — last heart holds!";
   if (events.some((event) => event.type === "mirrorVoid")) {
     return "INFINITE VOID — both Mirrors vanish!";
@@ -1533,6 +1826,15 @@ function describeOutcome(events) {
   const playerStoneBroke = events.some(
     (event) => event.type === "stoneShattered" && event.actorId === "you",
   );
+  const playerEliminated = events.some(
+    (event) => event.type === "eliminated" && event.actorId === "you",
+  );
+  if (
+    playerEliminated &&
+    powerIdFor(getPlayer()) === POWER_IDS.CIVILIAN
+  ) {
+    return "One hit ended the Civilian’s survival run!";
+  }
   if (playerReflected) return "MIRROR — their shot came straight back!";
   if (playerStoneBroke) return "Your stone skin shattered!";
   if (playerPower) return powerOutcomeMessage(playerPower);
@@ -1545,19 +1847,27 @@ function describeOutcome(events) {
   return "Nobody got hurt";
 }
 
-function endMatch(winner) {
+function endMatch(winner, reason = "last-standing") {
   phase = "gameover";
   clearTimers();
   const playerWon = winner.isHuman;
+  const civilianGoal = reason === "civilian-goal";
   ui.resultBurst.style.setProperty("--winner-color", winner.color);
   ui.winnerMedallion.style.setProperty("--winner-color", winner.color);
   ui.winnerMedallion.innerHTML = winner.image
     ? `<img src="${winner.image}" alt="" />`
     : winner.avatar;
+  ui.resultEyebrow.textContent = civilianGoal
+    ? "FIVE TIMES SURVIVED"
+    : "LAST ONE STANDING";
   ui.resultTitle.textContent = playerWon ? "You win!" : `${winner.name} wins`;
-  ui.resultSubtitle.textContent = playerWon
-    ? `Won on ${winner.hearts} ${winner.hearts === 1 ? "heart" : "hearts"}. Brutal.`
-    : "Watch the reloads. Take it back next round.";
+  ui.resultSubtitle.textContent = civilianGoal
+    ? playerWon
+      ? "One heart, no weapon, and still standing."
+      : "The Civilian survived five exposed beats."
+    : playerWon
+      ? `Won on ${winner.hearts} ${winner.hearts === 1 ? "heart" : "hearts"}. Brutal.`
+      : "Watch the reloads. Take it back next round.";
   ui.statBeats.textContent = String(stats.beats);
   ui.statBlocks.textContent = String(stats.blocks);
   ui.statReloads.textContent = String(stats.reloads);
@@ -1595,7 +1905,8 @@ function showHome() {
   clearTimers();
   ui.countdownOverlay.hidden = true;
   ui.onlineLobbyBar.hidden = true;
-  ui.rosterStatusText.textContent = "6 fighters ready";
+  ui.rosterStatusText.textContent =
+    `${CHARACTERS.filter((character) => character.available).length} of ${ROSTER_SLOT_COUNT} fighters ready`;
   ui.setupCard.hidden = true;
   ui.settingsModal.hidden = true;
   stopTutorialSpeedRound();
@@ -1636,9 +1947,13 @@ function characterById(id) {
   return CHARACTERS.find((character) => character.id === id) ?? CHARACTERS[0];
 }
 
-function heartMarkup(count) {
+function heartSlotCount(fighter) {
+  return powerIdFor(fighter) === POWER_IDS.CIVILIAN ? 1 : 3;
+}
+
+function heartMarkup(count, minimumSlots = 3) {
   return Array.from(
-    { length: Math.max(3, count) },
+    { length: Math.max(minimumSlots, count) },
     (_, index) => `<span class="heart ${index >= count ? "is-empty" : ""}" aria-hidden="true">♥</span>`,
   ).join("");
 }
@@ -1657,11 +1972,41 @@ function actionLabelForFighter(action, fighter) {
   return action.type === ACTIONS.POWER ? powerNameFor(fighter) : actionLabel(action.type);
 }
 
+function freezeRevealTarget(action, fighter) {
+  const powerId = action.type === ACTIONS.POWER ? powerIdFor(fighter) : null;
+  if (action.type === ACTIONS.POWER && powerId === POWER_IDS.MANIAC) {
+    return { label: "EVERYONE", isPlayerTarget: true };
+  }
+  if (
+    action.type !== ACTIONS.FIRE &&
+    !(action.type === ACTIONS.POWER && powerNeedsTarget(powerId))
+  ) {
+    return null;
+  }
+  const target = fighterById(action.targetId);
+  if (!target) return null;
+  return {
+    label: target.isHuman ? "YOU" : target.name.toUpperCase(),
+    isPlayerTarget: target.isHuman,
+  };
+}
+
+function actionThreatensPlayer(action, fighter, player) {
+  if (action.type === ACTIONS.FIRE) return action.targetId === player.id;
+  if (action.type !== ACTIONS.POWER) return false;
+  const powerId = powerIdFor(fighter);
+  if (powerId === POWER_IDS.MANIAC) return true;
+  return powerId === POWER_IDS.QUICKDRAW && action.targetId === player.id;
+}
+
 function actionButtonHint(action, player, target) {
   if (action.type === ACTIONS.FIRE) return target?.name ?? "no target";
   if (action.type === ACTIONS.POWER) {
-    if (player.powerUsed) return "used";
     const powerId = powerIdFor(player);
+    if (powerId === POWER_IDS.CIVILIAN) {
+      return `${player.powerUses}/${CIVILIAN_POWER_GOAL} survived`;
+    }
+    if (player.powerUsed) return "used";
     if (powerId === POWER_IDS.MANIAC) {
       const needed = fighters.filter((fighter) => fighter.alive).length;
       if (player.ammo < needed) return `needs ${needed} shots`;
@@ -1690,6 +2035,9 @@ function defaultPowerTarget(player, rivals) {
 
 function powerOutcomeMessage(event) {
   const target = event.targetId ? fighterById(event.targetId) : null;
+  if (event.powerId === POWER_IDS.CIVILIAN) {
+    return `SURVIVE — ${event.uses}/${CIVILIAN_POWER_GOAL}`;
+  }
   return {
     [POWER_IDS.QUICKDRAW]: target
       ? `QUICKDRAW hit ${target.name}!`
