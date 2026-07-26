@@ -7,9 +7,10 @@
 !.env.example
 node_modules/
 dist/
+.wrangler/
 
 # Source/reference files that are not needed by the playable build
 Mobile game combat UI concepts.zip
-assets/characters/*.png
-!assets/characters/*-8bit.png
+public/assets/characters/*.png
+!public/assets/characters/*-8bit.png
 wireframes/mobile-game-combat-ui-concepts/.thumbnail

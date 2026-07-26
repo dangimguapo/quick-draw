@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f0eee9;font-family:'Patrick Hand',system-ui,sans-serif}
+a{color:#0088b0}a:hover{color:#006a8a}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 15px/1.2 'Patrick Hand',sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 13px/1.3 'Patrick Hand',sans-serif;color:rgba(0,0,0,.6);max-width:640px}
+.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:22px 0 0;font:13px/1.5 'Patrick Hand',sans-serif;color:rgba(0,0,0,.5)}
+.ph{position:relative;width:600px;height:290px;background:#fff;color:#2b2b2b;overflow:hidden}
+.sk{border:2px solid #2b2b2b;border-radius:255px 15px 225px 15px/15px 225px 15px 255px}
+.sk2{border:2px solid #2b2b2b;border-radius:15px 225px 15px 255px/255px 15px 225px 15px}
+.c{width:50px;height:50px;border-radius:50%;border:2px solid #2b2b2b;display:flex;align-items:center;justify-content:center;font-size:22px;background:#fff;line-height:1}
+.glow{box-shadow:0 0 0 4px rgba(0,136,176,.3)}
+.dim{opacity:.32;border-style:dashed;box-shadow:none}
+.act{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}
+.an{color:#0088b0;font-size:12.5px;line-height:1.15}
+.hp{color:#d6006c;letter-spacing:1px}
+.face{width:40px;height:32px;border:2px solid #2b2b2b;border-radius:50% 50% 45% 45%;display:flex;align-items:center;justify-content:center;font-size:15px;margin:0 auto}
+.fbox{border:2px solid #2b2b2b;border-radius:6px;padding:8px 12px;font-size:14px;background:#fff}
+</style>
+</helmet>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Quick Draw — wireframes: flow, 4 game-screen layouts, and the supporting screens (landscape phone)</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Screen flow — solo branches to AI difficulty; multiplayer skips it</div>
+<div class="dv-card" style="padding:22px 26px;font-family:'Patrick Hand'">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px">
+<div class="fbox">Title</div><span>→</span><div class="fbox">Character<br>select</div><span>→</span>
+<div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+<div class="fbox" style="border-color:#0088b0;color:#0088b0">AI difficulty<br><span style="font-size:11px">(solo only)</span></div>
+<div style="font-size:11px;color:rgba(0,0,0,.45)">multiplayer skips ↴</div>
+</div>
+<span>→</span><div class="fbox" style="border-width:3px">DUEL<br><span style="font-size:11px">last one standing</span></div><span>→</span><div class="fbox">Round end</div>
+</div>
+<div class="an" style="margin-top:12px">↺ Round end → "Rematch" loops back to Duel · "Change character" back to select · Settings reachable from Title</div>
+</div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Game — classic fan (2-player). Everything on the center axis: enemy up top, your 4 circles fanned at the bottom</div>
+<div class="dv-card"><div class="ph">
+<div class="sk" style="position:absolute;top:10px;left:12px;padding:3px 12px;font-size:14px">PICK! <b>1s</b></div>
+<div class="an" style="position:absolute;top:12px;left:118px;width:88px">then "DRAW!" ~2s resolve</div>
+<div class="sk" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 14px;text-align:center;font-size:13px">
+<div class="face">·_·</div>OUTLAW<div><span class="hp">♥♥♡</span> · 2 ●</div>
+</div>
+<div class="an" style="position:absolute;top:34px;right:14px;width:120px;text-align:right">enemy hearts + bullet count always visible ↖</div>
+<div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:16px;align-items:flex-end">
+<div class="act" style="transform:translateY(-2px) rotate(-8deg)"><div class="c glow"><svg width="20" height="22" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="none" stroke="#2b2b2b" stroke-width="2"/></svg></div>block</div>
+<div class="act" style="transform:translateY(-12px) rotate(-3deg)"><div class="c glow">∞</div>reload</div>
+<div class="act" style="transform:translateY(-12px) rotate(3deg)"><div class="c dim">✸</div>attack</div>
+<div class="act" style="transform:translateY(-2px) rotate(8deg)"><div class="c glow">★</div>special</div>
+</div>
+<div class="an" style="position:absolute;bottom:118px;right:14px;width:118px;text-align:right">0 bullets → attack greyed; glow = usable</div>
+<div class="sk2" style="position:absolute;bottom:12px;left:12px;padding:4px 12px;font-size:14px">YOU <span class="hp">♥♥♥</span></div>
+<div class="sk2" style="position:absolute;bottom:12px;right:12px;padding:4px 12px;font-size:14px">● × 0</div>
+</div></div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Game — thumb arc (2-player). Circles hug the right corner for one-thumb play; stats read down the left</div>
+<div class="dv-card"><div class="ph">
+<div class="sk" style="position:absolute;top:12px;left:12px;padding:6px 14px;font-size:13px;text-align:center"><div class="face">·_·</div>OUTLAW<div><span class="hp">♥♥♡</span> · 2 ●</div></div>
+<div class="sk" style="position:absolute;top:14px;left:50%;transform:translateX(-50%);padding:3px 12px;font-size:14px">PICK! <b>1s</b></div>
+<div class="sk2" style="position:absolute;bottom:64px;left:12px;padding:4px 12px;font-size:14px">YOU <span class="hp">♥♥♥</span></div>
+<div class="sk2" style="position:absolute;bottom:16px;left:12px;padding:4px 12px;font-size:14px">● × 0</div>
+<div class="act" style="position:absolute;right:14px;bottom:148px"><div class="c glow">★</div>special</div>
+<div class="act" style="position:absolute;right:64px;bottom:88px"><div class="c dim">✸</div>attack</div>
+<div class="act" style="position:absolute;right:136px;bottom:44px"><div class="c glow">∞</div>reload</div>
+<div class="act" style="position:absolute;right:216px;bottom:22px"><div class="c glow"><svg width="20" height="22" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="none" stroke="#2b2b2b" stroke-width="2"/></svg></div>block</div>
+<div class="an" style="position:absolute;right:120px;bottom:150px;width:140px;text-align:right">arc = natural right-thumb sweep; lefty flip in settings</div>
+</div></div></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Game — aim lines (3-player). Two attack circles in the fan, each tied to its target by a dotted sight-line; circle position mirrors opponent position</div>
+<div class="dv-card"><div class="ph">
+<svg style="position:absolute;inset:0" width="600" height="290"><line x1="238" y1="238" x2="118" y2="72" stroke="#0088b0" stroke-width="2" stroke-dasharray="4 5"/><line x1="330" y1="238" x2="478" y2="72" stroke="#0088b0" stroke-width="2" stroke-dasharray="4 5"/></svg>
+<div class="sk" style="position:absolute;top:10px;left:66px;padding:5px 12px;font-size:13px;text-align:center;background:#fff"><div class="face">·_·</div>OUTLAW<div><span class="hp">♥♥♡</span> · 2 ●</div></div>
+<div class="sk" style="position:absolute;top:10px;right:66px;padding:5px 12px;font-size:13px;text-align:center;background:#fff"><div class="face">-_-</div>BANDIT<div><span class="hp">♥♡♡</span> · 0 ●</div></div>
+<div class="sk" style="position:absolute;top:14px;left:50%;transform:translateX(-50%);padding:3px 12px;font-size:14px;background:#fff">PICK! <b>1s</b></div>
+<div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:13px;align-items:flex-end">
+<div class="act" style="transform:translateY(-2px) rotate(-8deg)"><div class="c glow"><svg width="20" height="22" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="none" stroke="#2b2b2b" stroke-width="2"/></svg></div>block</div>
+<div class="act" style="transform:translateY(-11px) rotate(-4deg)"><div class="c glow">∞</div>reload</div>
+<div class="act" style="transform:translateY(-15px)"><div class="c dim">✸</div><span style="white-space:nowrap">→ outlaw</span></div>
+<div class="act" style="transform:translateY(-11px) rotate(4deg)"><div class="c dim">✸</div><span style="white-space:nowrap">→ bandit</span></div>
+<div class="act" style="transform:translateY(-2px) rotate(8deg)"><div class="c glow">★</div>special</div>
+</div>
+<div class="sk2" style="position:absolute;bottom:64px;left:12px;padding:4px 10px;font-size:13px">YOU <span class="hp">♥♥♥</span><br>● × 0</div>
+<div class="an" style="position:absolute;bottom:110px;right:16px;width:130px;text-align:right">left circle hits left enemy — spatial mapping + dotted line</div>
+</div></div></div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Game — target-under-portrait (3-player). Attack button lives under each enemy; fan keeps only block / reload / special</div>
+<div class="dv-card"><div class="ph">
+<div style="position:absolute;top:10px;left:70px;text-align:center">
+<div class="sk" style="padding:5px 12px;font-size:13px"><div class="face">·_·</div>OUTLAW <span class="hp">♥♥♡</span></div>
+<div class="act" style="margin-top:6px"><div class="c dim" style="width:42px;height:42px;font-size:18px">✸</div></div>
+</div>
+<div style="position:absolute;top:10px;right:70px;text-align:center">
+<div class="sk" style="padding:5px 12px;font-size:13px"><div class="face">-_-</div>BANDIT <span class="hp">♥♡♡</span></div>
+<div class="act" style="margin-top:6px"><div class="c dim" style="width:42px;height:42px;font-size:18px">✸</div></div>
+</div>
+<div class="sk" style="position:absolute;top:14px;left:50%;transform:translateX(-50%);padding:3px 12px;font-size:14px">PICK! <b>1s</b></div>
+<div class="an" style="position:absolute;top:118px;left:50%;transform:translateX(-50%);width:190px;text-align:center">tap the ✸ under a face to shoot THAT player — zero ambiguity, but hands travel up-screen</div>
+<div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:18px;align-items:flex-end">
+<div class="act" style="transform:translateY(-4px) rotate(-6deg)"><div class="c glow"><svg width="20" height="22" viewBox="0 0 20 22"><path d="M10 1 18 4v6c0 6-4 9-8 11-4-2-8-5-8-11V4z" fill="none" stroke="#2b2b2b" stroke-width="2"/></svg></div>block</div>
+<div class="act" style="transform:translateY(-10px)"><div class="c glow">∞</div>reload</div>
+<div class="act" style="transform:translateY(-4px) rotate(6deg)"><div class="c glow">★</div>special</div>
+</div>
+<div class="sk2" style="position:absolute;bottom:12px;left:12px;padding:4px 12px;font-size:14px">YOU <span class="hp">♥♥♥</span> · ● × 0</div>
+</div></div></div>
+
+<div class="dv-opt" id="1f"><div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Character select — lineup. All 6 visible at once; tap to preview, special-move card explains the ★</div>
+<div class="dv-card"><div class="ph">
+<div style="position:absolute;top:10px;left:14px;font-size:16px">CHOOSE YOUR GUNSLINGER</div>
+<div style="position:absolute;top:44px;left:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;width:190px">
+<div class="fbox" style="border-color:#0088b0;color:#0088b0;font-size:12px;padding:5px 8px">Quickdraw</div>
+<div class="fbox" style="font-size:12px;padding:5px 8px">Body Boulder</div>
+<div class="fbox" style="font-size:12px;padding:5px 8px">Sheriff</div>
+<div class="fbox" style="font-size:12px;padding:5px 8px">Mirror</div>
+<div class="fbox" style="font-size:12px;padding:5px 8px">Time Freeze</div>
+<div class="fbox" style="font-size:12px;padding:5px 8px">Maniac</div>
+</div>
+<div class="sk" style="position:absolute;top:44px;left:224px;width:140px;height:180px;display:flex;align-items:center;justify-content:center;font-size:13px;text-align:center">big<br>character<br>art</div>
+<div class="sk2" style="position:absolute;top:44px;right:14px;width:170px;padding:8px 12px;font-size:13px"><b>★ Quickdraw</b><br>Reload + shoot in the same beat. One use.</div>
+<div class="fbox" style="position:absolute;bottom:14px;right:14px;border-width:3px;font-size:16px;padding:8px 26px">READY ▸</div>
+<div class="an" style="position:absolute;bottom:18px;left:14px;width:260px">taken characters grey out in multiplayer lobby</div>
+</div></div></div>
+
+<div class="dv-opt" id="1g"><div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Character select — carousel. One at a time, big art, swipe through; slower but showcases each character</div>
+<div class="dv-card"><div class="ph">
+<div style="position:absolute;top:10px;left:0;right:0;text-align:center;font-size:16px">CHOOSE YOUR GUNSLINGER</div>
+<div style="position:absolute;top:46px;left:0;right:0;display:flex;justify-content:center;gap:20px;align-items:center">
+<div class="c" style="width:38px;height:38px">‹</div>
+<div class="sk" style="width:150px;height:150px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px">big<br>character<br>art</div>
+<div class="c" style="width:38px;height:38px">›</div>
+</div>
+<div style="position:absolute;bottom:76px;left:0;right:0;text-align:center;font-size:15px">SHERIFF · <span class="an">★ 6 in the Chamber — load 6 bullets in one turn</span></div>
+<div style="position:absolute;bottom:58px;left:0;right:0;text-align:center;letter-spacing:5px;font-size:12px">○ ○ ● ○ ○ ○</div>
+<div class="fbox" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);border-width:3px;font-size:16px;padding:6px 30px">READY ▸</div>
+</div></div></div>
+
+<div class="dv-opt" id="1h"><div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>AI difficulty — solo only. Wanted-poster tiles; stars telegraph the threat</div>
+<div class="dv-card"><div class="ph">
+<div style="position:absolute;top:14px;left:0;right:0;text-align:center;font-size:16px">PICK YOUR OPPONENT</div>
+<div style="position:absolute;top:52px;left:0;right:0;display:flex;justify-content:center;gap:22px">
+<div class="sk" style="width:130px;height:160px;text-align:center;padding-top:10px;font-size:14px">WANTED<div class="face" style="margin-top:8px">·_·</div><div style="margin-top:8px">EASY</div><div>★☆☆</div></div>
+<div class="sk2" style="width:130px;height:160px;text-align:center;padding-top:10px;font-size:14px">WANTED<div class="face" style="margin-top:8px">-_-</div><div style="margin-top:8px">MEDIUM</div><div>★★☆</div></div>
+<div class="sk" style="width:130px;height:160px;text-align:center;padding-top:10px;font-size:14px">WANTED<div class="face" style="margin-top:8px">ò_ó</div><div style="margin-top:8px">HARD</div><div>★★★</div></div>
+</div>
+<div class="an" style="position:absolute;bottom:14px;left:0;right:0;text-align:center">solo lobby can also add a 2nd AI for a 3-way duel</div>
+</div></div></div>
+
+<div class="dv-opt" id="1i"><div class="dv-olabel"><a class="dv-oid" href="#1i">1i</a>Title — mirrors your key art: logo center, two plank buttons</div>
+<div class="dv-card"><div class="ph">
+<div class="sk" style="position:absolute;top:36px;left:50%;transform:translateX(-50%);padding:14px 40px;font-size:34px;letter-spacing:2px">QUICK DRAW</div>
+<div style="position:absolute;top:118px;left:0;right:0;text-align:center;font-size:13px">— ★ —</div>
+<div style="position:absolute;bottom:60px;left:0;right:0;display:flex;justify-content:center;gap:26px">
+<div class="sk2" style="padding:12px 34px;font-size:18px;border-width:3px">LET'S DUEL!</div>
+<div class="sk" style="padding:12px 34px;font-size:18px">SETTINGS</div>
+</div>
+<div class="an" style="position:absolute;bottom:16px;left:0;right:0;text-align:center">desert / saloon backdrop from the key art behind everything</div>
+</div></div></div>
+
+<div class="dv-opt" id="1j"><div class="dv-olabel"><a class="dv-oid" href="#1j">1j</a>Round end — winner card, duel stats, rematch loop</div>
+<div class="dv-card"><div class="ph">
+<div class="sk" style="position:absolute;top:22px;left:50%;transform:translateX(-50%);padding:6px 30px;font-size:22px">🏆 SHERIFF WINS!</div>
+<div class="sk2" style="position:absolute;top:80px;left:50%;transform:translateX(-50%);width:120px;height:100px;display:flex;align-items:center;justify-content:center;font-size:13px;text-align:center">winner<br>art</div>
+<div style="position:absolute;top:196px;left:0;right:0;text-align:center;font-size:14px"><span class="hp">♥♥♡</span> left · 4 shots fired · 2 blocked · ★ used turn 3</div>
+<div style="position:absolute;bottom:16px;left:0;right:0;display:flex;justify-content:center;gap:16px">
+<div class="fbox" style="border-width:3px">REMATCH</div>
+<div class="fbox">CHANGE CHARACTER</div>
+<div class="fbox">EXIT</div>
+</div>
+</div></div></div>
+
+<div class="dv-opt" id="1k"><div class="dv-olabel"><a class="dv-oid" href="#1k">1k</a>Settings — minimal for v1</div>
+<div class="dv-card"><div class="ph">
+<div style="position:absolute;top:12px;left:0;right:0;text-align:center;font-size:16px">SETTINGS</div>
+<div style="position:absolute;top:52px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:14px;width:280px;font-size:15px">
+<div style="display:flex;justify-content:space-between;align-items:center">Sound effects <span class="sk" style="width:44px;height:22px;display:inline-flex;align-items:center;justify-content:flex-end;padding:0 3px">●</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center">Music <span class="sk" style="width:44px;height:22px;display:inline-flex;align-items:center;padding:0 3px">●</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center">Left-handed layout <span class="sk" style="width:44px;height:22px;display:inline-flex;align-items:center;padding:0 3px">●</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center">Game speed <span style="font-size:13px">relaxed —●———— quickdraw</span></div>
+</div>
+<div class="fbox" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);padding:6px 26px">BACK</div>
+</div></div></div>
+
+</div>
+<p class="dv-next">Try next: "build the prototype from <a class="dv-oid" href="#1b">1b</a> with <a class="dv-oid" href="#1e">1e</a>'s targeting for 3 players" · "riff more on the 3-player attack layout" · "show <a class="dv-oid" href="#1c">1c</a> with 3 players"</p>
+</section>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "quick-draw",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "check": "node --check worker/index.mjs && node --check worker/game-room.mjs && node --check public/src/engine.js && node --check public/src/game.js && node tests/engine.test.cjs",
+    "smoke": "node tests/worker-smoke.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
