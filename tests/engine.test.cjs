@@ -3,7 +3,14 @@ const assert = require("node:assert/strict");
 global.window = global;
 require("../public/src/engine.js");
 
-const { ACTIONS, canUsePower, createFighter, resolveTurn } = global.QuickDrawEngine;
+const {
+  ACTIONS,
+  CIVILIAN_POWER_GOAL,
+  canUsePower,
+  createFighter,
+  outcomePoseFor,
+  resolveTurn,
+} = global.QuickDrawEngine;
 
 function fighter(id, characterId) {
   return createFighter({
@@ -17,6 +24,24 @@ function fighter(id, characterId) {
 
 function selections(entries) {
   return new Map(entries);
+}
+
+{
+  assert.equal(
+    outcomePoseFor({ type: ACTIONS.RELOAD }, true),
+    ACTIONS.RELOAD,
+    "A selected action pose takes priority over incoming damage",
+  );
+  assert.equal(
+    outcomePoseFor({ type: ACTIONS.WAIT }, true),
+    "hit",
+    "A damaging no-action result uses the hit pose",
+  );
+  assert.equal(
+    outcomePoseFor({ type: ACTIONS.WAIT }, false),
+    "idle",
+    "A harmless no-action result uses the idle pose",
+  );
 }
 
 {
@@ -146,4 +171,75 @@ function selections(entries) {
   assert.ok(result.events.some((event) => event.type === "wildBackfire"));
 }
 
-console.log("All six redesigned Quick Draw powers passed.");
+{
+  const civilian = fighter("civilian", "civilian");
+  const rival = fighter("rival", "sheriff");
+  assert.equal(civilian.hearts, 1, "Civilian starts with one heart");
+
+  for (let use = 1; use < CIVILIAN_POWER_GOAL; use += 1) {
+    const result = resolveTurn(
+      [civilian, rival],
+      selections([
+        [civilian.id, { type: ACTIONS.POWER }],
+        [rival.id, { type: ACTIONS.BLOCK }],
+      ]),
+    );
+    assert.equal(civilian.powerUses, use);
+    assert.equal(civilian.powerUsed, false, "Survive remains repeatable");
+    assert.equal(
+      result.events.some((event) => event.type === "civilianVictory"),
+      false,
+      "Civilian cannot win before the fifth use",
+    );
+  }
+
+  const winningResult = resolveTurn(
+    [civilian, rival],
+    selections([
+      [civilian.id, { type: ACTIONS.POWER }],
+      [rival.id, { type: ACTIONS.BLOCK }],
+    ]),
+  );
+  assert.equal(civilian.powerUses, CIVILIAN_POWER_GOAL);
+  assert.equal(canUsePower(civilian, [civilian, rival]), false);
+  assert.ok(
+    winningResult.events.some(
+      (event) => event.type === "civilianVictory" && event.actorId === civilian.id,
+    ),
+    "Civilian wins after surviving the fifth use",
+  );
+
+  const exposedCivilian = fighter("exposed-civilian", "civilian");
+  const shooter = fighter("shooter", "sheriff");
+  exposedCivilian.powerUses = CIVILIAN_POWER_GOAL - 1;
+  shooter.ammo = 1;
+  const lethalResult = resolveTurn(
+    [exposedCivilian, shooter],
+    selections([
+      [exposedCivilian.id, { type: ACTIONS.POWER }],
+      [shooter.id, { type: ACTIONS.FIRE, targetId: exposedCivilian.id }],
+    ]),
+  );
+  assert.equal(exposedCivilian.alive, false, "Civilian dies to one unblocked shot");
+  assert.equal(exposedCivilian.powerUses, 0, "Civilian loses all progress when eliminated");
+  assert.equal(
+    lethalResult.events.some((event) => event.type === "civilianVictory"),
+    false,
+    "The fifth use does not win if Civilian dies during that beat",
+  );
+
+  const unarmedCivilian = fighter("unarmed-civilian", "civilian");
+  const target = fighter("target", "sheriff");
+  unarmedCivilian.ammo = 1;
+  const invalidFire = resolveTurn(
+    [unarmedCivilian, target],
+    selections([
+      [unarmedCivilian.id, { type: ACTIONS.FIRE, targetId: target.id }],
+      [target.id, { type: ACTIONS.WAIT }],
+    ]),
+  );
+  assert.equal(invalidFire.selections.get(unarmedCivilian.id).type, ACTIONS.WAIT);
+  assert.equal(target.hearts, 3, "Civilian cannot fire even if given ammunition");
+}
+
+console.log("All seven redesigned Quick Draw powers passed.");

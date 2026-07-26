@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=16" />
+    <link rel="stylesheet" href="./styles.css?v=24" />
   </head>
   <body>
     <main id="app">
@@ -221,7 +221,7 @@
           </div>
           <div class="roster-status">
             <span class="status-dot"></span>
-            <span id="rosterStatusText">6 fighters ready</span>
+            <span id="rosterStatusText">7 of 12 fighters ready</span>
           </div>
         </header>
 
@@ -254,12 +254,12 @@
               <p class="character-tagline" id="heroCharacterTagline"></p>
 
               <div class="power-card">
-                <span>SPECIAL · ONCE PER DUEL</span>
+                <span id="heroPowerRule">SPECIAL · ONCE PER DUEL</span>
                 <strong id="heroPowerName"></strong>
                 <p id="heroPowerDescription"></p>
               </div>
 
-              <p class="prototype-power-note">
+              <p class="prototype-power-note" id="heroPowerNote">
                 Every gunslinger’s special can be used once per duel.
               </p>
 
@@ -334,7 +334,7 @@
       <section class="screen result-screen" id="resultScreen" aria-labelledby="resultTitle">
         <div class="result-burst" id="resultBurst"></div>
         <div class="result-content">
-          <div class="eyebrow">LAST ONE STANDING</div>
+          <div class="eyebrow" id="resultEyebrow">LAST ONE STANDING</div>
           <div class="winner-medallion" id="winnerMedallion" aria-hidden="true">Y</div>
           <h2 id="resultTitle">You win!</h2>
           <p id="resultSubtitle">Won on one heart. Brutal.</p>
@@ -362,7 +362,7 @@
           <div><span class="mini-action">⬡</span><p><strong>BLOCK</strong> stops every incoming shot.</p></div>
           <div><span class="mini-action">∞</span><p><strong>RELOAD</strong> adds one shot, but leaves you open.</p></div>
           <div><span class="mini-action">✦</span><p><strong>FIRE</strong> costs one shot. Pick your target.</p></div>
-          <div><span class="mini-action">★</span><p><strong>POWER</strong> uses your fighter’s unique once-per-duel move.</p></div>
+          <div><span class="mini-action">★</span><p><strong>POWER</strong> uses your fighter’s unique move. Most are once per duel.</p></div>
         </div>
         <p class="rule-footnote">
           You get one second to choose, then one second to watch every move resolve.
@@ -399,7 +399,7 @@
       <span>This game is built for landscape play.</span>
     </div>
 
-    <script defer src="./src/engine.js?v=6"></script>
-    <script defer src="./src/game.js?v=16"></script>
+    <script defer src="./src/engine.js?v=8"></script>
+    <script defer src="./src/game.js?v=22"></script>
   </body>
 </html>

@@ -6,7 +6,8 @@ const CHARACTER_IDS = new Set([
   "sheriff",
   "mirror",
   "time-freeze",
-  "maniac"
+  "maniac",
+  "civilian"
 ]);
 
 export class GameRoom extends DurableObject {

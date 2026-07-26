@@ -51,9 +51,10 @@ results.
 - Six playable western gunslingers
 - Three-second ready countdown before every match and rematch
 - One-second decision and one-second reveal/outcome cadence
-- Block, reload, targeted fire, and six unique once-per-duel powers
+- Block, reload, targeted fire, and seven unique character powers
 - Visible hearts, private rival ammunition, eliminations, and victory/rematch
 - Landscape and safe-area-aware mobile layout
 
-Quickdraw, Harden, 6 in the Chamber, Mirror, Time Freeze, and Maniac are
-playable. Online accounts, matchmaking, and audio are not part of this slice.
+Quickdraw, Harden, 6 in the Chamber, Mirror, Time Freeze, Maniac, and the
+Civilian’s repeatable Survive objective are playable. Online accounts,
+matchmaking, and audio are not part of this slice.
