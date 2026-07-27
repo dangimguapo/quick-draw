@@ -58,6 +58,16 @@ const CHARACTERS = Object.freeze([
     powerName: "6 in the Chamber",
     powerDescription: "Load six bullets in a single beat instead of one.",
     color: "#3b5b86",
+    image: "./assets/characters/sheriff-icon-8bit.png",
+    fullBodyImage: "./assets/characters/sheriff-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/sheriff-fullbody-8bit.png",
+      block: "./assets/characters/sheriff-block-8bit.png",
+      reload: "./assets/characters/sheriff-reload-8bit.png",
+      fire: "./assets/characters/sheriff-fire-8bit.png",
+      power: "./assets/characters/sheriff-power-8bit.png",
+      hit: "./assets/characters/sheriff-hit-8bit.png",
+    }),
     available: true,
   },
   {
