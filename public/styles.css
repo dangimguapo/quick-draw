@@ -4780,6 +4780,7 @@ button:focus-visible,
 
 .outcome-action-card {
   --fighter-color: var(--western-gold);
+  --pose-art-scale: 1;
   position: relative;
   display: grid;
   width: clamp(82px, 14vw, 122px);
@@ -4809,6 +4810,8 @@ button:focus-visible,
   padding: 0;
   object-fit: contain;
   object-position: center bottom;
+  transform: scale(var(--pose-art-scale));
+  transform-origin: center bottom;
   image-rendering: pixelated;
   filter:
     drop-shadow(2px 2px 0 rgb(74 44 23 / 48%))
@@ -4816,7 +4819,7 @@ button:focus-visible,
 }
 
 .outcome-action-card[data-facing="left"] .outcome-action-visual img {
-  transform: scaleX(-1);
+  transform: scaleX(-1) scale(var(--pose-art-scale));
 }
 
 .outcome-action-card[data-pose="fire"] .outcome-action-visual img,
@@ -5047,4 +5050,52 @@ button:focus-visible,
   .combat-screen[data-layout="duel-thumb"] .action-fan[data-count="4"] {
     gap: clamp(8px, 1.35vw, 12px);
   }
+}
+
+/* Character art normalization
+   Measured bounds and rationale: docs/character-art-sizing.md */
+
+.character-card img {
+  transform: scale(var(--portrait-art-scale, 1));
+  transform-origin: center bottom;
+}
+
+#heroCharacterImage {
+  transform: scale(var(--fullbody-art-scale, 1));
+  transform-origin: center bottom;
+}
+
+.rival-avatar img,
+.you-avatar img,
+.winner-medallion img {
+  transform: scale(var(--portrait-art-scale, 1));
+  transform-origin: center;
+}
+
+.character-card[data-character-id="sheriff"],
+.rival-card[data-character-id="sheriff"] .rival-avatar,
+.combat-screen[data-player-character-id="sheriff"] .you-avatar,
+.winner-medallion[data-character-id="sheriff"] {
+  --portrait-art-scale: 1.04;
+}
+
+.character-feature[data-character-id="sheriff"] {
+  --fullbody-art-scale: 1.13;
+}
+
+.outcome-action-card[data-character-id="sheriff"][data-pose="idle"] {
+  --pose-art-scale: 1.03;
+}
+
+.outcome-action-card[data-character-id="sheriff"][data-pose="reload"],
+.outcome-action-card[data-character-id="sheriff"][data-pose="power"] {
+  --pose-art-scale: 0.99;
+}
+
+.outcome-action-card[data-character-id="sheriff"][data-pose="fire"] {
+  --pose-art-scale: 1.04;
+}
+
+.outcome-action-card[data-character-id="sheriff"][data-pose="hit"] {
+  --pose-art-scale: 0.95;
 }
