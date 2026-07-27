@@ -947,6 +947,7 @@ function renderCharacterSelect() {
       ]
         .filter(Boolean)
         .join(" ");
+      button.dataset.characterId = character.id;
       button.disabled = isTaken || !character.available;
       button.style.setProperty("--character-color", character.color);
       button.setAttribute("aria-pressed", String(character.id === selected.id));
@@ -1001,6 +1002,7 @@ function renderCharacterSelect() {
   );
 
   ui.characterFeature.style.setProperty("--character-color", selected.color);
+  ui.characterFeature.dataset.characterId = selected.id;
   ui.characterGlow.style.setProperty("--character-color", selected.color);
   ui.heroCharacterName.textContent = selected.name;
   ui.heroCharacterTagline.textContent = selected.tagline;
@@ -1374,6 +1376,7 @@ function renderRivals() {
         targetingPower && fighter.alive ? "is-power-target" : "",
       ].filter(Boolean).join(" ");
       card.dataset.fighterId = fighter.id;
+      card.dataset.characterId = fighter.characterId ?? "";
       card.style.setProperty("--fighter-color", fighter.color);
       card.innerHTML = `
         <div class="rival-avatar" aria-hidden="true">
@@ -1496,6 +1499,7 @@ function renderRivals() {
 function renderPlayerHud() {
   const player = getPlayer();
   const isCivilian = powerIdFor(player) === POWER_IDS.CIVILIAN;
+  ui.combat.dataset.playerCharacterId = player.characterId ?? "";
   ui.hearts.innerHTML = heartMarkup(player.hearts, heartSlotCount(player));
   ui.ammoPill.classList.toggle("is-civilian-goal", isCivilian);
   ui.ammoPill.setAttribute(
@@ -1666,6 +1670,7 @@ function renderOutcomeActions(result) {
         fighter.alive ? "" : "is-out",
       ].filter(Boolean).join(" ");
       card.dataset.fighterId = fighter.id;
+      card.dataset.characterId = fighter.characterId ?? "";
       card.dataset.pose = poseKey;
       card.dataset.facing = facesLeft ? "left" : "right";
       card.style.setProperty("--fighter-color", fighter.color);
@@ -1914,6 +1919,7 @@ function endMatch(winner, reason = "last-standing") {
   const civilianGoal = reason === "civilian-goal";
   ui.resultBurst.style.setProperty("--winner-color", winner.color);
   ui.winnerMedallion.style.setProperty("--winner-color", winner.color);
+  ui.winnerMedallion.dataset.characterId = winner.characterId ?? "";
   ui.winnerMedallion.innerHTML = winner.image
     ? `<img src="${winner.image}" alt="" />`
     : winner.avatar;
