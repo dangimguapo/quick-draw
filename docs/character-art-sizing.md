@@ -52,22 +52,34 @@ Coordinates use `(left, top)–(right, bottom)`.
 | Power | 512×768 | (98,90)–(412,685) | 314×595 | 61.3% × 77.5% |
 | Hit | 768×768 | (152,49)–(630,679) | 478×630 | 62.2% × 82.0% |
 
+### Mirror
+
+| Asset | Canvas | Visible bounds | Visible size | Canvas fill |
+| --- | ---: | ---: | ---: | ---: |
+| Icon | 1024×1024 | (0,83)–(971,1024) | 971×941 | 94.8% × 91.9% |
+| Full body / Idle | 1024×1536 | (234,100)–(776,1342) | 542×1242 | 52.9% × 80.9% |
+| Block | 512×768 | (95,73)–(417,686) | 322×613 | 62.9% × 79.8% |
+| Reload | 512×768 | (126,50)–(383,697) | 257×647 | 50.2% × 84.2% |
+| Fire | 768×768 | (159,81)–(703,640) | 544×559 | 70.8% × 72.8% |
+| Power | 511×768 | (79,54)–(414,688) | 335×634 | 65.6% × 82.6% |
+| Hit | 768×768 | (167,73)–(620,676) | 453×603 | 59.0% × 78.5% |
+
 ## CSS correction values
 
 Quickdraw is the `1.00` reference. Sheriff corrections are applied using
 `data-character-id` and `data-pose`, so adding another character does not require
 changing the shared component dimensions.
 
-| Location or pose | Quickdraw | Sheriff | Reason |
-| --- | ---: | ---: | --- |
-| Portraits | 1.00 | 1.04 | Compensates for the Sheriff icon’s smaller alpha bounds |
-| Selection full body | 1.00 | 1.13 | Compensates for the narrower full-body canvas and padding |
-| Outcome Idle | 1.00 | 1.03 | Matches visible full-body height |
-| Outcome Block | 1.00 | 1.00 | Heights already match |
-| Outcome Reload | 1.00 | 0.99 | Heights already match within 1% |
-| Outcome Fire | 1.00 | 1.04 | Sheriff Fire is about 4% shorter |
-| Outcome Power | 1.00 | 0.99 | Heights match; width remains intentionally pose-specific |
-| Outcome Hit | 1.00 | 0.95 | Sheriff Hit is about 5% taller |
+| Location or pose | Quickdraw | Sheriff | Mirror | Reason |
+| --- | ---: | ---: | ---: | --- |
+| Portraits | 1.00 | 1.04 | 1.05 | Compensates for smaller portrait alpha bounds |
+| Selection full body | 1.00 | 1.13 | 1.14 | Compensates for narrower full-body canvases and padding |
+| Outcome Idle | 1.00 | 1.03 | 1.03 | Matches visible full-body height |
+| Outcome Block | 1.00 | 1.00 | 0.94 | Mirror Block is about 6% taller |
+| Outcome Reload | 1.00 | 0.99 | 1.03 | Matches visible reload height |
+| Outcome Fire | 1.00 | 1.04 | 1.07 | Compensates for shorter firing silhouettes |
+| Outcome Power | 1.00 | 0.99 | 0.93 | Matches height; width remains intentionally pose-specific |
+| Outcome Hit | 1.00 | 0.95 | 0.99 | Matches visible recoil height |
 
 ## Adding future character art
 

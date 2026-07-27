@@ -5099,3 +5099,35 @@ button:focus-visible,
 .outcome-action-card[data-character-id="sheriff"][data-pose="hit"] {
   --pose-art-scale: 0.95;
 }
+
+.character-card[data-character-id="mirror"],
+.rival-card[data-character-id="mirror"] .rival-avatar,
+.combat-screen[data-player-character-id="mirror"] .you-avatar,
+.winner-medallion[data-character-id="mirror"] {
+  --portrait-art-scale: 1.05;
+}
+
+.character-feature[data-character-id="mirror"] {
+  --fullbody-art-scale: 1.14;
+}
+
+.outcome-action-card[data-character-id="mirror"][data-pose="idle"],
+.outcome-action-card[data-character-id="mirror"][data-pose="reload"] {
+  --pose-art-scale: 1.03;
+}
+
+.outcome-action-card[data-character-id="mirror"][data-pose="block"] {
+  --pose-art-scale: 0.94;
+}
+
+.outcome-action-card[data-character-id="mirror"][data-pose="fire"] {
+  --pose-art-scale: 1.07;
+}
+
+.outcome-action-card[data-character-id="mirror"][data-pose="power"] {
+  --pose-art-scale: 0.93;
+}
+
+.outcome-action-card[data-character-id="mirror"][data-pose="hit"] {
+  --pose-art-scale: 0.99;
+}
