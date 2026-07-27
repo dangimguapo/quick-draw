@@ -14,7 +14,7 @@ const {
 
 const DECIDE_MS = 1000;
 const REVEAL_MS = 0;
-const OUTCOME_MS = 1000;
+const OUTCOME_MS = 3000;
 
 const CHARACTERS = Object.freeze([
   {
