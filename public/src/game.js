@@ -75,10 +75,20 @@ const CHARACTERS = Object.freeze([
     name: "Mirror",
     shortName: "Mirror",
     initial: "M",
-    tagline: "Whatever you try, she sends it right back.",
+    tagline: "Whatever you try, Mirror sends it right back.",
     powerName: "Mirror",
     powerDescription: "Copy one rival’s block or reload, or reflect their shot back.",
     color: "#9aa2ab",
+    image: "./assets/characters/mirror-icon-8bit.png",
+    fullBodyImage: "./assets/characters/mirror-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/mirror-fullbody-8bit.png",
+      block: "./assets/characters/mirror-block-8bit.png",
+      reload: "./assets/characters/mirror-reload-8bit.png",
+      fire: "./assets/characters/mirror-fire-8bit.png",
+      power: "./assets/characters/mirror-power-8bit.png",
+      hit: "./assets/characters/mirror-hit-8bit.png",
+    }),
     available: true,
   },
   {
@@ -90,6 +100,16 @@ const CHARACTERS = Object.freeze([
     powerName: "Time Freeze",
     powerDescription: "Reveal every rival’s move, then take four extra seconds to answer.",
     color: "#cfc7ae",
+    image: "./assets/characters/time-freeze-icon-8bit.png",
+    fullBodyImage: "./assets/characters/time-freeze-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/time-freeze-fullbody-8bit.png",
+      block: "./assets/characters/time-freeze-block-8bit.png",
+      reload: "./assets/characters/time-freeze-reload-8bit.png",
+      fire: "./assets/characters/time-freeze-fire-8bit.png",
+      power: "./assets/characters/time-freeze-power-8bit.png",
+      hit: "./assets/characters/time-freeze-hit-8bit.png",
+    }),
     available: true,
   },
   {
@@ -244,6 +264,7 @@ const ui = {
   ammoLabel: document.querySelector("#ammoLabel"),
   playerAvatarImage: document.querySelector("#playerAvatarImage"),
   playerAvatarInitial: document.querySelector("#playerAvatarInitial"),
+  playerName: document.querySelector("#playerName"),
   phase: document.querySelector("#phaseLabel"),
   beatNumber: document.querySelector("#beatNumber"),
   beatProgress: document.querySelector("#beatProgress"),
@@ -1135,6 +1156,7 @@ function startCountdown(token) {
   ui.combat.classList.remove("phase-decide", "phase-resolve", "impact");
   ui.combat.classList.add("phase-countdown");
   ui.countdownOverlay.hidden = false;
+  ui.eventBanner.hidden = false;
   renderActionFan();
 
   let count = 3;
@@ -1192,6 +1214,7 @@ function startBeat(token) {
   ui.eventBanner.textContent = !player.alive
     ? "You’re out — last robot standing wins"
     : "Choose your move";
+  ui.eventBanner.hidden = false;
   ui.reveals.replaceChildren();
   ui.reveals.classList.remove("is-outcome");
   ui.combat.classList.remove("phase-countdown", "phase-resolve", "impact");
@@ -1225,6 +1248,7 @@ function beginReveal(token) {
   phase = "reveal";
   ui.rules.disabled = true;
   ui.phase.textContent = "REVEAL";
+  ui.eventBanner.hidden = false;
   ui.beatProgress.style.transform = "scaleX(0)";
   ui.combat.classList.remove("phase-decide");
   ui.combat.classList.add("phase-resolve");
@@ -1253,6 +1277,7 @@ function beginTimeFreeze(token) {
   selectedAction = null;
   targetingPower = false;
   ui.phase.textContent = "TIME FROZEN";
+  ui.eventBanner.hidden = false;
   ui.eventBanner.textContent =
     livingFighters.length > 2
       ? incomingShots.length > 0
@@ -1281,6 +1306,7 @@ function finishBeat(token, selections) {
 
   ui.phase.textContent = "OUTCOME";
   ui.eventBanner.textContent = describeOutcome(result.events);
+  ui.eventBanner.hidden = true;
   ui.combat.classList.add("impact");
   renderAll();
   renderOutcomeActions(result);
@@ -1516,6 +1542,10 @@ function renderPlayerHud() {
     : player.ammo === 1
       ? "shot"
       : "shots";
+  ui.playerName.textContent =
+    player.name === "You"
+      ? player.characterName ?? "YOU"
+      : player.name;
   if (player.image) {
     ui.playerAvatarImage.src = player.image;
     ui.playerAvatarImage.hidden = false;
@@ -1549,9 +1579,9 @@ function renderActionFan() {
         ]
       : rivals.length === 1
       ? [
-          { type: ACTIONS.BLOCK },
           { type: ACTIONS.RELOAD },
           { type: ACTIONS.FIRE, targetId: rivals[0].id },
+          { type: ACTIONS.BLOCK },
           powerAction,
         ]
       : [

@@ -13,15 +13,17 @@ narrow; they should not be stretched to equal widths.
 
 | Location | CSS selector | Display box | Normalization target |
 | --- | --- | --- | --- |
-| Roster portrait | `.character-card img` | 96% card width × 64% card height | Face and hat fill the portrait area without clipping |
+| Roster portrait | `.character-card img` | 84% card width × 56% card height | Face and hat remain comfortably inside the wanted poster |
 | Character feature | `#heroCharacterImage` | 96% stage width × 100% stage height | Full body matches the Quickdraw reference silhouette and baseline |
 | Rival HUD portrait | `.rival-avatar img` | 46–68 px square | Same apparent head-and-shoulders size as the roster portrait |
 | Player HUD portrait | `.you-avatar img` | 22 px square | Same portrait crop at compact scale |
 | Winner portrait | `.winner-medallion img` | 58–86 px square | Same portrait crop as HUD avatars |
 | Outcome pose | `.outcome-action-visual img` | 82–122 px card width; 58–94 px visual height | Match the Quickdraw reference height for the same pose |
 
-All full-body and action images use a bottom-center transform origin so boots
-stay on the same baseline when a scale correction is applied.
+The feature image uses a center transform origin so scaling does not pull a
+fighter toward the top of the panel. Outcome images use a fixed-height visual
+stage and a bottom-center transform origin so different source aspect ratios
+cannot change their rendered size.
 
 ## Measured alpha bounds
 
@@ -52,22 +54,51 @@ Coordinates use `(left, top)–(right, bottom)`.
 | Power | 512×768 | (98,90)–(412,685) | 314×595 | 61.3% × 77.5% |
 | Hit | 768×768 | (152,49)–(630,679) | 478×630 | 62.2% × 82.0% |
 
+### Mirror
+
+| Asset | Canvas | Visible bounds | Visible size | Canvas fill |
+| --- | ---: | ---: | ---: | ---: |
+| Icon | 1024×1024 | (0,83)–(971,1024) | 971×941 | 94.8% × 91.9% |
+| Full body / Idle | 1024×1536 | (234,100)–(776,1342) | 542×1242 | 52.9% × 80.9% |
+| Block | 512×768 | (95,73)–(417,686) | 322×613 | 62.9% × 79.8% |
+| Reload | 512×768 | (126,50)–(383,697) | 257×647 | 50.2% × 84.2% |
+| Fire | 768×768 | (159,81)–(703,640) | 544×559 | 70.8% × 72.8% |
+| Power | 511×768 | (79,54)–(414,688) | 335×634 | 65.6% × 82.6% |
+| Hit | 768×768 | (167,73)–(620,676) | 453×603 | 59.0% × 78.5% |
+
+### Time Freeze
+
+| Asset | Canvas | Visible bounds | Visible size | Canvas fill |
+| --- | ---: | ---: | ---: | ---: |
+| Icon | 1024×1024 | (0,80)–(949,1024) | 949×944 | 92.7% × 92.2% |
+| Full body / Idle | 1024×1536 | (278,147)–(740,1229) | 462×1082 | 45.1% × 70.4% |
+| Block | 512×768 | (106,100)–(404,659) | 298×559 | 58.2% × 72.8% |
+| Reload | 511×768 | (127,54)–(375,655) | 248×601 | 48.5% × 78.3% |
+| Fire | 768×768 | (120,80)–(694,642) | 574×562 | 74.7% × 73.2% |
+| Power | 512×768 | (120,58)–(417,689) | 297×631 | 58.0% × 82.2% |
+| Hit | 768×768 | (207,89)–(588,642) | 381×553 | 49.6% × 72.0% |
+
 ## CSS correction values
 
-Quickdraw is the `1.00` reference. Sheriff corrections are applied using
-`data-character-id` and `data-pose`, so adding another character does not require
-changing the shared component dimensions.
+Quickdraw is the `1.00` reference. Corrections are applied using
+`data-character-id` and `data-pose`, so adding another character does not
+require changing the shared component dimensions.
 
-| Location or pose | Quickdraw | Sheriff | Reason |
-| --- | ---: | ---: | --- |
-| Portraits | 1.00 | 1.04 | Compensates for the Sheriff icon’s smaller alpha bounds |
-| Selection full body | 1.00 | 1.13 | Compensates for the narrower full-body canvas and padding |
-| Outcome Idle | 1.00 | 1.03 | Matches visible full-body height |
-| Outcome Block | 1.00 | 1.00 | Heights already match |
-| Outcome Reload | 1.00 | 0.99 | Heights already match within 1% |
-| Outcome Fire | 1.00 | 1.04 | Sheriff Fire is about 4% shorter |
-| Outcome Power | 1.00 | 0.99 | Heights match; width remains intentionally pose-specific |
-| Outcome Hit | 1.00 | 0.95 | Sheriff Hit is about 5% taller |
+| Location or pose | Quickdraw | Sheriff | Mirror | Time Freeze |
+| --- | ---: | ---: | ---: | ---: |
+| Portraits | 1.000 | 1.028 | 1.065 | 1.061 |
+| Selection full body | 1.000 | 1.140 | 1.136 | 1.304 |
+| Outcome Idle | 1.000 | 1.033 | 1.029 | 1.181 |
+| Outcome Block | 1.000 | 0.995 | 0.943 | 1.034 |
+| Outcome Reload | 1.000 | 0.993 | 1.032 | 1.111 |
+| Outcome Fire | 1.000 | 1.044 | 1.068 | 1.062 |
+| Outcome Power | 1.000 | 0.992 | 0.931 | 0.935 |
+| Outcome Hit | 1.000 | 0.951 | 0.993 | 1.083 |
+
+Position corrections center the visible pixels rather than the transparent PNG
+canvas. They also compensate for different transparent margins below boots.
+Run `scripts/audit_character_art.py` after adding or replacing art to calculate
+the scale and position values used by CSS.
 
 ## Adding future character art
 
@@ -78,5 +109,7 @@ changing the shared component dimensions.
    renderer; do not target filenames in CSS.
 5. Add portrait, full-body, and per-pose scale variables relative to the
    Quickdraw reference.
-6. Verify at least roster, duel outcome, trio outcome, player HUD, rival HUD,
+6. Run `scripts/audit_character_art.py` and copy the measured scale and shift
+   values into the character-specific CSS variables.
+7. Verify at least roster, duel outcome, trio outcome, player HUD, rival HUD,
    and winner-medallion placements.
