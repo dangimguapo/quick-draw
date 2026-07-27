@@ -12,9 +12,9 @@ const {
   resolveTurn,
 } = window.QuickDrawEngine;
 
-const DECIDE_MS = 1000;
+const DECIDE_MS = 2000;
 const REVEAL_MS = 0;
-const OUTCOME_MS = 3000;
+const OUTCOME_MS = 2000;
 
 const CHARACTERS = Object.freeze([
   {
@@ -142,7 +142,7 @@ const TUTORIAL_STEPS = Object.freeze([
   {
     eyebrow: "STEP 1 · THE CLOCK",
     title: "LEARN AT YOUR OWN PACE",
-    body: "This trainer pauses before every move. In a real duel, you get one second to choose and one second to watch every move resolve.",
+    body: "This trainer pauses before every move. In a real duel, you get two seconds to choose and two seconds to watch every move resolve.",
     expected: "intro",
     button: "BEGIN TRAINING",
     event: "Training paused",
@@ -178,9 +178,9 @@ const TUTORIAL_STEPS = Object.freeze([
   {
     eyebrow: "STEP 6 · REAL SPEED",
     title: "TRY A LIVE BEAT",
-    body: "Your POWER is now used and stays grey. In Trio matches, targeted FIRE and POWER buttons map to specific rivals. Next, choose any available move in one second.",
+    body: "Your POWER is now used and stays grey. In Trio matches, targeted FIRE and POWER buttons map to specific rivals. Next, choose any available move in two seconds.",
     expected: "speed",
-    button: "START 1-SECOND BEAT",
+    button: "START 2-SECOND PICK",
     event: "Power used · One use per duel",
   },
   {
@@ -749,10 +749,10 @@ function startTutorialSpeedRound() {
   tutorialSpeedRunning = true;
   tutorialSpeedSelection = null;
   ui.tutorialPhaseLabel.textContent = "PICK!";
-  ui.tutorialCoachEyebrow.textContent = "LIVE BEAT · 1 SECOND";
+  ui.tutorialCoachEyebrow.textContent = "LIVE PICK · 2 SECONDS";
   ui.tutorialCoachTitle.textContent = "DRAW!";
   ui.tutorialCoachBody.textContent =
-    "Choose BLOCK, RELOAD, or FIRE before the one-second gold bar empties.";
+    "Choose BLOCK, RELOAD, or FIRE before the two-second gold bar empties.";
   ui.tutorialCoachButton.hidden = true;
   ui.tutorialCoach.classList.add("is-speed-round");
   ui.tutorialEventBanner.textContent = "Choose a move now";
@@ -770,11 +770,11 @@ function startTutorialSpeedRound() {
     if (!tutorialSpeedRunning) return;
     requestAnimationFrame(() => {
       if (!tutorialSpeedRunning) return;
-      ui.tutorialBeatProgress.style.transition = "transform 1000ms linear";
+      ui.tutorialBeatProgress.style.transition = `transform ${DECIDE_MS}ms linear`;
       ui.tutorialBeatProgress.style.transform = "scaleX(0)";
     });
   });
-  tutorialSpeedTimer = window.setTimeout(finishTutorialSpeedRound, 1000);
+  tutorialSpeedTimer = window.setTimeout(finishTutorialSpeedRound, DECIDE_MS);
 }
 
 function finishTutorialSpeedRound() {
@@ -789,7 +789,7 @@ function finishTutorialSpeedRound() {
     ui.tutorialCoachBody.textContent =
       "That is the real pace. The tutorial stays paused here, so start the beat again when you are ready.";
     ui.tutorialCoachButton.hidden = false;
-    ui.tutorialCoachButton.textContent = "TRY 1-SECOND BEAT AGAIN";
+    ui.tutorialCoachButton.textContent = "TRY 2-SECOND PICK AGAIN";
     ui.tutorialCoach.classList.remove("is-speed-round");
     ui.tutorialEventBanner.textContent = "No move selected";
     ui.tutorialActions.forEach((button) => {
@@ -1580,8 +1580,8 @@ function renderActionFan() {
       : rivals.length === 1
       ? [
           { type: ACTIONS.RELOAD },
-          { type: ACTIONS.FIRE, targetId: rivals[0].id },
           { type: ACTIONS.BLOCK },
+          { type: ACTIONS.FIRE, targetId: rivals[0].id },
           powerAction,
         ]
       : [

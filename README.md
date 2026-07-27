@@ -50,7 +50,7 @@ results.
 - Easy, medium, and hard robot behavior
 - Six playable western gunslingers
 - Three-second ready countdown before every match and rematch
-- One-second decision and one-second reveal/outcome cadence
+- Two-second decision and two-second outcome cadence
 - Block, reload, targeted fire, and seven unique character powers
 - Visible hearts, private rival ammunition, eliminations, and victory/rematch
 - Landscape and safe-area-aware mobile layout
