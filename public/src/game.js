@@ -254,6 +254,7 @@ const ui = {
   ammoLabel: document.querySelector("#ammoLabel"),
   playerAvatarImage: document.querySelector("#playerAvatarImage"),
   playerAvatarInitial: document.querySelector("#playerAvatarInitial"),
+  playerName: document.querySelector("#playerName"),
   phase: document.querySelector("#phaseLabel"),
   beatNumber: document.querySelector("#beatNumber"),
   beatProgress: document.querySelector("#beatProgress"),
@@ -1145,6 +1146,7 @@ function startCountdown(token) {
   ui.combat.classList.remove("phase-decide", "phase-resolve", "impact");
   ui.combat.classList.add("phase-countdown");
   ui.countdownOverlay.hidden = false;
+  ui.eventBanner.hidden = false;
   renderActionFan();
 
   let count = 3;
@@ -1202,6 +1204,7 @@ function startBeat(token) {
   ui.eventBanner.textContent = !player.alive
     ? "You’re out — last robot standing wins"
     : "Choose your move";
+  ui.eventBanner.hidden = false;
   ui.reveals.replaceChildren();
   ui.reveals.classList.remove("is-outcome");
   ui.combat.classList.remove("phase-countdown", "phase-resolve", "impact");
@@ -1235,6 +1238,7 @@ function beginReveal(token) {
   phase = "reveal";
   ui.rules.disabled = true;
   ui.phase.textContent = "REVEAL";
+  ui.eventBanner.hidden = false;
   ui.beatProgress.style.transform = "scaleX(0)";
   ui.combat.classList.remove("phase-decide");
   ui.combat.classList.add("phase-resolve");
@@ -1263,6 +1267,7 @@ function beginTimeFreeze(token) {
   selectedAction = null;
   targetingPower = false;
   ui.phase.textContent = "TIME FROZEN";
+  ui.eventBanner.hidden = false;
   ui.eventBanner.textContent =
     livingFighters.length > 2
       ? incomingShots.length > 0
@@ -1291,6 +1296,7 @@ function finishBeat(token, selections) {
 
   ui.phase.textContent = "OUTCOME";
   ui.eventBanner.textContent = describeOutcome(result.events);
+  ui.eventBanner.hidden = true;
   ui.combat.classList.add("impact");
   renderAll();
   renderOutcomeActions(result);
@@ -1526,6 +1532,10 @@ function renderPlayerHud() {
     : player.ammo === 1
       ? "shot"
       : "shots";
+  ui.playerName.textContent =
+    player.name === "You"
+      ? player.characterName ?? "YOU"
+      : player.name;
   if (player.image) {
     ui.playerAvatarImage.src = player.image;
     ui.playerAvatarImage.hidden = false;
@@ -1559,9 +1569,9 @@ function renderActionFan() {
         ]
       : rivals.length === 1
       ? [
-          { type: ACTIONS.BLOCK },
           { type: ACTIONS.RELOAD },
           { type: ACTIONS.FIRE, targetId: rivals[0].id },
+          { type: ACTIONS.BLOCK },
           powerAction,
         ]
       : [

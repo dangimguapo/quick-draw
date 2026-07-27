@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=26" />
+    <link rel="stylesheet" href="./styles.css?v=27" />
   </head>
   <body>
     <main id="app">
@@ -184,11 +184,6 @@
           </div>
 
           <div class="action-fan" data-count="4" aria-label="Tutorial actions">
-            <button class="action-button action-block" type="button" data-tutorial-action="block">
-              <span class="action-icon" aria-hidden="true">⬡</span>
-              <strong>BLOCK</strong>
-              <small>stop shots</small>
-            </button>
             <button class="action-button action-reload" type="button" data-tutorial-action="reload">
               <span class="action-icon" aria-hidden="true">∞</span>
               <strong>RELOAD</strong>
@@ -198,6 +193,11 @@
               <span class="action-icon" aria-hidden="true">✦</span>
               <strong>FIRE</strong>
               <small>hit Riley</small>
+            </button>
+            <button class="action-button action-block" type="button" data-tutorial-action="block">
+              <span class="action-icon" aria-hidden="true">⬡</span>
+              <strong>BLOCK</strong>
+              <small>stop shots</small>
             </button>
             <button class="action-button action-power" type="button" data-tutorial-action="power">
               <span class="action-icon" aria-hidden="true">★</span>
@@ -306,7 +306,7 @@
                 <img id="playerAvatarImage" alt="" />
                 <strong id="playerAvatarInitial">Q</strong>
               </span>
-              <span>YOU</span>
+              <span id="playerName">Quickdraw</span>
             </div>
             <div class="my-hearts" id="playerHearts" aria-label="Your hearts"></div>
             <div class="ammo-pill" id="ammoPill">
@@ -400,6 +400,6 @@
     </div>
 
     <script defer src="./src/engine.js?v=8"></script>
-    <script defer src="./src/game.js?v=25"></script>
+    <script defer src="./src/game.js?v=26"></script>
   </body>
 </html>

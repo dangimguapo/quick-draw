@@ -13,7 +13,7 @@ narrow; they should not be stretched to equal widths.
 
 | Location | CSS selector | Display box | Normalization target |
 | --- | --- | --- | --- |
-| Roster portrait | `.character-card img` | 96% card width × 64% card height | Face and hat fill the portrait area without clipping |
+| Roster portrait | `.character-card img` | 84% card width × 56% card height | Face and hat remain comfortably inside the wanted poster |
 | Character feature | `#heroCharacterImage` | 96% stage width × 100% stage height | Full body matches the Quickdraw reference silhouette and baseline |
 | Rival HUD portrait | `.rival-avatar img` | 46–68 px square | Same apparent head-and-shoulders size as the roster portrait |
 | Player HUD portrait | `.you-avatar img` | 22 px square | Same portrait crop at compact scale |
@@ -80,6 +80,11 @@ changing the shared component dimensions.
 | Outcome Fire | 1.00 | 1.04 | 1.07 | Compensates for shorter firing silhouettes |
 | Outcome Power | 1.00 | 0.99 | 0.93 | Matches height; width remains intentionally pose-specific |
 | Outcome Hit | 1.00 | 0.95 | 0.99 | Matches visible recoil height |
+
+The selection feature also applies a horizontal correction derived from each
+full-body asset’s visible alpha center: Sheriff shifts right `2.5%` and Mirror
+shifts right `0.7%`. This centers the visible character rather than the
+transparent PNG canvas.
 
 ## Adding future character art
 
