@@ -4610,7 +4610,7 @@ button:focus-visible,
   }
 }
 
-/* Three-player controls: stationary selection and lower target buttons */
+/* Three-player controls: stationary selection and paired target buttons */
 
 .combat-screen[data-layout="three-target"] .action-button,
 .combat-screen[data-layout="three-target"] .action-button:not(:disabled):active,
@@ -4619,21 +4619,43 @@ button:focus-visible,
   transform: none;
 }
 
-.combat-screen[data-layout="three-target"] .rival-shoot-button {
+.combat-screen[data-layout="three-target"] .rival-target-actions {
+  position: absolute;
   top: calc(100% + clamp(22px, 8vh, 34px));
-  width: clamp(58px, 9vw, 64px);
-  height: clamp(58px, 9vw, 64px);
+  left: 50%;
+  display: flex;
+  gap: clamp(8px, 1.4vw, 12px);
+  transform: translateX(-50%);
 }
 
-.combat-screen[data-layout="three-target"] .rival-shoot-button span {
+.combat-screen[data-layout="three-target"] .rival-target-button {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: flex;
+  width: clamp(58px, 9vw, 64px);
+  height: clamp(58px, 9vw, 64px);
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--western-gold);
+  border-radius: 50% !important;
+  background: var(--western-wood);
+  color: var(--western-cream);
+  box-shadow: 0 3px 0 var(--western-ink);
+  transform: none;
+}
+
+.combat-screen[data-layout="three-target"] .rival-target-button span {
   font-size: 1.45rem;
 }
 
-.combat-screen[data-layout="three-target"] .rival-shoot-button strong {
+.combat-screen[data-layout="three-target"] .rival-target-button strong {
   font-size: 0.82rem;
 }
 
-.combat-screen[data-layout="three-target"] .rival-shoot-button.is-selected {
+.combat-screen[data-layout="three-target"] .rival-target-button.is-selected {
   border-color: var(--western-cream);
   outline: 4px solid rgb(244 201 93 / 52%);
   outline-offset: 3px;
@@ -4644,11 +4666,29 @@ button:focus-visible,
     0 0 20px rgb(244 201 93 / 72%);
   filter: none;
   opacity: 1;
-  transform: translateX(-50%);
+  transform: none;
 }
 
-.combat-screen[data-layout="three-target"] .rival-shoot-button:not(:disabled):active {
-  transform: translateX(-50%);
+.combat-screen[data-layout="three-target"] .rival-target-button:not(:disabled):active {
+  transform: none;
+}
+
+.combat-screen[data-layout="three-target"] .rival-target-button:disabled {
+  border-color: var(--western-ink);
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+
+.combat-screen[data-layout="three-target"] .rival-power-button {
+  border-color: #492866;
+  background: #7d4fa5;
+  color: #fff8df;
+}
+
+.combat-screen[data-layout="three-target"] .rival-power-button:disabled {
+  border-color: var(--western-ink);
+  background: #4a2c17;
+  color: #8a6a52;
 }
 
 /* Civilian: one-heart survival objective and two-action duel controls. */
