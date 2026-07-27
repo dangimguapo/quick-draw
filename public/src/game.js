@@ -14,7 +14,7 @@ const {
 
 const DECIDE_MS = 1000;
 const REVEAL_MS = 0;
-const OUTCOME_MS = 1000;
+const OUTCOME_MS = 3000;
 
 const CHARACTERS = Object.freeze([
   {
@@ -1352,6 +1352,9 @@ function renderAll() {
 function renderRivals() {
   const rivals = fighters.filter((fighter) => !fighter.isHuman);
   const player = getPlayer();
+  const playerPowerId = powerIdFor(player);
+  const showTargetedPowerButtons =
+    rivals.length > 1 && powerNeedsTarget(playerPowerId);
   ui.rivals.replaceChildren(
     ...rivals.map((fighter) => {
       const card = document.createElement("article");
@@ -1379,13 +1382,17 @@ function renderRivals() {
         </div>
       `;
 
-      if (rivals.length > 1 && powerIdFor(player) !== POWER_IDS.CIVILIAN) {
+      if (rivals.length > 1 && playerPowerId !== POWER_IDS.CIVILIAN) {
+        const targetActions = document.createElement("div");
+        targetActions.className = "rival-target-actions";
+
         const shoot = document.createElement("button");
         const isSelected =
           selectedAction?.type === ACTIONS.FIRE &&
           selectedAction.targetId === fighter.id;
         shoot.type = "button";
         shoot.className = [
+          "rival-target-button",
           "rival-shoot-button",
           isSelected ? "is-selected" : "",
         ]
@@ -1407,7 +1414,48 @@ function renderRivals() {
             disabled: shoot.disabled,
           });
         });
-        card.append(shoot);
+        targetActions.append(shoot);
+
+        if (showTargetedPowerButtons) {
+          const powerAction = {
+            type: ACTIONS.POWER,
+            targetId: fighter.id,
+          };
+          const power = document.createElement("button");
+          const isPowerSelected =
+            selectedAction?.type === ACTIONS.POWER &&
+            selectedAction.targetId === fighter.id;
+          power.type = "button";
+          power.className = [
+            "rival-target-button",
+            "rival-power-button",
+            isPowerSelected ? "is-selected" : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
+          power.disabled =
+            (phase !== "decide" && phase !== "freeze") ||
+            !player?.alive ||
+            !fighter.alive ||
+            phase === "freeze" ||
+            !canUsePower(player, fighters, powerAction);
+          power.setAttribute(
+            "aria-label",
+            `Use ${powerNameFor(player)} on ${fighter.name}`,
+          );
+          power.setAttribute("aria-pressed", String(isPowerSelected));
+          power.innerHTML = `<span>★</span><strong>POWER</strong>`;
+          power.addEventListener("click", (event) => {
+            event.stopPropagation();
+            chooseAction({
+              ...powerAction,
+              disabled: power.disabled,
+            });
+          });
+          targetActions.append(power);
+        }
+
+        card.append(targetActions);
       }
 
       if (targetingPower && fighter.alive) {
@@ -1477,6 +1525,8 @@ function renderActionFan() {
     type: ACTIONS.POWER,
     targetId: powerTarget?.id ?? null,
   };
+  const hasOpponentTargetedPower =
+    rivals.length > 1 && powerNeedsTarget(playerPowerId);
   const actions =
     playerPowerId === POWER_IDS.CIVILIAN
       ? [
@@ -1493,7 +1543,7 @@ function renderActionFan() {
       : [
           { type: ACTIONS.BLOCK },
           { type: ACTIONS.RELOAD },
-          powerAction,
+          ...(hasOpponentTargetedPower ? [] : [powerAction]),
         ];
 
   ui.actionFan.dataset.count = String(actions.length);
