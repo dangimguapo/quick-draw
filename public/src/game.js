@@ -1580,8 +1580,8 @@ function renderActionFan() {
       : rivals.length === 1
       ? [
           { type: ACTIONS.RELOAD },
-          { type: ACTIONS.FIRE, targetId: rivals[0].id },
           { type: ACTIONS.BLOCK },
+          { type: ACTIONS.FIRE, targetId: rivals[0].id },
           powerAction,
         ]
       : [
