@@ -20,8 +20,10 @@ narrow; they should not be stretched to equal widths.
 | Winner portrait | `.winner-medallion img` | 58–86 px square | Same portrait crop as HUD avatars |
 | Outcome pose | `.outcome-action-visual img` | 82–122 px card width; 58–94 px visual height | Match the Quickdraw reference height for the same pose |
 
-All full-body and action images use a bottom-center transform origin so boots
-stay on the same baseline when a scale correction is applied.
+The feature image uses a center transform origin so scaling does not pull a
+fighter toward the top of the panel. Outcome images use a fixed-height visual
+stage and a bottom-center transform origin so different source aspect ratios
+cannot change their rendered size.
 
 ## Measured alpha bounds
 
@@ -64,27 +66,39 @@ Coordinates use `(left, top)–(right, bottom)`.
 | Power | 511×768 | (79,54)–(414,688) | 335×634 | 65.6% × 82.6% |
 | Hit | 768×768 | (167,73)–(620,676) | 453×603 | 59.0% × 78.5% |
 
+### Time Freeze
+
+| Asset | Canvas | Visible bounds | Visible size | Canvas fill |
+| --- | ---: | ---: | ---: | ---: |
+| Icon | 1024×1024 | (0,80)–(949,1024) | 949×944 | 92.7% × 92.2% |
+| Full body / Idle | 1024×1536 | (278,147)–(740,1229) | 462×1082 | 45.1% × 70.4% |
+| Block | 512×768 | (106,100)–(404,659) | 298×559 | 58.2% × 72.8% |
+| Reload | 511×768 | (127,54)–(375,655) | 248×601 | 48.5% × 78.3% |
+| Fire | 768×768 | (120,80)–(694,642) | 574×562 | 74.7% × 73.2% |
+| Power | 512×768 | (120,58)–(417,689) | 297×631 | 58.0% × 82.2% |
+| Hit | 768×768 | (207,89)–(588,642) | 381×553 | 49.6% × 72.0% |
+
 ## CSS correction values
 
-Quickdraw is the `1.00` reference. Sheriff corrections are applied using
-`data-character-id` and `data-pose`, so adding another character does not require
-changing the shared component dimensions.
+Quickdraw is the `1.00` reference. Corrections are applied using
+`data-character-id` and `data-pose`, so adding another character does not
+require changing the shared component dimensions.
 
-| Location or pose | Quickdraw | Sheriff | Mirror | Reason |
-| --- | ---: | ---: | ---: | --- |
-| Portraits | 1.00 | 1.04 | 1.05 | Compensates for smaller portrait alpha bounds |
-| Selection full body | 1.00 | 1.13 | 1.14 | Compensates for narrower full-body canvases and padding |
-| Outcome Idle | 1.00 | 1.03 | 1.03 | Matches visible full-body height |
-| Outcome Block | 1.00 | 1.00 | 0.94 | Mirror Block is about 6% taller |
-| Outcome Reload | 1.00 | 0.99 | 1.03 | Matches visible reload height |
-| Outcome Fire | 1.00 | 1.04 | 1.07 | Compensates for shorter firing silhouettes |
-| Outcome Power | 1.00 | 0.99 | 0.93 | Matches height; width remains intentionally pose-specific |
-| Outcome Hit | 1.00 | 0.95 | 0.99 | Matches visible recoil height |
+| Location or pose | Quickdraw | Sheriff | Mirror | Time Freeze |
+| --- | ---: | ---: | ---: | ---: |
+| Portraits | 1.000 | 1.028 | 1.065 | 1.061 |
+| Selection full body | 1.000 | 1.140 | 1.136 | 1.304 |
+| Outcome Idle | 1.000 | 1.033 | 1.029 | 1.181 |
+| Outcome Block | 1.000 | 0.995 | 0.943 | 1.034 |
+| Outcome Reload | 1.000 | 0.993 | 1.032 | 1.111 |
+| Outcome Fire | 1.000 | 1.044 | 1.068 | 1.062 |
+| Outcome Power | 1.000 | 0.992 | 0.931 | 0.935 |
+| Outcome Hit | 1.000 | 0.951 | 0.993 | 1.083 |
 
-The selection feature also applies a horizontal correction derived from each
-full-body asset’s visible alpha center: Sheriff shifts right `2.5%` and Mirror
-shifts right `0.7%`. This centers the visible character rather than the
-transparent PNG canvas.
+Position corrections center the visible pixels rather than the transparent PNG
+canvas. They also compensate for different transparent margins below boots.
+Run `scripts/audit_character_art.py` after adding or replacing art to calculate
+the scale and position values used by CSS.
 
 ## Adding future character art
 
@@ -95,5 +109,7 @@ transparent PNG canvas.
    renderer; do not target filenames in CSS.
 5. Add portrait, full-body, and per-pose scale variables relative to the
    Quickdraw reference.
-6. Verify at least roster, duel outcome, trio outcome, player HUD, rival HUD,
+6. Run `scripts/audit_character_art.py` and copy the measured scale and shift
+   values into the character-specific CSS variables.
+7. Verify at least roster, duel outcome, trio outcome, player HUD, rival HUD,
    and winner-medallion placements.

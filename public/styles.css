@@ -4799,18 +4799,23 @@ button:focus-visible,
 .outcome-action-visual {
   position: relative;
   display: grid;
-  min-height: clamp(58px, 18vh, 94px);
+  height: clamp(58px, 18vh, 94px);
+  min-height: 0;
   place-items: center;
   background: transparent;
 }
 
 .outcome-action-visual img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   padding: 0;
   object-fit: contain;
   object-position: center bottom;
-  transform: scale(var(--pose-art-scale));
+  transform:
+    translateY(var(--pose-art-shift-y, 0%))
+    scale(var(--pose-art-scale));
   transform-origin: center bottom;
   image-rendering: pixelated;
   filter:
@@ -4819,7 +4824,10 @@ button:focus-visible,
 }
 
 .outcome-action-card[data-facing="left"] .outcome-action-visual img {
-  transform: scaleX(-1) scale(var(--pose-art-scale));
+  transform:
+    translateY(var(--pose-art-shift-y, 0%))
+    scaleX(-1)
+    scale(var(--pose-art-scale));
 }
 
 .outcome-action-card[data-pose="fire"] .outcome-action-visual img,
@@ -5056,84 +5064,175 @@ button:focus-visible,
    Measured bounds and rationale: docs/character-art-sizing.md */
 
 .character-card img {
-  transform: scale(var(--portrait-art-scale, 1));
-  transform-origin: center bottom;
+  object-position: center;
+  transform:
+    translateX(var(--portrait-art-shift-x, 0%))
+    scale(var(--portrait-art-scale, 1));
+  transform-origin: center;
 }
 
 #heroCharacterImage {
+  object-position: center;
   transform:
-    translateX(var(--fullbody-art-shift, 0))
+    translate(
+      var(--fullbody-art-shift-x, 0%),
+      var(--fullbody-art-shift-y, 0%)
+    )
     scale(var(--fullbody-art-scale, 1));
-  transform-origin: center bottom;
+  transform-origin: center;
 }
 
 .rival-avatar img,
 .you-avatar img,
 .winner-medallion img {
-  transform: scale(var(--portrait-art-scale, 1));
+  transform:
+    translateX(var(--portrait-art-shift-x, 0%))
+    scale(var(--portrait-art-scale, 1));
   transform-origin: center;
+}
+
+.character-card[data-character-id="quickdraw"],
+.rival-card[data-character-id="quickdraw"] .rival-avatar,
+.combat-screen[data-player-character-id="quickdraw"] .you-avatar,
+.winner-medallion[data-character-id="quickdraw"] {
+  --portrait-art-shift-x: 0.93%;
+}
+
+.character-feature[data-character-id="quickdraw"] {
+  --fullbody-art-shift-x: 0.62%;
+  --fullbody-art-shift-y: 1.23%;
 }
 
 .character-card[data-character-id="sheriff"],
 .rival-card[data-character-id="sheriff"] .rival-avatar,
 .combat-screen[data-player-character-id="sheriff"] .you-avatar,
 .winner-medallion[data-character-id="sheriff"] {
-  --portrait-art-scale: 1.04;
+  --portrait-art-scale: 1.028;
+  --portrait-art-shift-x: 3.76%;
 }
 
 .character-feature[data-character-id="sheriff"] {
-  --fullbody-art-scale: 1.13;
-  --fullbody-art-shift: 2.5%;
+  --fullbody-art-scale: 1.14;
+  --fullbody-art-shift-x: 2.84%;
+  --fullbody-art-shift-y: 2.94%;
 }
 
 .outcome-action-card[data-character-id="sheriff"][data-pose="idle"] {
-  --pose-art-scale: 1.03;
+  --pose-art-scale: 1.033;
+  --pose-art-shift-y: 3.95%;
 }
 
-.outcome-action-card[data-character-id="sheriff"][data-pose="reload"],
-.outcome-action-card[data-character-id="sheriff"][data-pose="power"] {
-  --pose-art-scale: 0.99;
+.outcome-action-card[data-character-id="sheriff"][data-pose="block"] {
+  --pose-art-scale: 0.995;
+  --pose-art-shift-y: 1.1%;
+}
+
+.outcome-action-card[data-character-id="sheriff"][data-pose="reload"] {
+  --pose-art-scale: 0.993;
+  --pose-art-shift-y: -0.19%;
 }
 
 .outcome-action-card[data-character-id="sheriff"][data-pose="fire"] {
-  --pose-art-scale: 1.04;
+  --pose-art-scale: 1.044;
+  --pose-art-shift-y: 4.51%;
+}
+
+.outcome-action-card[data-character-id="sheriff"][data-pose="power"] {
+  --pose-art-scale: 0.992;
+  --pose-art-shift-y: -1.26%;
 }
 
 .outcome-action-card[data-character-id="sheriff"][data-pose="hit"] {
-  --pose-art-scale: 0.95;
+  --pose-art-scale: 0.951;
+  --pose-art-shift-y: -1.87%;
 }
 
 .character-card[data-character-id="mirror"],
 .rival-card[data-character-id="mirror"] .rival-avatar,
 .combat-screen[data-player-character-id="mirror"] .you-avatar,
 .winner-medallion[data-character-id="mirror"] {
-  --portrait-art-scale: 1.05;
+  --portrait-art-scale: 1.065;
+  --portrait-art-shift-x: 2.76%;
 }
 
 .character-feature[data-character-id="mirror"] {
-  --fullbody-art-scale: 1.14;
-  --fullbody-art-shift: 0.7%;
+  --fullbody-art-scale: 1.136;
+  --fullbody-art-shift-x: 0.78%;
+  --fullbody-art-shift-y: 2.35%;
 }
 
-.outcome-action-card[data-character-id="mirror"][data-pose="idle"],
-.outcome-action-card[data-character-id="mirror"][data-pose="reload"] {
-  --pose-art-scale: 1.03;
+.outcome-action-card[data-character-id="mirror"][data-pose="idle"] {
+  --pose-art-scale: 1.029;
+  --pose-art-shift-y: 2.96%;
 }
 
 .outcome-action-card[data-character-id="mirror"][data-pose="block"] {
-  --pose-art-scale: 0.94;
+  --pose-art-scale: 0.943;
+  --pose-art-shift-y: -2.17%;
+}
+
+.outcome-action-card[data-character-id="mirror"][data-pose="reload"] {
+  --pose-art-scale: 1.032;
+  --pose-art-shift-y: 1.47%;
 }
 
 .outcome-action-card[data-character-id="mirror"][data-pose="fire"] {
-  --pose-art-scale: 1.07;
+  --pose-art-scale: 1.068;
+  --pose-art-shift-y: 4.78%;
 }
 
 .outcome-action-card[data-character-id="mirror"][data-pose="power"] {
-  --pose-art-scale: 0.93;
+  --pose-art-scale: 0.931;
+  --pose-art-shift-y: -2.29%;
 }
 
 .outcome-action-card[data-character-id="mirror"][data-pose="hit"] {
-  --pose-art-scale: 0.99;
+  --pose-art-scale: 0.993;
+  --pose-art-shift-y: -0.99%;
+}
+
+.character-card[data-character-id="time-freeze"],
+.rival-card[data-character-id="time-freeze"] .rival-avatar,
+.combat-screen[data-player-character-id="time-freeze"] .you-avatar,
+.winner-medallion[data-character-id="time-freeze"] {
+  --portrait-art-scale: 1.061;
+  --portrait-art-shift-x: 3.89%;
+}
+
+.character-feature[data-character-id="time-freeze"] {
+  --fullbody-art-scale: 1.304;
+  --fullbody-art-shift-x: 0.38%;
+  --fullbody-art-shift-y: 4.59%;
+}
+
+.outcome-action-card[data-character-id="time-freeze"][data-pose="idle"] {
+  --pose-art-scale: 1.181;
+  --pose-art-shift-y: 13.57%;
+}
+
+.outcome-action-card[data-character-id="time-freeze"][data-pose="block"] {
+  --pose-art-scale: 1.034;
+  --pose-art-shift-y: 2.44%;
+}
+
+.outcome-action-card[data-character-id="time-freeze"][data-pose="reload"] {
+  --pose-art-scale: 1.111;
+  --pose-art-shift-y: 8.28%;
+}
+
+.outcome-action-card[data-character-id="time-freeze"][data-pose="fire"] {
+  --pose-art-scale: 1.062;
+  --pose-art-shift-y: 4.41%;
+}
+
+.outcome-action-card[data-character-id="time-freeze"][data-pose="power"] {
+  --pose-art-scale: 0.935;
+  --pose-art-shift-y: -2.36%;
+}
+
+.outcome-action-card[data-character-id="time-freeze"][data-pose="hit"] {
+  --pose-art-scale: 1.083;
+  --pose-art-shift-y: 4.88%;
 }
 
 /* Split duel controls around a compact, centered player profile. */

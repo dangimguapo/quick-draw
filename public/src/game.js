@@ -100,6 +100,16 @@ const CHARACTERS = Object.freeze([
     powerName: "Time Freeze",
     powerDescription: "Reveal every rival’s move, then take four extra seconds to answer.",
     color: "#cfc7ae",
+    image: "./assets/characters/time-freeze-icon-8bit.png",
+    fullBodyImage: "./assets/characters/time-freeze-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/time-freeze-fullbody-8bit.png",
+      block: "./assets/characters/time-freeze-block-8bit.png",
+      reload: "./assets/characters/time-freeze-reload-8bit.png",
+      fire: "./assets/characters/time-freeze-fire-8bit.png",
+      power: "./assets/characters/time-freeze-power-8bit.png",
+      hit: "./assets/characters/time-freeze-hit-8bit.png",
+    }),
     available: true,
   },
   {
