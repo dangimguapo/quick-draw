@@ -1,4 +1,3 @@
-(() => {
 const ACTIONS = Object.freeze({
   BLOCK: "block",
   RELOAD: "reload",
@@ -15,6 +14,9 @@ const POWER_IDS = Object.freeze({
   TIME_FREEZE: "time-freeze",
   MANIAC: "maniac",
   CIVILIAN: "civilian-survive",
+  DOUSE: "douse",
+  STICKY_FINGERS: "sticky-fingers",
+  JUMBLE: "jumble",
 });
 
 const CIVILIAN_POWER_GOAL = 5;
@@ -27,7 +29,12 @@ const CHARACTER_POWERS = Object.freeze({
   "time-freeze": POWER_IDS.TIME_FREEZE,
   maniac: POWER_IDS.MANIAC,
   civilian: POWER_IDS.CIVILIAN,
+  arsonist: POWER_IDS.DOUSE,
+  "sticky-fingers": POWER_IDS.STICKY_FINGERS,
+  "circus-freak": POWER_IDS.JUMBLE,
 });
+
+const CHARACTER_IDS = Object.freeze(Object.keys(CHARACTER_POWERS));
 
 function createFighter({
   id,
@@ -56,6 +63,8 @@ function createFighter({
     powerUsed: false,
     powerUses: 0,
     hardened: false,
+    dousedTurns: 0,
+    dousedById: null,
     lastAction: null,
   };
 }
@@ -65,12 +74,22 @@ function outcomePoseFor(action, tookDamage = false) {
   return tookDamage ? "hit" : "idle";
 }
 
+function isCharacterId(value) {
+  return typeof value === "string" && CHARACTER_IDS.includes(value);
+}
+
 function powerIdFor(fighter) {
   return CHARACTER_POWERS[fighter?.characterId] ?? POWER_IDS.QUICKDRAW;
 }
 
 function powerNeedsTarget(powerId) {
-  return powerId === POWER_IDS.QUICKDRAW || powerId === POWER_IDS.MIRROR;
+  return (
+    powerId === POWER_IDS.QUICKDRAW ||
+    powerId === POWER_IDS.MIRROR ||
+    powerId === POWER_IDS.DOUSE ||
+    powerId === POWER_IDS.STICKY_FINGERS ||
+    powerId === POWER_IDS.JUMBLE
+  );
 }
 
 function canUsePower(fighter, fighters, action = { type: ACTIONS.POWER }) {
@@ -87,18 +106,65 @@ function canUsePower(fighter, fighters, action = { type: ACTIONS.POWER }) {
   return Boolean(resolvePowerTarget(fighter, fighters, action.targetId));
 }
 
-function resolveTurn(fighters, selections) {
+function resolveTurn(fighters, selections, random = Math.random) {
   const active = fighters.filter((fighter) => fighter.alive);
   const events = [];
   const damage = new Map();
   const blockedShots = new Map();
   const reloaded = new Set();
+  const dousedAtStart = new Map(
+    active.map((fighter) => [fighter.id, Math.max(0, fighter.dousedTurns ?? 0)]),
+  );
+  const dousedByAtStart = new Map(
+    active.map((fighter) => [fighter.id, fighter.dousedById ?? null]),
+  );
+  const newlyDoused = new Set();
+  const ignitedDouse = new Set();
+  const requestedActions = new Map(
+    active.map((fighter) => [
+      fighter.id,
+      { ...(selections.get(fighter.id) ?? { type: ACTIONS.WAIT }) },
+    ]),
+  );
+  const jumbleActorsByTarget = new Map();
+
+  for (const circusFighter of active) {
+    const requested = requestedActions.get(circusFighter.id);
+    if (
+      powerIdFor(circusFighter) !== POWER_IDS.JUMBLE ||
+      requested.type !== ACTIONS.POWER
+    ) {
+      continue;
+    }
+    const target = resolvePowerTarget(
+      circusFighter,
+      fighters,
+      requested.targetId,
+    );
+    const powerAction = {
+      type: ACTIONS.POWER,
+      powerId: POWER_IDS.JUMBLE,
+      targetId: target?.id ?? null,
+    };
+    if (!target || !canUsePower(circusFighter, fighters, powerAction)) continue;
+    const actors = jumbleActorsByTarget.get(target.id) ?? [];
+    actors.push(circusFighter.id);
+    jumbleActorsByTarget.set(target.id, actors);
+  }
 
   const normalized = new Map(
     active.map((fighter) => {
-      const requested = selections.get(fighter.id) ?? { type: ACTIONS.WAIT };
+      const requested = requestedActions.get(fighter.id);
       let action = { ...requested };
       const fighterPowerId = powerIdFor(fighter);
+      const jumbleActors = jumbleActorsByTarget.get(fighter.id);
+
+      if (
+        jumbleActors?.length &&
+        [ACTIONS.BLOCK, ACTIONS.RELOAD, ACTIONS.FIRE].includes(action.type)
+      ) {
+        action = jumbledAction(fighter, action, active, jumbleActors, random);
+      }
 
       if (
         fighterPowerId === POWER_IDS.CIVILIAN &&
@@ -106,11 +172,11 @@ function resolveTurn(fighters, selections) {
         action.type !== ACTIONS.POWER &&
         action.type !== ACTIONS.WAIT
       ) {
-        action = { type: ACTIONS.WAIT };
+        action = preserveJumbleMetadata(action, ACTIONS.WAIT);
       }
 
       if (action.type === ACTIONS.FIRE && fighter.ammo < 1) {
-        action = { type: ACTIONS.WAIT };
+        action = preserveJumbleMetadata(action, ACTIONS.WAIT);
       }
 
       if (action.type === ACTIONS.POWER) {
@@ -259,6 +325,38 @@ function resolveTurn(fighters, selections) {
         });
       }
     }
+
+    if (action.powerId === POWER_IDS.DOUSE) {
+      const target = fighters.find(
+        (candidate) => candidate.id === action.targetId && candidate.alive,
+      );
+      if (target) {
+        target.dousedTurns = 2;
+        target.dousedById = fighter.id;
+        newlyDoused.add(target.id);
+        events.push({
+          type: "doused",
+          actorId: fighter.id,
+          targetId: target.id,
+          turns: target.dousedTurns,
+          powerId: action.powerId,
+        });
+      }
+    }
+
+    if (action.powerId === POWER_IDS.JUMBLE) {
+      const targetAction = normalized.get(action.targetId);
+      events.push({
+        type: "jumbled",
+        actorId: fighter.id,
+        targetId: action.targetId,
+        originalAction: targetAction?.jumbledFrom ?? null,
+        resolvedAction: targetAction?.jumbledTo ?? null,
+        originalTargetId: targetAction?.jumbledOriginalTargetId ?? null,
+        resolvedTargetId: targetAction?.targetId ?? null,
+        powerId: action.powerId,
+      });
+    }
   }
 
   if (mirrorPairs.size) {
@@ -273,6 +371,27 @@ function resolveTurn(fighters, selections) {
   for (const fighter of active) {
     if (mirrorPairs.has(fighter.id)) continue;
     const action = normalized.get(fighter.id);
+    const douseIgnites =
+      (dousedAtStart.get(fighter.id) ?? 0) > 0 &&
+      (action.type === ACTIONS.FIRE ||
+        (action.type === ACTIONS.POWER &&
+          (action.powerId === POWER_IDS.QUICKDRAW ||
+            action.powerId === POWER_IDS.MANIAC)));
+
+    if (douseIgnites) {
+      addDamage(fighter.id, 1, {
+        type: "douseIgnited",
+        actorId: dousedByAtStart.get(fighter.id),
+        targetId: fighter.id,
+        attemptedAction: action.type,
+        attemptedPowerId: action.powerId ?? null,
+        powerId: POWER_IDS.DOUSE,
+      });
+      fighter.dousedTurns = 0;
+      fighter.dousedById = null;
+      ignitedDouse.add(fighter.id);
+      continue;
+    }
 
     if (action.type === ACTIONS.FIRE) {
       fighter.ammo -= 1;
@@ -299,8 +418,91 @@ function resolveTurn(fighters, selections) {
     }
   }
 
+  const stickyClaims = new Map();
+  for (const stickyFighter of active) {
+    const action = normalized.get(stickyFighter.id);
+    if (
+      action.type !== ACTIONS.POWER ||
+      action.powerId !== POWER_IDS.STICKY_FINGERS
+    ) {
+      continue;
+    }
+    const target = active.find((candidate) => candidate.id === action.targetId);
+    if (!target) continue;
+    const targetAction = normalized.get(target.id);
+    const targetShootsSticky =
+      (targetAction?.type === ACTIONS.FIRE &&
+        targetAction.targetId === stickyFighter.id) ||
+      (targetAction?.type === ACTIONS.POWER &&
+        targetAction.powerId === POWER_IDS.QUICKDRAW &&
+        targetAction.targetId === stickyFighter.id) ||
+      (targetAction?.type === ACTIONS.POWER &&
+        targetAction.powerId === POWER_IDS.MANIAC);
+    if (targetShootsSticky) {
+      events.push({
+        type: "bulletsStolen",
+        actorId: stickyFighter.id,
+        targetId: target.id,
+        amount: 0,
+        reason: "shotAtThief",
+        powerId: action.powerId,
+      });
+      continue;
+    }
+    const claimants = stickyClaims.get(target.id) ?? [];
+    claimants.push(stickyFighter);
+    stickyClaims.set(target.id, claimants);
+  }
+
+  const ammoBeforeTheft = new Map(
+    active.map((fighter) => [fighter.id, Math.max(0, fighter.ammo ?? 0)]),
+  );
+  const ammoDeltas = new Map(active.map((fighter) => [fighter.id, 0]));
+  for (const [targetId, claimants] of stickyClaims) {
+    const target = active.find((candidate) => candidate.id === targetId);
+    const targetAction = normalized.get(targetId);
+    const available = ammoBeforeTheft.get(targetId) ?? 0;
+    const stolenTotal =
+      targetAction?.type === ACTIONS.BLOCK
+        ? Math.ceil(available / 2)
+        : available;
+    ammoDeltas.set(targetId, (ammoDeltas.get(targetId) ?? 0) - stolenTotal);
+    const evenShare = Math.floor(stolenTotal / claimants.length);
+    const remainder = stolenTotal % claimants.length;
+    claimants.forEach((stickyFighter, index) => {
+      const amount = evenShare + (index < remainder ? 1 : 0);
+      ammoDeltas.set(
+        stickyFighter.id,
+        (ammoDeltas.get(stickyFighter.id) ?? 0) + amount,
+      );
+      events.push({
+        type: "bulletsStolen",
+        actorId: stickyFighter.id,
+        targetId: target.id,
+        amount,
+        reason: available > 0 ? "stolen" : "empty",
+        targetAction: targetAction?.type ?? ACTIONS.WAIT,
+        powerId: POWER_IDS.STICKY_FINGERS,
+      });
+    });
+  }
+  for (const fighter of active) {
+    fighter.ammo = Math.max(
+      0,
+      (ammoBeforeTheft.get(fighter.id) ?? 0) + (ammoDeltas.get(fighter.id) ?? 0),
+    );
+  }
+
   for (const fighter of active) {
     fighter.lastAction = normalized.get(fighter.id).type;
+    if (
+      !newlyDoused.has(fighter.id) &&
+      !ignitedDouse.has(fighter.id) &&
+      (dousedAtStart.get(fighter.id) ?? 0) > 0
+    ) {
+      fighter.dousedTurns = Math.max(0, (dousedAtStart.get(fighter.id) ?? 0) - 1);
+      if (fighter.dousedTurns === 0) fighter.dousedById = null;
+    }
   }
 
   for (const [fighterId, hitCount] of damage) {
@@ -315,6 +517,8 @@ function resolveTurn(fighters, selections) {
   for (const fighter of active) {
     if (fighter.hearts === 0) {
       fighter.alive = false;
+      fighter.dousedTurns = 0;
+      fighter.dousedById = null;
       if (powerIdFor(fighter) === POWER_IDS.CIVILIAN) fighter.powerUses = 0;
       events.push({ type: "eliminated", actorId: fighter.id });
     }
@@ -323,21 +527,22 @@ function resolveTurn(fighters, selections) {
   if (!fighters.some((fighter) => fighter.alive)) {
     for (const fighter of active) {
       fighter.hearts = 1;
-      fighter.ammo = 0;
       fighter.alive = true;
       fighter.hardened = false;
+      fighter.dousedTurns = 0;
+      fighter.dousedById = null;
       if (powerIdFor(fighter) === POWER_IDS.CIVILIAN) fighter.powerUses = 0;
     }
     events.push({ type: "lastStand" });
   }
 
-  const civilianWinner = fighters.find(
+  const civilianWinners = fighters.filter(
     (fighter) =>
       fighter.alive &&
       powerIdFor(fighter) === POWER_IDS.CIVILIAN &&
       fighter.powerUses >= CIVILIAN_POWER_GOAL,
   );
-  if (civilianWinner) {
+  for (const civilianWinner of civilianWinners) {
     events.push({
       type: "civilianVictory",
       actorId: civilianWinner.id,
@@ -374,7 +579,10 @@ function chooseRobotAction(robot, fighters, difficulty = "medium", random = Math
       (powerId === POWER_IDS.SIX_CHAMBER && robot.ammo <= 1) ||
       (powerId === POWER_IDS.MIRROR && targets.some((candidate) => candidate.ammo > 0)) ||
       (powerId === POWER_IDS.TIME_FREEZE && targets.some((candidate) => candidate.ammo > 0)) ||
-      powerId === POWER_IDS.MANIAC;
+      powerId === POWER_IDS.MANIAC ||
+      powerId === POWER_IDS.DOUSE ||
+      powerId === POWER_IDS.STICKY_FINGERS ||
+      powerId === POWER_IDS.JUMBLE;
     if (shouldUse && canUsePower(robot, fighters, powerAction)) return powerAction;
   }
 
@@ -397,6 +605,54 @@ function chooseRobotAction(robot, fighters, difficulty = "medium", random = Math
   if (roll < fireChance) return { type: ACTIONS.FIRE, targetId: target?.id };
   if (roll < fireChance + blockChance) return { type: ACTIONS.BLOCK };
   return { type: ACTIONS.RELOAD };
+}
+
+function jumbledAction(fighter, action, active, actorIds, random) {
+  const mapping = createJumbleMapping(random);
+  const resolvedType = mapping[action.type];
+  const metadata = {
+    jumbledFrom: action.type,
+    jumbledTo: resolvedType,
+    jumbledByIds: [...actorIds],
+    jumbledOriginalTargetId: action.targetId ?? null,
+  };
+  if (resolvedType !== ACTIONS.FIRE) {
+    return { type: resolvedType, ...metadata };
+  }
+  const targets = active.filter((candidate) => candidate.id !== fighter.id);
+  const target = targets[randomIndex(random, targets.length)] ?? null;
+  return {
+    type: ACTIONS.FIRE,
+    targetId: target?.id ?? null,
+    ...metadata,
+  };
+}
+
+function createJumbleMapping(random = Math.random) {
+  const outcomes = [ACTIONS.BLOCK, ACTIONS.RELOAD, ACTIONS.FIRE];
+  return Object.fromEntries(
+    outcomes.map((button) => [
+      button,
+      outcomes[randomIndex(random, outcomes.length)],
+    ]),
+  );
+}
+
+function randomIndex(random, length) {
+  if (length < 1) return 0;
+  const roll = Math.min(0.999999, Math.max(0, Number(random()) || 0));
+  return Math.floor(roll * length);
+}
+
+function preserveJumbleMetadata(action, type) {
+  if (!action?.jumbledFrom) return { type };
+  return {
+    type,
+    jumbledFrom: action.jumbledFrom,
+    jumbledTo: action.jumbledTo,
+    jumbledByIds: action.jumbledByIds,
+    jumbledOriginalTargetId: action.jumbledOriginalTargetId ?? null,
+  };
 }
 
 function resolvePowerTarget(fighter, fighters, requestedTargetId) {
@@ -426,16 +682,18 @@ function difficultyChance(difficulty, easy, medium, hard) {
   return { easy, medium, hard }[difficulty] ?? medium;
 }
 
-window.QuickDrawEngine = Object.freeze({
+export {
   ACTIONS,
+  CHARACTER_IDS,
   CIVILIAN_POWER_GOAL,
   POWER_IDS,
   canUsePower,
   chooseRobotAction,
+  createJumbleMapping,
   createFighter,
+  isCharacterId,
   outcomePoseFor,
   powerIdFor,
   powerNeedsTarget,
   resolveTurn,
-});
-})();
+};

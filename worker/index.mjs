@@ -1,4 +1,5 @@
 import { GameRoom } from "./game-room.mjs";
+import { PROTOCOL_VERSION } from "../public/src/multiplayer-protocol.mjs";
 
 export { GameRoom };
 
@@ -14,7 +15,8 @@ export default {
       return json({
         ok: true,
         service: "quick-draw-worker",
-        durableObjects: true
+        durableObjects: true,
+        protocolVersion: PROTOCOL_VERSION
       });
     }
 
@@ -43,6 +45,7 @@ export default {
         {
           roomCode,
           maxPlayers: options.maxPlayers,
+          protocolVersion: PROTOCOL_VERSION,
           statusPath: `/api/rooms/${roomCode}`,
           websocketPath: `/ws/rooms/${roomCode}`
         },
@@ -97,7 +100,7 @@ function roomRequest(originalRequest, pathname, roomCode, extraHeaders = {}) {
 }
 
 async function readRoomOptions(request) {
-  const fallback = { roomCode: null, maxPlayers: 2 };
+  const fallback = { roomCode: null, maxPlayers: 5 };
   if (!request.headers.get("content-type")?.includes("application/json")) {
     return fallback;
   }
@@ -109,7 +112,7 @@ async function readRoomOptions(request) {
         typeof body.roomCode === "string"
           ? body.roomCode.trim().toUpperCase()
           : null,
-      maxPlayers: Number(body.maxPlayers) === 3 ? 3 : 2
+      maxPlayers: 5
     };
   } catch {
     return fallback;

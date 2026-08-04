@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Rye&family=VT323&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=28" />
+    <link rel="stylesheet" href="./styles.css?v=30" />
   </head>
   <body>
     <main id="app">
@@ -53,19 +53,15 @@
           </div>
 
           <div id="localSetup">
-            <div class="setup-group">
-              <span class="setup-label">MATCH</span>
-              <div class="segmented" role="group" aria-label="Match size">
-                <button class="segment is-selected" type="button" data-player-count="2">
-                  Duel
-                  <small>1 robot</small>
-                </button>
-                <button class="segment" type="button" data-player-count="3">
-                  Trio
-                  <small>2 robots</small>
-                </button>
-              </div>
-            </div>
+            <label class="setup-field arcade-ai-field">
+              <span class="setup-label">AI RIVALS</span>
+              <select id="aiQuantitySelect" aria-label="Number of AI rivals">
+                <option value="1">1 AI Rival</option>
+                <option value="2">2 AI Rivals</option>
+                <option value="3">3 AI Rivals</option>
+                <option value="4">4 AI Rivals</option>
+              </select>
+            </label>
 
             <div class="setup-group">
               <span class="setup-label">ROBOT SKILL</span>
@@ -91,18 +87,9 @@
               <input id="onlinePlayerName" type="text" maxlength="24" autocomplete="nickname" placeholder="Your name" />
             </label>
 
-            <div class="setup-group">
-              <span class="setup-label">ROOM SIZE</span>
-              <div class="segmented" role="group" aria-label="Online room size">
-                <button class="segment is-selected" type="button" data-online-player-count="2">
-                  Duel
-                  <small>2 players</small>
-                </button>
-                <button class="segment" type="button" data-online-player-count="3">
-                  Trio
-                  <small>3 players</small>
-                </button>
-              </div>
+            <div class="online-capacity-note" aria-label="Online room capacity">
+              <strong>2–5 PLAYERS</strong>
+              <span>Invite up to four rivals. The host can start once everyone in the room is ready.</span>
             </div>
 
             <button class="primary-button" id="createRoomButton" type="button">
@@ -221,7 +208,7 @@
           </div>
           <div class="roster-status">
             <span class="status-dot"></span>
-            <span id="rosterStatusText">7 of 12 fighters ready</span>
+            <span id="rosterStatusText">10 of 12 fighters ready</span>
           </div>
         </header>
 
@@ -232,7 +219,12 @@
             <button id="copyRoomCodeButton" type="button">COPY</button>
           </div>
           <div class="lobby-players" id="lobbyPlayers"></div>
-          <p class="lobby-message" id="lobbyMessage" aria-live="polite">Waiting for players…</p>
+          <div class="lobby-status">
+            <p class="lobby-message" id="lobbyMessage" aria-live="polite">Waiting for players…</p>
+            <button class="host-start-button" id="hostStartMatchButton" type="button" hidden>
+              START MATCH
+            </button>
+          </div>
         </section>
 
         <div class="character-layout">
@@ -399,7 +391,6 @@
       <span>This game is built for landscape play.</span>
     </div>
 
-    <script defer src="./src/engine.js?v=8"></script>
-    <script defer src="./src/game.js?v=29"></script>
+    <script type="module" src="./src/game.mjs?v=42"></script>
   </body>
 </html>

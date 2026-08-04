@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "check": "node --check worker/index.mjs && node --check worker/game-room.mjs && node --check public/src/engine.js && node --check public/src/game.js && node tests/engine.test.cjs",
+    "check": "node --check worker/index.mjs && node --check worker/game-room.mjs && node --check worker/match-actions.mjs && node --check worker/player-safe-result.mjs && node --check public/src/engine.mjs && node --check public/src/multiplayer-protocol.mjs && node --check public/src/game.mjs && node tests/engine.test.mjs && node tests/protocol.test.mjs && node tests/online-powers.test.mjs",
     "smoke": "node tests/worker-smoke.mjs"
   },
   "devDependencies": {

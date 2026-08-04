@@ -1,5 +1,4 @@
-(() => {
-const {
+import {
   ACTIONS,
   CIVILIAN_POWER_GOAL,
   POWER_IDS,
@@ -10,7 +9,17 @@ const {
   powerIdFor,
   powerNeedsTarget,
   resolveTurn,
-} = window.QuickDrawEngine;
+} from "./engine.mjs";
+import {
+  CLIENT_MESSAGE_TYPES,
+  MATCH_PHASES,
+  PROTOCOL_VERSION,
+  SERVER_MESSAGE_TYPES,
+  createClientMessage,
+  parseServerMessage,
+} from "./multiplayer-protocol.mjs";
+
+(() => {
 
 const DECIDE_MS = 2000;
 const REVEAL_MS = 0;
@@ -40,13 +49,23 @@ const CHARACTERS = Object.freeze([
   },
   {
     id: "body-boulder",
-    name: "Body Boulder",
-    shortName: "Boulder",
+    name: "The Bulk",
+    shortName: "Bulk",
     initial: "B",
     tagline: "Built like the canyon and twice as stubborn.",
     powerName: "Harden",
     powerDescription: "Gain a fourth heart. The stone skin breaks the first time you’re hit.",
     color: "#8a5a2b",
+    image: "./assets/characters/the-bulk-icon-8bit.png",
+    fullBodyImage: "./assets/characters/the-bulk-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/the-bulk-fullbody-8bit.png",
+      block: "./assets/characters/the-bulk-block-8bit.png",
+      reload: "./assets/characters/the-bulk-reload-8bit.png",
+      fire: "./assets/characters/the-bulk-fire-8bit.png",
+      power: "./assets/characters/the-bulk-power-8bit.png",
+      hit: "./assets/characters/the-bulk-hit-8bit.png",
+    }),
     available: true,
   },
   {
@@ -121,6 +140,16 @@ const CHARACTERS = Object.freeze([
     powerName: "Maniac",
     powerDescription: "Shoot everyone. If they all block, the final bullet is your own.",
     color: "#7d2b20",
+    image: "./assets/characters/maniac-icon-8bit.png",
+    fullBodyImage: "./assets/characters/maniac-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/maniac-fullbody-8bit.png",
+      block: "./assets/characters/maniac-block-8bit.png",
+      reload: "./assets/characters/maniac-reload-8bit.png",
+      fire: "./assets/characters/maniac-fire-8bit.png",
+      power: "./assets/characters/maniac-power-8bit.png",
+      hit: "./assets/characters/maniac-hit-8bit.png",
+    }),
     available: true,
   },
   {
@@ -132,11 +161,109 @@ const CHARACTERS = Object.freeze([
     powerName: "Survive",
     powerDescription: "Use Survive five times without being eliminated to win the duel.",
     color: "#6f7a55",
+    image: "./assets/characters/civilian-icon-8bit.png",
+    fullBodyImage: "./assets/characters/civilian-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/civilian-fullbody-8bit.png",
+      block: "./assets/characters/civilian-block-8bit.png",
+      power: "./assets/characters/civilian-power-8bit.png",
+      hit: "./assets/characters/civilian-hit-8bit.png",
+    }),
     available: true,
+  },
+  {
+    id: "arsonist",
+    name: "Arsonist",
+    shortName: "Arsonist",
+    initial: "A",
+    tagline: "One spark is all it takes.",
+    powerName: "Douse",
+    powerDescription: "Soak one rival for two beats. If they shoot, the shot is canceled and they lose a heart.",
+    color: "#d94324",
+    image: "./assets/characters/arsonist-icon-8bit.png",
+    fullBodyImage: "./assets/characters/arsonist-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/arsonist-fullbody-8bit.png",
+      block: "./assets/characters/arsonist-block-8bit.png",
+      reload: "./assets/characters/arsonist-reload-8bit.png",
+      fire: "./assets/characters/arsonist-fire-8bit.png",
+      power: "./assets/characters/arsonist-power-8bit.png",
+      hit: "./assets/characters/arsonist-hit-8bit.png",
+    }),
+    available: true,
+  },
+  {
+    id: "sticky-fingers",
+    name: "Sticky Fingers",
+    shortName: "Sticky",
+    initial: "$",
+    tagline: "Your bullets look safer in his pockets.",
+    powerName: "Sticky Fingers",
+    powerDescription: "Steal a rival’s bullets after their move. Blocking protects half; shooting at Sticky protects them all.",
+    color: "#c8b27c",
+    image: "./assets/characters/sticky-fingers-icon-8bit.png",
+    fullBodyImage: "./assets/characters/sticky-fingers-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/sticky-fingers-fullbody-8bit.png",
+      block: "./assets/characters/sticky-fingers-block-8bit.png",
+      reload: "./assets/characters/sticky-fingers-reload-8bit.png",
+      fire: "./assets/characters/sticky-fingers-fire-8bit.png",
+      power: "./assets/characters/sticky-fingers-power-8bit.png",
+      hit: "./assets/characters/sticky-fingers-hit-8bit.png",
+    }),
+    available: true,
+  },
+  {
+    id: "circus-freak",
+    name: "Circus Freak",
+    shortName: "Circus Freak",
+    initial: "J",
+    tagline: "The joke is on whichever button you trust.",
+    powerName: "Jumble",
+    powerDescription: "Independently scramble one rival’s Block, Reload, and Fire buttons for that beat. Buttons may share the same action; a scrambled shot picks a random living opponent.",
+    color: "#e9b928",
+    image: "./assets/characters/circus-freak-icon-8bit.png",
+    fullBodyImage: "./assets/characters/circus-freak-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/circus-freak-fullbody-8bit.png",
+      block: "./assets/characters/circus-freak-block-8bit.png",
+      reload: "./assets/characters/circus-freak-reload-8bit.png",
+      fire: "./assets/characters/circus-freak-fire-8bit.png",
+      power: "./assets/characters/circus-freak-power-8bit.png",
+      hit: "./assets/characters/circus-freak-hit-8bit.png",
+    }),
+    available: true,
+  },
+  {
+    id: "shotgun",
+    name: "Shotgun",
+    shortName: "Shotgun",
+    initial: "S",
+    tagline: "No nonsense. No warning. One very large backup plan.",
+    powerName: "Power TBD",
+    powerDescription: "Shotgun’s special move is still being finalized.",
+    color: "#292929",
+    image: "./assets/characters/shotgun-icon-8bit.png",
+    fullBodyImage: "./assets/characters/shotgun-fullbody-8bit.png",
+    actionImages: Object.freeze({
+      idle: "./assets/characters/shotgun-fullbody-8bit.png",
+      block: "./assets/characters/shotgun-block-8bit.png",
+      reload: "./assets/characters/shotgun-reload-8bit.png",
+      fire: "./assets/characters/shotgun-fire-8bit.png",
+      power: "./assets/characters/shotgun-power-8bit.png",
+      hit: "./assets/characters/shotgun-hit-8bit.png",
+    }),
+    available: false,
   },
 ]);
 
 const ROSTER_SLOT_COUNT = 12;
+const ROBOT_PROFILES = Object.freeze([
+  { id: "mo", name: "Mo", color: "#cf7b2a" },
+  { id: "ava", name: "Ava", color: "#9b54c6" },
+  { id: "rex", name: "Rex", color: "#3d7f6f" },
+  { id: "ivy", name: "Ivy", color: "#b44963" },
+]);
 
 const TUTORIAL_STEPS = Object.freeze([
   {
@@ -223,6 +350,7 @@ const ui = {
   tutorialPlayerHearts: document.querySelector("#tutorialPlayerHearts"),
   tutorialActions: [...document.querySelectorAll("[data-tutorial-action]")],
   localSetup: document.querySelector("#localSetup"),
+  aiQuantity: document.querySelector("#aiQuantitySelect"),
   onlineSetup: document.querySelector("#onlineSetup"),
   onlinePlayerName: document.querySelector("#onlinePlayerName"),
   joinRoomCode: document.querySelector("#joinRoomCode"),
@@ -249,6 +377,7 @@ const ui = {
   copyRoomCode: document.querySelector("#copyRoomCodeButton"),
   lobbyPlayers: document.querySelector("#lobbyPlayers"),
   lobbyMessage: document.querySelector("#lobbyMessage"),
+  hostStartMatch: document.querySelector("#hostStartMatchButton"),
   ready: document.querySelector("#readyButton"),
   rematch: document.querySelector("#rematchButton"),
   changeMatch: document.querySelector("#changeMatchButton"),
@@ -288,7 +417,6 @@ const ui = {
 const config = {
   mode: "local",
   playerCount: 2,
-  onlinePlayerCount: 2,
   difficulty: "medium",
   characterId: "quickdraw",
   handedness:
@@ -302,6 +430,16 @@ const multiplayer = {
   playerName: "",
   closing: false,
   initialCharacterSent: false,
+  matchId: null,
+  acceptedAction: null,
+  pendingAction: null,
+  clockOffset: 0,
+  clockPingId: null,
+  clockPingSentAt: 0,
+  lastRenderedBeat: 0,
+  freezePlayerIds: [],
+  freezePlayerId: null,
+  revealedActions: [],
 };
 let previewCharacterId = config.characterId;
 let fighters = [];
@@ -374,18 +512,9 @@ document.querySelectorAll("[data-game-mode]").forEach((button) => {
   });
 });
 
-document.querySelectorAll("[data-player-count]").forEach((button) => {
-  button.addEventListener("click", () => {
-    config.playerCount = Number(button.dataset.playerCount);
-    selectSegment("[data-player-count]", button);
-  });
-});
-
-document.querySelectorAll("[data-online-player-count]").forEach((button) => {
-  button.addEventListener("click", () => {
-    config.onlinePlayerCount = Number(button.dataset.onlinePlayerCount);
-    selectSegment("[data-online-player-count]", button);
-  });
+ui.aiQuantity.addEventListener("change", () => {
+  const aiCount = Number(ui.aiQuantity.value);
+  config.playerCount = Math.min(5, Math.max(2, aiCount + 1));
 });
 
 document.querySelectorAll("[data-difficulty]").forEach((button) => {
@@ -410,7 +539,14 @@ ui.onlinePlayerName.addEventListener("keydown", (event) => {
 ui.backToHome.addEventListener("click", showHome);
 ui.ready.addEventListener("click", confirmCharacter);
 ui.copyRoomCode.addEventListener("click", copyActiveRoomCode);
-ui.rematch.addEventListener("click", startMatch);
+ui.hostStartMatch.addEventListener("click", startOnlineMatchNow);
+ui.rematch.addEventListener("click", () => {
+  if (config.mode === "online") {
+    toggleOnlineRematchVote();
+    return;
+  }
+  startMatch();
+});
 ui.changeMatch.addEventListener("click", showHome);
 ui.quit.addEventListener("click", showHome);
 ui.rules.addEventListener("click", openRules);
@@ -420,10 +556,24 @@ ui.rulesModal.addEventListener("click", (event) => {
 });
 
 document.addEventListener("visibilitychange", () => {
+  if (config.mode === "online" && multiplayer.matchId) {
+    if (!document.hidden) {
+      syncOnlineClock();
+      sendOnline(CLIENT_MESSAGE_TYPES.SYNC_REQUEST, {
+        matchId: multiplayer.matchId,
+      });
+    }
+    return;
+  }
   if (document.hidden && phase !== "idle" && phase !== "gameover") {
     pauseMatch();
   } else if (!document.hidden && phase === "paused" && ui.rulesModal.hidden) {
     resumePausedMatch();
+  }
+});
+window.addEventListener("resize", () => {
+  if (phase === MATCH_PHASES.OUTCOME || phase === "outcome") {
+    requestAnimationFrame(positionOutcomeTrails);
   }
 });
 
@@ -437,9 +587,9 @@ async function createOnlineRoom() {
     const response = await fetch("/api/rooms", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ maxPlayers: config.onlinePlayerCount }),
+      body: JSON.stringify({ maxPlayers: 5 }),
     });
-    const body = await response.json();
+    const body = await readOnlineApiResponse(response);
     if (!response.ok) throw new Error(body.error || "Could not create the room.");
     await connectOnlineRoom(body.roomCode, playerName);
   } catch (error) {
@@ -463,7 +613,7 @@ async function joinOnlineRoom() {
   setOnlineStatus("Finding room…");
   try {
     const response = await fetch(`/api/rooms/${roomCode}`);
-    const body = await response.json();
+    const body = await readOnlineApiResponse(response);
     if (!response.ok) throw new Error(body.error || "Room not found.");
     await connectOnlineRoom(roomCode, playerName);
   } catch (error) {
@@ -480,15 +630,34 @@ function connectOnlineRoom(roomCode, playerName) {
   multiplayer.closing = false;
   multiplayer.initialCharacterSent = false;
   ui.activeRoomCode.textContent = roomCode;
-  localStorage.setItem("quickDrawPlayerName", playerName);
+  try {
+    localStorage.setItem("quickDrawPlayerName", playerName);
+  } catch {
+    // Privacy-restricted browsers may disable persistent storage.
+  }
 
-  const socketUrl = new URL(`/ws/rooms/${roomCode}`, window.location.href);
-  socketUrl.protocol = socketUrl.protocol === "https:" ? "wss:" : "ws:";
-  socketUrl.searchParams.set("playerId", multiplayer.playerId);
-  socketUrl.searchParams.set("name", playerName);
+  const socketProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const socketQuery = new URLSearchParams({
+    playerId: multiplayer.playerId,
+    name: playerName,
+    protocolVersion: String(PROTOCOL_VERSION),
+  });
+  const socketUrl =
+    `${socketProtocol}//${window.location.host}` +
+    `/ws/rooms/${encodeURIComponent(roomCode)}?${socketQuery.toString()}`;
 
   return new Promise((resolve, reject) => {
-    const socket = new WebSocket(socketUrl);
+    let socket;
+    try {
+      socket = new WebSocket(socketUrl);
+    } catch {
+      reject(
+        new Error(
+          "This browser could not open a secure game connection. Refresh and try again.",
+        ),
+      );
+      return;
+    }
     multiplayer.socket = socket;
     const timeout = window.setTimeout(() => {
       socket.close();
@@ -497,6 +666,7 @@ function connectOnlineRoom(roomCode, playerName) {
 
     socket.addEventListener("open", () => {
       window.clearTimeout(timeout);
+      syncOnlineClock();
       previewCharacterId = config.characterId;
       renderCharacterSelect();
       renderOnlineLobby();
@@ -514,56 +684,259 @@ function connectOnlineRoom(roomCode, playerName) {
         reject(new Error("Could not connect. The room may be full."));
       }
     });
-    socket.addEventListener("close", () => {
+    socket.addEventListener("close", (event) => {
       window.clearTimeout(timeout);
       if (multiplayer.socket === socket) multiplayer.socket = null;
       if (!multiplayer.closing && multiplayer.room) {
-        ui.lobbyMessage.textContent = "Disconnected · return home to reconnect";
+        const message =
+          event.code === 4004
+            ? "The host left · this room is now closed"
+            : "Disconnected · return home to reconnect";
+        ui.lobbyMessage.textContent = message;
+        if (multiplayer.matchId) {
+          ui.eventBanner.textContent = message;
+          ui.eventBanner.hidden = false;
+          renderActionFan();
+        }
         ui.ready.disabled = true;
       }
+      renderOnlineRematchButton();
     });
   });
 }
 
 function handleOnlineMessage(event) {
-  let message;
-  try {
-    message = JSON.parse(event.data);
-  } catch {
+  const parsed = parseServerMessage(event.data);
+  if (!parsed.ok) {
+    showOnlineMessage(parsed.error.message, true);
+    return;
+  }
+  const message = parsed.value;
+
+  if (message.type === SERVER_MESSAGE_TYPES.ERROR) {
+    multiplayer.pendingAction = null;
+    selectedAction = multiplayer.acceptedAction;
+    showOnlineMessage(message.message, true);
+    if (multiplayer.matchId) renderAll();
     return;
   }
 
-  if (message.type === "error") {
-    ui.lobbyMessage.textContent = message.error;
+  if (message.type === SERVER_MESSAGE_TYPES.PONG) {
+    applyOnlineClockSample(message);
     return;
   }
-  if (message.type !== "room_state") return;
 
-  multiplayer.room = message.room;
+  if (message.type === SERVER_MESSAGE_TYPES.ROOM_STATE) {
+    applyOnlineRoomState(message.room);
+    return;
+  }
+
+  if (message.type === SERVER_MESSAGE_TYPES.MATCH_START) {
+    beginOnlineMatch(message.state);
+    return;
+  }
+
+  if (message.type === SERVER_MESSAGE_TYPES.PHASE_STARTED) {
+    applyOnlinePhase(message);
+    return;
+  }
+
+  if (message.type === SERVER_MESSAGE_TYPES.ACTION_ACCEPTED) {
+    if (
+      message.matchId !== multiplayer.matchId ||
+      message.beat !== beat
+    ) return;
+    multiplayer.acceptedAction = message.action;
+    if (sameAction(multiplayer.pendingAction, message.action)) {
+      multiplayer.pendingAction = null;
+    }
+    selectedAction =
+      multiplayer.pendingAction ?? multiplayer.acceptedAction;
+    showOnlineActionStatus(selectedAction);
+    renderAll();
+    return;
+  }
+
+  if (message.type === SERVER_MESSAGE_TYPES.BEAT_RESULT) {
+    if (message.matchId !== multiplayer.matchId) return;
+    renderOnlineBeatResult(message.beat, message.result);
+    return;
+  }
+
+  if (message.type === SERVER_MESSAGE_TYPES.MATCH_END) {
+    if (message.matchId !== multiplayer.matchId) return;
+    finishOnlineMatch(message.result);
+    return;
+  }
+
+  if (message.type === SERVER_MESSAGE_TYPES.STATE_SYNC) {
+    applyOnlineStateSync(message.state);
+  }
+}
+
+function applyOnlineRoomState(room) {
+  const returningToCharacterSelect =
+    config.mode === "online" &&
+    phase === MATCH_PHASES.GAMEOVER &&
+    Boolean(multiplayer.matchId) &&
+    room.phase === MATCH_PHASES.LOBBY;
+  multiplayer.room = room;
   const player = onlinePlayer();
   if (player?.characterId) {
     config.characterId = player.characterId;
     previewCharacterId = player.characterId;
-  } else if (player && !multiplayer.initialCharacterSent) {
+  } else if (
+    player &&
+    !multiplayer.initialCharacterSent &&
+    !multiplayer.matchId
+  ) {
     const available = firstAvailableOnlineCharacter();
     previewCharacterId = available.id;
     config.characterId = available.id;
     multiplayer.initialCharacterSent = true;
-    sendOnline({
-      type: "player_update",
+    sendOnline(CLIENT_MESSAGE_TYPES.PLAYER_UPDATE, {
       name: multiplayer.playerName,
       characterId: available.id,
     });
   }
 
+  if (returningToCharacterSelect) {
+    returnToOnlineCharacterSelect();
+    return;
+  }
+
   renderOnlineLobby();
   renderCharacterSelect();
+  renderOnlineRematchButton();
 }
 
-function sendOnline(message) {
+function returnToOnlineCharacterSelect() {
+  clearTimers();
+  matchToken += 1;
+  multiplayer.matchId = null;
+  multiplayer.acceptedAction = null;
+  multiplayer.pendingAction = null;
+  multiplayer.lastRenderedBeat = 0;
+  applyOnlineFreezeState();
+  fighters = [];
+  beat = 0;
+  phase = MATCH_PHASES.LOBBY;
+  selectedAction = null;
+  targetingPower = false;
+  robotSelections = new Map();
+  ui.countdownOverlay.hidden = true;
+  ui.rules.disabled = false;
+  ui.rematch.disabled = false;
+  ui.rematch.textContent = "REMATCH";
+  ui.rematch.setAttribute("aria-pressed", "false");
+  renderOnlineLobby();
+  renderCharacterSelect();
+  showScreen(ui.character);
+}
+
+function applyOnlineStateSync(state) {
+  if (state.room) applyOnlineRoomState(state.room);
+  if (!state.match) return;
+  beginOnlineMatch(state.match);
+}
+
+function syncOnlineClock() {
+  if (multiplayer.socket?.readyState !== WebSocket.OPEN) return;
+  const requestId = `clock-${Date.now().toString(36)}`;
+  multiplayer.clockPingId = requestId;
+  multiplayer.clockPingSentAt = Date.now();
+  sendOnline(CLIENT_MESSAGE_TYPES.PING, { requestId });
+}
+
+function applyOnlineClockSample(message) {
+  if (
+    message.requestId !== multiplayer.clockPingId ||
+    !Number.isFinite(message.serverTime)
+  ) return;
+  const receivedAt = Date.now();
+  const midpoint = (multiplayer.clockPingSentAt + receivedAt) / 2;
+  multiplayer.clockOffset = message.serverTime - midpoint;
+  multiplayer.clockPingId = null;
+}
+
+function onlineNow() {
+  return Date.now() + multiplayer.clockOffset;
+}
+
+function canChooseOnlineAction() {
+  if (config.mode !== "online") return true;
+  if (phase !== MATCH_PHASES.FREEZE) return true;
+  return multiplayer.freezePlayerIds.includes(multiplayer.playerId);
+}
+
+function applyOnlineFreezeState(state = null) {
+  const freezePlayerIds = Array.isArray(state?.freezePlayerIds)
+    ? state.freezePlayerIds
+    : state?.freezePlayerId
+      ? [state.freezePlayerId]
+      : [];
+  multiplayer.freezePlayerIds = freezePlayerIds;
+  multiplayer.freezePlayerId = freezePlayerIds[0] ?? null;
+  multiplayer.revealedActions = state?.revealedActions ?? [];
+}
+
+function showOnlineMessage(message, isError = false) {
+  ui.lobbyMessage.textContent = message;
+  if (!multiplayer.matchId) return;
+  ui.eventBanner.textContent = message;
+  ui.eventBanner.hidden = false;
+  ui.eventBanner.classList.toggle("is-error", isError);
+}
+
+function sendOnline(type, payload = {}) {
   if (multiplayer.socket?.readyState !== WebSocket.OPEN) return false;
+  const message = createClientMessage(type, payload);
   multiplayer.socket.send(JSON.stringify(message));
   return true;
+}
+
+function toggleOnlineRematchVote() {
+  const rematch = multiplayer.room?.rematch;
+  if (
+    phase !== MATCH_PHASES.GAMEOVER ||
+    rematch?.matchId !== multiplayer.matchId
+  ) return;
+  const hasVoted = rematch.votedPlayerIds?.includes(multiplayer.playerId);
+  if (!sendOnline(CLIENT_MESSAGE_TYPES.REMATCH_VOTE, { vote: !hasVoted })) {
+    renderOnlineRematchButton();
+    return;
+  }
+  ui.rematch.disabled = true;
+  ui.rematch.textContent = hasVoted ? "CANCELING…" : "VOTE SENT…";
+}
+
+function renderOnlineRematchButton() {
+  if (config.mode !== "online" || phase !== MATCH_PHASES.GAMEOVER) return;
+  const rematch = multiplayer.room?.rematch;
+  const connected = multiplayer.socket?.readyState === WebSocket.OPEN;
+  const currentMatch = rematch?.matchId === multiplayer.matchId;
+  if (!connected || !currentMatch) {
+    ui.rematch.disabled = true;
+    ui.rematch.textContent = connected ? "SYNCING…" : "DISCONNECTED";
+    ui.rematch.setAttribute("aria-pressed", "false");
+    return;
+  }
+
+  const hasVoted = rematch.votedPlayerIds?.includes(multiplayer.playerId);
+  const progress = `${rematch.voteCount}/${rematch.requiredCount}`;
+  ui.rematch.disabled = false;
+  ui.rematch.textContent = hasVoted
+    ? `WAITING · ${progress}`
+    : rematch.voteCount
+      ? `REMATCH · ${progress}`
+      : "REMATCH";
+  ui.rematch.setAttribute("aria-pressed", String(Boolean(hasVoted)));
+  ui.rematch.setAttribute(
+    "aria-label",
+    hasVoted
+      ? `Rematch vote recorded, ${progress} players ready. Tap to cancel.`
+      : `Vote for a rematch, ${progress} players ready.`,
+  );
 }
 
 function disconnectOnlineRoom() {
@@ -573,6 +946,13 @@ function disconnectOnlineRoom() {
   multiplayer.room = null;
   multiplayer.roomCode = null;
   multiplayer.initialCharacterSent = false;
+  multiplayer.matchId = null;
+  multiplayer.acceptedAction = null;
+  multiplayer.pendingAction = null;
+  multiplayer.clockOffset = 0;
+  multiplayer.clockPingId = null;
+  multiplayer.lastRenderedBeat = 0;
+  applyOnlineFreezeState();
   if (socket && socket.readyState < WebSocket.CLOSING) {
     socket.close(1000, "Left room");
   }
@@ -600,15 +980,39 @@ function setOnlineStatus(message, isError = false) {
   ui.onlineStatus.classList.toggle("is-error", isError);
 }
 
+async function readOnlineApiResponse(response) {
+  try {
+    return await response.json();
+  } catch {
+    return {
+      error: response.ok
+        ? "The online service returned an unreadable response."
+        : "Online multiplayer is temporarily unavailable. Please try again.",
+    };
+  }
+}
+
 function normalizeRoomCode(value) {
   return value.toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 6);
 }
 
 function getOrCreatePlayerId() {
-  const stored = sessionStorage.getItem("quickDrawPlayerId");
+  let stored = null;
+  try {
+    stored = sessionStorage.getItem("quickDrawPlayerId");
+  } catch {
+    // A temporary in-memory identity still allows privacy-restricted browsers.
+  }
   if (stored) return stored;
-  const playerId = crypto.randomUUID();
-  sessionStorage.setItem("quickDrawPlayerId", playerId);
+  const playerId =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `player-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+  try {
+    sessionStorage.setItem("quickDrawPlayerId", playerId);
+  } catch {
+    // The current page keeps the generated ID in memory for this session.
+  }
   return playerId;
 }
 
@@ -852,49 +1256,41 @@ function selectSegment(selector, selected) {
 function startMatch() {
   clearTimers();
   matchToken += 1;
+  ui.rematch.disabled = false;
+  ui.rematch.textContent = "REMATCH";
   const selectedCharacter = characterById(config.characterId);
   const matchRoster = [
     selectedCharacter,
     ...CHARACTERS.filter((character) => character.id !== selectedCharacter.id),
   ];
   matchRoster.forEach(preloadActionImages);
-  fighters = [
-    createFighter({
-      id: "you",
-      name: "You",
-      color: selectedCharacter.color,
-      avatar: selectedCharacter.initial,
-      isHuman: true,
-      characterId: selectedCharacter.id,
-      characterName: selectedCharacter.name,
-      image: selectedCharacter.image ?? null,
-      actionImages: selectedCharacter.actionImages ?? null,
-    }),
-    createFighter({
-      id: "mo",
-      name: "Mo",
-      color: "#cf7b2a",
-      avatar: matchRoster[1].initial,
-      characterId: matchRoster[1].id,
-      characterName: matchRoster[1].name,
-      image: matchRoster[1].image ?? null,
-      actionImages: matchRoster[1].actionImages ?? null,
-    }),
-  ];
-  if (config.playerCount === 3) {
-    fighters.push(
-      createFighter({
-        id: "ava",
-        name: "Ava",
-        color: "#9b54c6",
-        avatar: matchRoster[2].initial,
-        characterId: matchRoster[2].id,
-        characterName: matchRoster[2].name,
-        image: matchRoster[2].image ?? null,
-        actionImages: matchRoster[2].actionImages ?? null,
-      }),
-    );
-  }
+  const player = createFighter({
+    id: "you",
+    name: "You",
+    color: selectedCharacter.color,
+    avatar: selectedCharacter.initial,
+    isHuman: true,
+    characterId: selectedCharacter.id,
+    characterName: selectedCharacter.name,
+    image: selectedCharacter.image ?? null,
+    actionImages: selectedCharacter.actionImages ?? null,
+  });
+  const robots = ROBOT_PROFILES
+    .slice(0, config.playerCount - 1)
+    .map((profile, index) => {
+      const character = matchRoster[index + 1];
+      return createFighter({
+        id: profile.id,
+        name: profile.name,
+        color: profile.color,
+        avatar: character.initial,
+        characterId: character.id,
+        characterName: character.name,
+        image: character.image ?? null,
+        actionImages: character.actionImages ?? null,
+      });
+    });
+  fighters = [player, ...robots];
 
   beat = 0;
   stats = freshStats();
@@ -902,8 +1298,7 @@ function startMatch() {
   pausedFromPhase = null;
   selectedAction = null;
   robotSelections = new Map();
-  ui.combat.dataset.layout =
-    config.playerCount === 2 ? "duel-thumb" : "three-target";
+  ui.combat.dataset.layout = combatLayoutFor(config.playerCount);
   ui.rules.disabled = true;
   ui.countdownOverlay.hidden = true;
   showScreen(ui.combat);
@@ -933,12 +1328,11 @@ function confirmCharacter() {
   if (config.mode === "online") {
     const player = onlinePlayer();
     if (!player) return;
-    sendOnline({
-      type: "player_update",
+    sendOnline(CLIENT_MESSAGE_TYPES.PLAYER_UPDATE, {
       name: multiplayer.playerName,
       characterId: character.id,
     });
-    sendOnline({ type: "ready", ready: !player.ready });
+    sendOnline(CLIENT_MESSAGE_TYPES.READY, { ready: !player.ready });
     return;
   }
 
@@ -947,29 +1341,19 @@ function confirmCharacter() {
 
 function renderCharacterSelect() {
   const selected = characterById(previewCharacterId);
-  const claimedByOthers = new Set(
-    config.mode === "online"
-      ? (multiplayer.room?.players ?? [])
-          .filter((player) => player.id !== multiplayer.playerId)
-          .map((player) => player.characterId)
-          .filter(Boolean)
-      : [],
-  );
   ui.characterGrid.replaceChildren(
     ...CHARACTERS.map((character) => {
-      const isTaken = claimedByOthers.has(character.id);
       const button = document.createElement("button");
       button.type = "button";
       button.className = [
         "character-card",
         character.id === selected.id ? "is-selected" : "",
         character.available ? "" : "is-coming",
-        isTaken ? "is-taken" : "",
       ]
         .filter(Boolean)
         .join(" ");
       button.dataset.characterId = character.id;
-      button.disabled = isTaken || !character.available;
+      button.disabled = !character.available;
       button.style.setProperty("--character-color", character.color);
       button.setAttribute("aria-pressed", String(character.id === selected.id));
       button.setAttribute(
@@ -992,8 +1376,7 @@ function renderCharacterSelect() {
         previewCharacterId = character.id;
         config.characterId = character.id;
         if (config.mode === "online") {
-          sendOnline({
-            type: "player_update",
+          sendOnline(CLIENT_MESSAGE_TYPES.PLAYER_UPDATE, {
             name: multiplayer.playerName,
             characterId: character.id,
           });
@@ -1057,7 +1440,7 @@ function renderCharacterSelect() {
     config.mode === "online" &&
     multiplayer.socket?.readyState !== WebSocket.OPEN;
   ui.ready.disabled =
-    !selected.available || claimedByOthers.has(selected.id) || onlineDisconnected;
+    !selected.available || onlineDisconnected;
   ui.ready.textContent =
     config.mode === "online"
       ? player?.ready
@@ -1069,7 +1452,7 @@ function renderCharacterSelect() {
   ui.onlineLobbyBar.hidden = config.mode !== "online";
   ui.rosterStatusText.textContent =
     config.mode === "online"
-      ? `${multiplayer.room?.playerCount ?? 0}/${multiplayer.room?.maxPlayers ?? config.onlinePlayerCount} players`
+      ? `${multiplayer.room?.playerCount ?? 0}/${multiplayer.room?.maxPlayers ?? 5} players`
       : `${CHARACTERS.filter((character) => character.available).length} of ${ROSTER_SLOT_COUNT} fighters ready`;
 }
 
@@ -1079,6 +1462,7 @@ function renderOnlineLobby() {
   if (!room) {
     ui.lobbyPlayers.replaceChildren();
     ui.lobbyMessage.textContent = "Connecting…";
+    ui.hostStartMatch.hidden = true;
     return;
   }
 
@@ -1105,15 +1489,49 @@ function renderOnlineLobby() {
     }),
   );
 
+  const currentPlayer = onlinePlayer();
+  const minPlayers = room.minPlayers ?? 2;
+  const readyCount = room.players.filter((player) => player.ready).length;
+  const allConnectedReady =
+    room.playerCount >= minPlayers && readyCount === room.playerCount;
+  const isWaitingForHost =
+    room.playerCount < room.maxPlayers && allConnectedReady;
+  const showHostStart =
+    Boolean(currentPlayer?.isHost) &&
+    room.playerCount < room.maxPlayers &&
+    !multiplayer.matchId;
+
+  ui.hostStartMatch.hidden = !showHostStart;
+  ui.hostStartMatch.disabled = !room.canHostStart;
+  ui.hostStartMatch.textContent =
+    room.playerCount < minPlayers
+      ? "NEED 2 PLAYERS"
+      : room.canHostStart
+        ? `START ${room.playerCount}-PLAYER MATCH`
+        : "WAITING FOR READY";
+
   if (room.canStart) {
-    ui.lobbyMessage.textContent = "ALL READY · BATTLE SYNC IS NEXT";
-  } else if (room.playerCount < room.maxPlayers) {
-    const openSlots = room.maxPlayers - room.playerCount;
-    ui.lobbyMessage.textContent = `Waiting for ${openSlots} player${openSlots === 1 ? "" : "s"}…`;
+    ui.lobbyMessage.textContent = "ALL 5 READY · MATCH STARTING";
+  } else if (room.playerCount < minPlayers) {
+    ui.lobbyMessage.textContent = "Waiting for at least one rival…";
+  } else if (isWaitingForHost) {
+    ui.lobbyMessage.textContent = currentPlayer?.isHost
+      ? "EVERYONE READY · START WHEN YOU ARE"
+      : "EVERYONE READY · WAITING FOR HOST";
   } else {
-    const readyCount = room.players.filter((player) => player.ready).length;
-    ui.lobbyMessage.textContent = `${readyCount}/${room.maxPlayers} ready`;
+    ui.lobbyMessage.textContent =
+      `${readyCount}/${room.playerCount} here ready · ${room.playerCount}/5 joined`;
   }
+}
+
+function startOnlineMatchNow() {
+  if (!multiplayer.room?.canHostStart || !onlinePlayer()?.isHost) return;
+  if (!sendOnline(CLIENT_MESSAGE_TYPES.START_MATCH)) {
+    renderOnlineLobby();
+    return;
+  }
+  ui.hostStartMatch.disabled = true;
+  ui.hostStartMatch.textContent = "STARTING…";
 }
 
 function onlinePlayer() {
@@ -1121,13 +1539,10 @@ function onlinePlayer() {
 }
 
 function firstAvailableOnlineCharacter() {
-  const claimed = new Set(
-    (multiplayer.room?.players ?? [])
-      .filter((player) => player.id !== multiplayer.playerId)
-      .map((player) => player.characterId)
-      .filter(Boolean),
-  );
-  return CHARACTERS.find((character) => character.available && !claimed.has(character.id)) ?? CHARACTERS[0];
+  const preferred = characterById(config.characterId);
+  return preferred.available
+    ? preferred
+    : CHARACTERS.find((character) => character.available) ?? CHARACTERS[0];
 }
 
 async function copyActiveRoomCode() {
@@ -1141,6 +1556,381 @@ async function copyActiveRoomCode() {
   } catch {
     ui.lobbyMessage.textContent = `Share code ${multiplayer.roomCode}`;
   }
+}
+
+function beginOnlineMatch(state) {
+  if (
+    !state?.id ||
+    !Array.isArray(state.fighters) ||
+    !state.fighters.some((fighter) => fighter.id === multiplayer.playerId)
+  ) return;
+  const isNewMatch = multiplayer.matchId !== state.id;
+  clearTimers();
+  matchToken += 1;
+  multiplayer.matchId = state.id;
+  multiplayer.pendingAction = null;
+  multiplayer.acceptedAction = state.selection ?? null;
+  applyOnlineFreezeState(state);
+  if (isNewMatch) multiplayer.lastRenderedBeat = 0;
+  selectedAction = state.selection ?? null;
+  targetingPower = false;
+  robotSelections = new Map();
+  if (isNewMatch) stats = freshStats();
+
+  syncOnlineFighters(state);
+  beat = state.beat;
+  stats.beats = Math.max(stats.beats, beat);
+  config.playerCount = fighters.length;
+  ui.combat.dataset.layout = combatLayoutFor(fighters.length);
+  ui.rules.disabled = true;
+  ui.rematch.disabled = false;
+  ui.rematch.textContent = "REMATCH";
+  ui.onlineLobbyBar.hidden = true;
+  showScreen(ui.combat);
+  renderAll();
+  applyOnlineSnapshot(state);
+}
+
+function syncOnlineFighters(state) {
+  fighters = state.fighters.map((snapshot) => {
+    const character = characterById(snapshot.characterId);
+    preloadActionImages(character);
+    const fighter = createFighter({
+      id: snapshot.id,
+      name: snapshot.name,
+      color: character.color,
+      avatar: character.initial,
+      isHuman: snapshot.id === multiplayer.playerId,
+      characterId: character.id,
+      characterName: character.name,
+      image: character.image ?? null,
+      actionImages: character.actionImages ?? null,
+    });
+    fighter.hearts = snapshot.hearts;
+    fighter.alive = snapshot.alive;
+    fighter.powerUsed = snapshot.powerUsed;
+    fighter.powerUses = snapshot.powerUses;
+    fighter.hardened = snapshot.hardened;
+    fighter.dousedTurns = snapshot.dousedTurns ?? 0;
+    fighter.dousedById = snapshot.dousedById ?? null;
+    fighter.lastAction = snapshot.lastAction;
+    if (fighter.isHuman) {
+      fighter.ammo = Number.isInteger(snapshot.ammo) ? snapshot.ammo : 0;
+    } else {
+      delete fighter.ammo;
+    }
+    return fighter;
+  });
+}
+
+function combatLayoutFor(playerCount) {
+  return playerCount === 2 ? "duel-thumb" : "multi-target";
+}
+
+function applyOnlineSnapshot(state) {
+  if (state.phase === MATCH_PHASES.COUNTDOWN) {
+    showOnlineCountdown(state.deadlineAt);
+    return;
+  }
+  if (
+    state.phase === MATCH_PHASES.DECIDE ||
+    state.phase === MATCH_PHASES.FREEZE
+  ) {
+    showOnlineDecision(
+      state.beat,
+      state.deadlineAt,
+      state.selection,
+      state.phase,
+      state,
+    );
+    return;
+  }
+  if (state.phase === MATCH_PHASES.OUTCOME) {
+    if (state.lastResult) {
+      renderOnlineBeatResult(state.beat, {
+        ...state.lastResult,
+        state,
+      });
+    }
+    return;
+  }
+  if (state.phase === MATCH_PHASES.GAMEOVER && state.matchResult) {
+    finishOnlineMatch({ ...state.matchResult, state });
+  }
+}
+
+function applyOnlinePhase(message) {
+  if (message.matchId !== multiplayer.matchId) return;
+  if (message.state) {
+    syncOnlineFighters(message.state);
+  }
+  if (message.phase === MATCH_PHASES.COUNTDOWN) {
+    showOnlineCountdown(message.deadlineAt);
+    return;
+  }
+  if (
+    message.phase === MATCH_PHASES.DECIDE ||
+    message.phase === MATCH_PHASES.FREEZE
+  ) {
+    showOnlineDecision(
+      message.beat,
+      message.deadlineAt,
+      message.state?.selection ?? null,
+      message.phase,
+      message.state ?? null,
+    );
+    return;
+  }
+  if (message.phase === MATCH_PHASES.OUTCOME) {
+    cancelAnimationFrame(timerFrame);
+    phase = MATCH_PHASES.OUTCOME;
+    deadline = message.deadlineAt;
+    ui.beatProgress.style.transform = "scaleX(0)";
+    renderActionFan();
+  }
+}
+
+function showOnlineCountdown(deadlineAt) {
+  clearTimers();
+  phase = MATCH_PHASES.COUNTDOWN;
+  beat = 0;
+  selectedAction = null;
+  multiplayer.acceptedAction = null;
+  multiplayer.pendingAction = null;
+  applyOnlineFreezeState();
+  deadline = deadlineAt;
+  deadlineDuration = Math.max(1, deadlineAt - onlineNow());
+  ui.rules.disabled = true;
+  ui.beatNumber.textContent = "MATCH START";
+  ui.phase.textContent = "GET READY";
+  ui.eventBanner.textContent = "First beat begins after the count";
+  ui.eventBanner.classList.remove("is-error");
+  ui.eventBanner.hidden = false;
+  ui.reveals.replaceChildren();
+  ui.reveals.classList.remove("is-outcome");
+  ui.combat.classList.remove("phase-decide", "phase-resolve", "impact");
+  ui.combat.classList.add("phase-countdown");
+  ui.countdownOverlay.hidden = false;
+  renderActionFan();
+
+  let displayedCount = null;
+  const updateCount = () => {
+    if (
+      config.mode !== "online" ||
+      phase !== MATCH_PHASES.COUNTDOWN ||
+      deadline !== deadlineAt
+    ) return;
+    const remaining = Math.max(0, deadlineAt - onlineNow());
+    const count = Math.max(1, Math.ceil(remaining / 1000));
+    if (remaining === 0) {
+      ui.countdownLabel.textContent = "DRAW";
+      ui.countdownNumber.textContent = "!";
+      return;
+    }
+    if (count !== displayedCount) {
+      displayedCount = count;
+      ui.countdownLabel.textContent = count === 1 ? "READY…" : "GET READY";
+      ui.countdownNumber.textContent = String(count);
+      ui.countdownNumber.animate?.(
+        [
+          { opacity: 0, transform: "scale(1.45)" },
+          { opacity: 1, transform: "scale(1)" },
+        ],
+        { duration: 240, easing: "ease-out" },
+      );
+      pulseDevice(18);
+    }
+    phaseTimer = window.setTimeout(updateCount, 80);
+  };
+  updateCount();
+}
+
+function showOnlineDecision(
+  serverBeat,
+  deadlineAt,
+  selection = null,
+  serverPhase = MATCH_PHASES.DECIDE,
+  phaseState = null,
+) {
+  clearTimers();
+  phase = serverPhase;
+  beat = serverBeat;
+  stats.beats = Math.max(stats.beats, beat);
+  deadline = deadlineAt;
+  deadlineDuration =
+    serverPhase === MATCH_PHASES.FREEZE
+      ? Math.max(1, deadlineAt - onlineNow())
+      : DECIDE_MS;
+  targetingPower = false;
+  applyOnlineFreezeState(phaseState);
+  multiplayer.acceptedAction = selection ?? null;
+  multiplayer.pendingAction = null;
+  selectedAction = selection ?? null;
+
+  const player = getPlayer();
+  const isFreezeChooser =
+    serverPhase === MATCH_PHASES.FREEZE &&
+    multiplayer.freezePlayerIds.includes(player.id);
+  const freezeFighters = multiplayer.freezePlayerIds
+    .map((fighterId) => fighterById(fighterId))
+    .filter(Boolean);
+  const freezeChooserLabel =
+    freezeFighters.length > 1
+      ? `${freezeFighters.map((fighter) => fighter.name).join(" & ")} are choosing responses`
+      : `${freezeFighters[0]?.name ?? "Time Freeze"} is choosing a response`;
+  const revealedSelections = new Map(
+    multiplayer.revealedActions.map(({ fighterId, ...action }) => [
+      fighterId,
+      action,
+    ]),
+  );
+  const incomingShots = [...revealedSelections].filter(
+    ([fighterId, action]) => {
+      const fighter = fighterById(fighterId);
+      return fighter && actionThreatensPlayer(action, fighter, player);
+    },
+  );
+  ui.countdownOverlay.hidden = true;
+  ui.beatNumber.textContent = `BEAT ${beat}`;
+  ui.phase.textContent = !player.alive
+    ? "SPECTATING"
+    : serverPhase === MATCH_PHASES.FREEZE
+      ? "TIME FROZEN"
+      : "PICK!";
+  ui.eventBanner.textContent = !player.alive
+    ? "You’re out — watching the duel"
+      : serverPhase === MATCH_PHASES.FREEZE && isFreezeChooser
+      ? incomingShots.length > 0
+        ? `${incomingShots.length} ${incomingShots.length === 1 ? "shot is" : "shots are"} aimed at you — choose your answer`
+        : "No shots are aimed at you — choose your answer"
+      : serverPhase === MATCH_PHASES.FREEZE
+        ? freezeChooserLabel
+    : selection
+      ? `${actionLabel(selection.type)} locked in`
+      : "Choose your move";
+  ui.eventBanner.classList.remove("is-error");
+  ui.eventBanner.hidden = false;
+  ui.reveals.replaceChildren();
+  ui.reveals.classList.remove("is-outcome");
+  ui.combat.classList.remove("phase-countdown", "phase-resolve", "impact");
+  ui.combat.classList.add("phase-decide");
+  ui.rules.disabled = false;
+  renderAll();
+  if (isFreezeChooser) renderReveals(revealedSelections);
+  animateTimer();
+  pulseDevice(18);
+}
+
+function renderOnlineBeatResult(serverBeat, payload) {
+  if (!payload.state) return;
+  clearTimers();
+  syncOnlineFighters(payload.state);
+  beat = serverBeat;
+  stats.beats = Math.max(stats.beats, beat);
+  phase = MATCH_PHASES.OUTCOME;
+  deadline = payload.state.deadlineAt;
+  targetingPower = false;
+  multiplayer.acceptedAction = null;
+  multiplayer.pendingAction = null;
+  applyOnlineFreezeState();
+  selectedAction = null;
+
+  const result = deserializeOnlineResult(payload);
+  const player = getPlayer();
+  if (multiplayer.lastRenderedBeat !== serverBeat) {
+    const shotsBlocked = result.blockedShots.get(player.id) ?? 0;
+    stats.blocks += shotsBlocked;
+    if (result.reloaded.has(player.id)) stats.reloads += 1;
+    if (result.reloaded.has(player.id) && result.damage.has(player.id)) {
+      stats.riskyReloads += 1;
+    }
+    multiplayer.lastRenderedBeat = serverBeat;
+  }
+
+  ui.countdownOverlay.hidden = true;
+  ui.beatNumber.textContent = `BEAT ${beat}`;
+  ui.phase.textContent = "OUTCOME";
+  ui.eventBanner.textContent = describeOutcome(result.events);
+  ui.eventBanner.classList.remove("is-error");
+  ui.eventBanner.hidden = true;
+  ui.beatProgress.style.transform = "scaleX(0)";
+  ui.combat.classList.remove("phase-countdown", "phase-decide");
+  ui.combat.classList.add("phase-resolve", "impact");
+  ui.rules.disabled = true;
+  renderAll();
+  renderOutcomeActions(result);
+  animateEvents(result.events);
+  pulseDevice(result.damage.size ? [25, 35, 45] : 14);
+}
+
+function deserializeOnlineResult(payload) {
+  return {
+    selections: new Map(
+      (payload.actions ?? []).map(({ fighterId, ...action }) => [
+        fighterId,
+        action,
+      ]),
+    ),
+    events: payload.events ?? [],
+    damage: new Map(Object.entries(payload.damage ?? {})),
+    blockedShots: new Map(Object.entries(payload.blockedShots ?? {})),
+    reloaded: new Set(payload.reloaded ?? []),
+  };
+}
+
+function finishOnlineMatch(result) {
+  if (result.state) syncOnlineFighters(result.state);
+  const winner = fighterById(result.winnerId);
+  if (!winner) return;
+  multiplayer.acceptedAction = null;
+  multiplayer.pendingAction = null;
+  selectedAction = null;
+  const reason =
+    result.reason === "civilian_survived_five_powers"
+      ? "civilian-goal"
+      : "last-standing";
+  endMatch(winner, reason);
+  const winners = (result.winnerIds ?? [result.winnerId])
+    .map((winnerId) => fighterById(winnerId))
+    .filter(Boolean);
+  if (winners.length > 1) {
+    const playerWon = winners.some((candidate) => candidate.isHuman);
+    const otherWinners = winners.filter((candidate) => !candidate.isHuman);
+    ui.resultTitle.textContent = playerWon
+      ? otherWinners.length
+        ? `You & ${otherWinners.map((candidate) => candidate.name).join(" & ")} win!`
+        : "You win!"
+      : `${winners.map((candidate) => candidate.name).join(" & ")} win!`;
+    ui.resultSubtitle.textContent =
+      "Multiple Civilians survived their fifth exposed beat together.";
+  }
+  renderOnlineRematchButton();
+}
+
+function showOnlineActionStatus(action) {
+  if (!action) {
+    ui.eventBanner.textContent = "Choose your move";
+    return;
+  }
+  const target = action.targetId ? fighterById(action.targetId) : null;
+  ui.eventBanner.classList.remove("is-error");
+  ui.eventBanner.textContent =
+    action.type === ACTIONS.FIRE
+      ? `Targeting ${target?.name ?? "opponent"}`
+      : action.type === ACTIONS.POWER
+        ? target
+          ? `${powerNameFor(getPlayer())} targets ${target.name}`
+          : `${powerNameFor(getPlayer())} locked in`
+      : `${actionLabel(action.type)} locked in`;
+}
+
+function sameAction(left, right) {
+  return Boolean(
+    left &&
+    right &&
+    left.type === right.type &&
+    (left.targetId ?? null) === (right.targetId ?? null),
+  );
 }
 
 function startCountdown(token) {
@@ -1331,12 +2121,14 @@ function finishBeat(token, selections) {
 }
 
 function chooseAction(action) {
+  const player = getPlayer();
   if (
     (phase !== "decide" && phase !== "freeze") ||
-    !getPlayer().alive ||
-    action.disabled
+    !player?.alive ||
+    action.disabled ||
+    (config.mode === "online" &&
+      (!canChooseOnlineAction() || onlineNow() >= deadline))
   ) return;
-  const player = getPlayer();
   const powerId = powerIdFor(player);
   const livingRivals = fighters.filter(
     (fighter) => fighter.alive && !fighter.isHuman,
@@ -1374,6 +2166,22 @@ function chooseAction(action) {
   }
   renderAll();
 
+  if (config.mode === "online") {
+    multiplayer.pendingAction = selectedAction;
+    const sent = sendOnline(CLIENT_MESSAGE_TYPES.ACTION_SUBMIT, {
+      matchId: multiplayer.matchId,
+      beat,
+      action: selectedAction,
+    });
+    if (!sent) {
+      multiplayer.pendingAction = null;
+      selectedAction = multiplayer.acceptedAction;
+      showOnlineMessage("Connection interrupted", true);
+      renderAll();
+    }
+    return;
+  }
+
   if (phase === "freeze") {
     window.clearTimeout(phaseTimer);
     phaseTimer = window.setTimeout(() => beginReveal(matchToken), 120);
@@ -1393,6 +2201,7 @@ function renderRivals() {
   const playerPowerId = powerIdFor(player);
   const showTargetedPowerButtons =
     rivals.length > 1 && powerNeedsTarget(playerPowerId);
+  ui.rivals.dataset.count = String(rivals.length);
   ui.rivals.replaceChildren(
     ...rivals.map((fighter) => {
       const card = document.createElement("article");
@@ -1417,6 +2226,7 @@ function renderRivals() {
                 ? `<span class="civilian-progress">${fighter.powerUses}/${CIVILIAN_POWER_GOAL}</span>`
                 : ""
             }
+            ${dousedStatusMarkup(fighter)}
           </div>
         </div>
       `;
@@ -1441,6 +2251,10 @@ function renderRivals() {
           (phase !== "decide" && phase !== "freeze") ||
           !player?.alive ||
           !fighter.alive ||
+          (config.mode === "online" &&
+            (!canChooseOnlineAction() ||
+              onlineNow() >= deadline ||
+              multiplayer.socket?.readyState !== WebSocket.OPEN)) ||
           player.ammo < 1;
         shoot.setAttribute("aria-label", `Shoot ${fighter.name}`);
         shoot.setAttribute("aria-pressed", String(isSelected));
@@ -1526,7 +2340,13 @@ function renderPlayerHud() {
   const player = getPlayer();
   const isCivilian = powerIdFor(player) === POWER_IDS.CIVILIAN;
   ui.combat.dataset.playerCharacterId = player.characterId ?? "";
-  ui.hearts.innerHTML = heartMarkup(player.hearts, heartSlotCount(player));
+  ui.hearts.innerHTML = `${heartMarkup(player.hearts, heartSlotCount(player))}${dousedStatusMarkup(player)}`;
+  ui.hearts.setAttribute(
+    "aria-label",
+    player.dousedTurns > 0
+      ? `Your hearts. Doused for ${player.dousedTurns} ${player.dousedTurns === 1 ? "beat" : "beats"}. Shooting will ignite the gasoline.`
+      : "Your hearts",
+  );
   ui.ammoPill.classList.toggle("is-civilian-goal", isCivilian);
   ui.ammoPill.setAttribute(
     "aria-label",
@@ -1597,6 +2417,10 @@ function renderActionFan() {
       const disabled =
         (phase !== "decide" && phase !== "freeze") ||
         !player.alive ||
+        (config.mode === "online" &&
+          (!canChooseOnlineAction() ||
+            onlineNow() >= deadline ||
+            multiplayer.socket?.readyState !== WebSocket.OPEN)) ||
         (Boolean(action.targetId) && !target?.alive) ||
         (action.type === ACTIONS.FIRE && (player.ammo < 1 || !target)) ||
         (phase === "freeze" && action.type === ACTIONS.POWER) ||
@@ -1677,33 +2501,55 @@ function renderReveals(selections) {
 
 function renderOutcomeActions(result) {
   const participants = outcomeFighterOrder(result.selections);
+  const positions = outcomeArenaPositions(participants);
+  const trails = document.createElement("div");
+  trails.className = "outcome-trails";
+  trails.setAttribute("aria-hidden", "true");
+
+  for (const interaction of outcomeInteractions(result)) {
+    if (!positions.has(interaction.actorId) || !positions.has(interaction.targetId)) {
+      continue;
+    }
+    const actor = fighterById(interaction.actorId);
+    const trail = document.createElement("div");
+    trail.className = `outcome-trail is-${interaction.kind}`;
+    trail.dataset.actorId = interaction.actorId;
+    trail.dataset.targetId = interaction.targetId;
+    trail.style.setProperty("--trail-color", actor?.color ?? "#f4c95d");
+    trails.append(trail);
+  }
+
   ui.reveals.classList.add("is-outcome");
   ui.reveals.replaceChildren(
-    ...participants.map((fighter, index) => {
+    trails,
+    ...participants.map((fighter) => {
       const action = result.selections.get(fighter.id) ?? { type: ACTIONS.WAIT };
       const poseKey = outcomePoseFor(action, result.damage.has(fighter.id));
       const poseImage =
         fighter.actionImages?.[poseKey] ??
         fighter.actionImages?.idle ??
         fighter.image;
-      const targetIndex = participants.findIndex(
-        (candidate) => candidate.id === action.targetId,
-      );
-      const facesLeft =
-        targetIndex >= 0
-          ? targetIndex < index
-          : index >= Math.ceil(participants.length / 2);
+      const position = positions.get(fighter.id);
+      const targetPosition = positions.get(action.targetId);
+      const facesLeft = targetPosition
+        ? targetPosition.x < position.x
+        : position.x > 50;
       const card = document.createElement("article");
       const caption = describeFighterOutcome(fighter, action, result);
       card.className = [
         "outcome-action-card",
         fighter.alive ? "" : "is-out",
+        result.damage.has(fighter.id) ? "is-hit" : "",
+        (result.blockedShots.get(fighter.id) ?? 0) > 0 ? "is-blocked" : "",
       ].filter(Boolean).join(" ");
       card.dataset.fighterId = fighter.id;
       card.dataset.characterId = fighter.characterId ?? "";
       card.dataset.pose = poseKey;
+      card.dataset.action = action.type;
       card.dataset.facing = facesLeft ? "left" : "right";
       card.style.setProperty("--fighter-color", fighter.color);
+      card.style.setProperty("--arena-x", `${position.x}%`);
+      card.style.setProperty("--arena-y", `${position.y}%`);
       card.setAttribute("aria-label", caption);
 
       const visual = document.createElement("div");
@@ -1723,23 +2569,40 @@ function renderOutcomeActions(result) {
         visual.append(placeholder);
       }
 
-      const copy = document.createElement("div");
-      copy.className = "outcome-action-copy";
-      const heading = document.createElement("strong");
-      heading.textContent = `${fighter.isHuman ? "YOU" : fighter.name} · ${actionLabelForFighter(action, fighter)}`;
-      const statement = document.createElement("p");
-      statement.textContent = caption;
-      copy.append(heading, statement);
+      const name = document.createElement("strong");
+      name.className = "outcome-fighter-name";
+      name.textContent = fighter.isHuman ? "YOU" : fighter.name;
+      const actionBadge = document.createElement("span");
+      actionBadge.className = "outcome-action-badge";
+      actionBadge.textContent = actionIcon(action.type);
+      actionBadge.setAttribute("aria-hidden", "true");
+      visual.append(name, actionBadge);
+
+      if (result.damage.has(fighter.id)) {
+        const hit = document.createElement("span");
+        hit.className = "outcome-impact-mark is-hit";
+        hit.textContent = "✹";
+        hit.setAttribute("aria-hidden", "true");
+        visual.append(hit);
+      } else if ((result.blockedShots.get(fighter.id) ?? 0) > 0) {
+        const blocked = document.createElement("span");
+        blocked.className = "outcome-impact-mark is-blocked";
+        blocked.textContent = "⬡";
+        blocked.setAttribute("aria-hidden", "true");
+        visual.append(blocked);
+      }
+
       if (!fighter.alive) {
         const out = document.createElement("span");
         out.className = "outcome-out-badge";
         out.textContent = "OUT";
         visual.append(out);
       }
-      card.append(visual, copy);
+      card.append(visual);
       return card;
     }),
   );
+  requestAnimationFrame(positionOutcomeTrails);
 }
 
 function outcomeFighterOrder(selections) {
@@ -1747,8 +2610,94 @@ function outcomeFighterOrder(selections) {
   const player = participants.find((fighter) => fighter.isHuman);
   const rivals = participants.filter((fighter) => !fighter.isHuman);
   if (!player) return rivals;
-  if (rivals.length < 2) return [...rivals, player];
-  return [rivals[0], player, ...rivals.slice(1)];
+  return [player, ...rivals];
+}
+
+function outcomeArenaPositions(participants) {
+  const player = participants.find((fighter) => fighter.isHuman);
+  const rivals = participants.filter((fighter) => !fighter.isHuman);
+  const rivalSlots = {
+    1: [{ x: 50, y: 27 }],
+    2: [{ x: 24, y: 29 }, { x: 76, y: 29 }],
+    3: [
+      { x: 14, y: 36 },
+      { x: 50, y: 23 },
+      { x: 86, y: 36 },
+    ],
+    4: [
+      { x: 10, y: 38 },
+      { x: 36, y: 25 },
+      { x: 64, y: 25 },
+      { x: 90, y: 38 },
+    ],
+  }[rivals.length] ?? [];
+  const positions = new Map(
+    rivals.map((fighter, index) => [
+      fighter.id,
+      rivalSlots[index] ?? { x: 50, y: 30 },
+    ]),
+  );
+  if (player) positions.set(player.id, { x: 50, y: 79 });
+  return positions;
+}
+
+function outcomeInteractions(result) {
+  const interactions = [];
+  const keys = new Set();
+  const add = (actorId, targetId, kind) => {
+    if (!actorId || !targetId || actorId === targetId) return;
+    const key = `${actorId}:${targetId}`;
+    if (keys.has(key)) return;
+    keys.add(key);
+    interactions.push({ actorId, targetId, kind });
+  };
+
+  for (const event of result.events) {
+    if (event.type === "hit" || event.type === "blocked") {
+      add(event.actorId, event.targetId, event.type);
+    } else if (event.type === "reflected") {
+      add(event.actorId, event.targetId, "reflected");
+    } else if (event.type === "doused" || event.type === "douseIgnited") {
+      add(event.actorId, event.targetId, "power");
+    }
+  }
+  for (const [fighterId, action] of result.selections) {
+    if (action.type === ACTIONS.POWER && action.targetId) {
+      add(fighterId, action.targetId, "power");
+    }
+  }
+  return interactions;
+}
+
+function positionOutcomeTrails() {
+  if (!ui.reveals.classList.contains("is-outcome")) return;
+  const arena = ui.reveals.getBoundingClientRect();
+  for (const trail of ui.reveals.querySelectorAll(".outcome-trail")) {
+    const actor = ui.reveals.querySelector(
+      `.outcome-action-card[data-fighter-id="${CSS.escape(trail.dataset.actorId)}"]`,
+    );
+    const target = ui.reveals.querySelector(
+      `.outcome-action-card[data-fighter-id="${CSS.escape(trail.dataset.targetId)}"]`,
+    );
+    if (!actor || !target) continue;
+    const actorBox = actor.getBoundingClientRect();
+    const targetBox = target.getBoundingClientRect();
+    const startX = actorBox.left + actorBox.width / 2 - arena.left;
+    const startY = actorBox.top + actorBox.height / 2 - arena.top;
+    const endX = targetBox.left + targetBox.width / 2 - arena.left;
+    const endY = targetBox.top + targetBox.height / 2 - arena.top;
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    const distance = Math.hypot(deltaX, deltaY);
+    if (!distance) continue;
+    const inset = Math.min(34, distance * 0.18);
+    const unitX = deltaX / distance;
+    const unitY = deltaY / distance;
+    trail.style.left = `${startX + unitX * inset}px`;
+    trail.style.top = `${startY + unitY * inset}px`;
+    trail.style.width = `${Math.max(12, distance - inset * 2)}px`;
+    trail.style.transform = `rotate(${Math.atan2(deltaY, deltaX)}rad)`;
+  }
 }
 
 function describeFighterOutcome(fighter, action, result) {
@@ -1773,6 +2722,12 @@ function describeFighterOutcome(fighter, action, result) {
   const eliminated = result.events.some(
     (event) => event.type === "eliminated" && event.actorId === fighter.id,
   );
+  const douseIgnited = result.events.some(
+    (event) => event.type === "douseIgnited" && event.targetId === fighter.id,
+  );
+  const stickyResult = result.events.find(
+    (event) => event.type === "bulletsStolen" && event.actorId === fighter.id,
+  );
   let statement;
 
   if (action.type === ACTIONS.BLOCK) {
@@ -1782,7 +2737,9 @@ function describeFighterOutcome(fighter, action, result) {
   } else if (action.type === ACTIONS.RELOAD) {
     statement = `${subject} ${thirdPerson ? "reloads" : "reload"}.`;
   } else if (action.type === ACTIONS.FIRE) {
-    const resultText = landedShot
+    const resultText = douseIgnited
+      ? " — Douse ignited and canceled the shot!"
+      : landedShot
       ? " — hit!"
       : shotWasBlocked
         ? " — blocked!"
@@ -1801,6 +2758,12 @@ function describeFighterOutcome(fighter, action, result) {
             : shotWasReflected
               ? " — reflected!"
               : "."
+        : powerId === POWER_IDS.STICKY_FINGERS
+          ? stickyResult?.reason === "shotAtThief"
+            ? " — the target fired at Sticky, so nothing was stolen."
+            : Number.isInteger(stickyResult?.amount)
+              ? ` — stole ${stickyResult.amount} ${stickyResult.amount === 1 ? "bullet" : "bullets"}.`
+              : " — stole bullets."
         : ".";
     const powerTarget =
       powerId === POWER_IDS.MANIAC
@@ -1808,7 +2771,9 @@ function describeFighterOutcome(fighter, action, result) {
         : targetName
           ? ` on ${targetName}`
           : "";
-    statement = `${subject} ${thirdPerson ? "uses" : "use"} ${powerNameFor(fighter)}${powerTarget}${resultText}`;
+    statement = douseIgnited
+      ? `${subject} ${thirdPerson ? "tries" : "try"} ${powerNameFor(fighter)}, but Douse ignites and cancels the shot!`
+      : `${subject} ${thirdPerson ? "uses" : "use"} ${powerNameFor(fighter)}${powerTarget}${resultText}`;
   } else {
     statement = damage
       ? `${subject} couldn’t act. ${subject} ${thirdPerson ? "takes" : "take"} ${damage === 1 ? "a hit" : `${damage} hits`}.`
@@ -1819,6 +2784,14 @@ function describeFighterOutcome(fighter, action, result) {
     statement += ` ${subject} ${thirdPerson ? "takes" : "take"} ${damage === 1 ? "a hit" : `${damage} hits`}.`;
   }
   if (eliminated) statement += ` ${subject} ${thirdPerson ? "is" : "are"} out!`;
+  if (action.jumbledFrom) {
+    statement = `${describeJumbleChange(
+      action.jumbledFrom,
+      action.jumbledTo,
+      action.jumbledOriginalTargetId,
+      action.targetId,
+    )} ${statement}`;
+  }
   return statement;
 }
 
@@ -1852,15 +2825,17 @@ function renderTerritories() {
 }
 
 function animateEvents(events) {
+  const playerId = getPlayer()?.id;
   for (const event of events) {
     const hitEvent =
       event.type === "hit" ||
       event.type === "reflected" ||
-      event.type === "wildBackfire";
+      event.type === "wildBackfire" ||
+      event.type === "douseIgnited";
     const blockEvent = event.type === "blocked";
     if (!hitEvent && !blockEvent) continue;
     const target =
-      event.targetId === "you"
+      event.targetId === playerId
         ? ui.combat
         : ui.rivals.querySelector(`[data-fighter-id="${event.targetId}"]`);
     target?.classList.add(hitEvent ? "takes-hit" : "blocks-hit");
@@ -1874,21 +2849,31 @@ function animateEvents(events) {
 function animateTimer() {
   const update = (now) => {
     if (phase !== "decide" && phase !== "freeze") return;
-    const remaining = Math.max(0, deadline - now);
-    ui.beatProgress.style.transform = `scaleX(${remaining / deadlineDuration})`;
-    timerFrame = requestAnimationFrame(update);
+    const currentTime = config.mode === "online" ? onlineNow() : now;
+    const remaining = Math.max(0, deadline - currentTime);
+    const progress = Math.min(1, remaining / deadlineDuration);
+    ui.beatProgress.style.transform = `scaleX(${progress})`;
+    if (remaining > 0) {
+      timerFrame = requestAnimationFrame(update);
+    } else if (config.mode === "online") {
+      ui.eventBanner.textContent = "Choice locked · waiting for outcome";
+      renderActionFan();
+    }
   };
   timerFrame = requestAnimationFrame(update);
 }
 
 function describeReveal(selections) {
-  const playerAction = selections.get("you")?.type ?? ACTIONS.WAIT;
+  const playerAction =
+    selections.get(getPlayer()?.id)?.type ?? ACTIONS.WAIT;
   return playerAction === ACTIONS.WAIT ? "No move — you’re wide open!" : "Moves up!";
 }
 
 function describeOutcome(events) {
+  const playerId = getPlayer()?.id;
   const civilianVictory = events.find(
-    (event) => event.type === "civilianVictory" && event.actorId === "you",
+    (event) =>
+      event.type === "civilianVictory" && event.actorId === playerId,
   );
   if (civilianVictory) return "SURVIVED FIVE — civilian victory!";
   if (events.some((event) => event.type === "lastStand")) return "Double knockout — last heart holds!";
@@ -1897,32 +2882,51 @@ function describeOutcome(events) {
   }
   if (
     events.some(
-      (event) => event.type === "wildBackfire" && event.actorId === "you",
+      (event) =>
+        event.type === "wildBackfire" && event.actorId === playerId,
     )
   ) {
     return "Everyone blocked — your last bullet found you!";
   }
-  const playerPower = events.find((event) => event.type === "power" && event.actorId === "you");
+  if (
+    events.some(
+      (event) => event.type === "douseIgnited" && event.targetId === playerId,
+    )
+  ) {
+    return "DOUSE ignited — your shot was canceled!";
+  }
+  const playerPower = events.find(
+    (event) => event.type === "power" && event.actorId === playerId,
+  );
+  const playerTheft = events.find(
+    (event) => event.type === "bulletsStolen" && event.actorId === playerId,
+  );
+  const playerJumble = events.find(
+    (event) => event.type === "jumbled" && event.targetId === playerId,
+  );
   const playerHit = events.some(
     (event) =>
       (event.type === "hit" || event.type === "reflected") &&
-      event.targetId === "you",
+      event.targetId === playerId,
   );
   const playerBlocked = events.some(
-    (event) => event.type === "blocked" && event.targetId === "you",
+    (event) => event.type === "blocked" && event.targetId === playerId,
   );
   const playerLanded = events.some(
     (event) =>
-      event.type === "hit" && event.actorId === "you",
+      event.type === "hit" && event.actorId === playerId,
   );
   const playerReflected = events.some(
-    (event) => event.type === "reflected" && event.actorId === "you",
+    (event) =>
+      event.type === "reflected" && event.actorId === playerId,
   );
   const playerStoneBroke = events.some(
-    (event) => event.type === "stoneShattered" && event.actorId === "you",
+    (event) =>
+      event.type === "stoneShattered" && event.actorId === playerId,
   );
   const playerEliminated = events.some(
-    (event) => event.type === "eliminated" && event.actorId === "you",
+    (event) =>
+      event.type === "eliminated" && event.actorId === playerId,
   );
   if (
     playerEliminated &&
@@ -1932,11 +2936,31 @@ function describeOutcome(events) {
   }
   if (playerReflected) return "MIRROR — their shot came straight back!";
   if (playerStoneBroke) return "Your stone skin shattered!";
+  if (playerJumble?.originalAction && playerJumble?.resolvedAction) {
+    return describeJumbleChange(
+      playerJumble.originalAction,
+      playerJumble.resolvedAction,
+      playerJumble.originalTargetId,
+      playerJumble.resolvedTargetId,
+    ).toUpperCase();
+  }
+  if (playerTheft) {
+    if (playerTheft.reason === "shotAtThief") {
+      return "They fired at you — no bullets stolen!";
+    }
+    return playerTheft.amount > 0
+      ? `STICKY FINGERS stole ${playerTheft.amount} ${playerTheft.amount === 1 ? "bullet" : "bullets"}!`
+      : "Their pockets were empty!";
+  }
   if (playerPower) return powerOutcomeMessage(playerPower);
   if (playerHit) return "Ouch — you lost a heart!";
   if (playerLanded) return "Direct hit!";
   if (playerBlocked) return "Blocked!";
-  if (events.some((event) => event.type === "reload" && event.actorId === "you")) {
+  if (
+    events.some(
+      (event) => event.type === "reload" && event.actorId === playerId,
+    )
+  ) {
     return "Loaded +1 shot";
   }
   return "Nobody got hurt";
@@ -1971,6 +2995,7 @@ function endMatch(winner, reason = "last-standing") {
 }
 
 function pauseMatch() {
+  if (config.mode === "online") return;
   if (phase === "idle" || phase === "gameover") return;
   pausedFromPhase = phase;
   matchToken += 1;
@@ -1984,13 +3009,13 @@ function pauseMatch() {
 
 function openRules() {
   if (phase !== "decide" && phase !== "paused") return;
-  if (phase === "decide") pauseMatch();
+  if (phase === "decide" && config.mode !== "online") pauseMatch();
   ui.rulesModal.hidden = false;
 }
 
 function closeRules() {
   ui.rulesModal.hidden = true;
-  if (phase === "paused") resumePausedMatch();
+  if (phase === "paused" && config.mode !== "online") resumePausedMatch();
 }
 
 function showHome() {
@@ -2054,6 +3079,12 @@ function heartMarkup(count, minimumSlots = 3) {
   ).join("");
 }
 
+function dousedStatusMarkup(fighter) {
+  const turns = Math.max(0, fighter?.dousedTurns ?? 0);
+  if (!turns) return "";
+  return `<span class="doused-status" title="Shooting will ignite the gasoline"><span aria-hidden="true">🔥</span> DOUSED ${turns}</span>`;
+}
+
 function actionLabel(action) {
   return {
     [ACTIONS.BLOCK]: "BLOCK",
@@ -2062,6 +3093,30 @@ function actionLabel(action) {
     [ACTIONS.POWER]: "POWER",
     [ACTIONS.WAIT]: "NO MOVE",
   }[action];
+}
+
+function describeJumbleChange(
+  originalAction,
+  resolvedAction,
+  originalTargetId = null,
+  resolvedTargetId = null,
+) {
+  const resolvedTarget = resolvedTargetId
+    ? fighterById(resolvedTargetId)
+    : null;
+  const targetText = resolvedTarget
+    ? ` at ${resolvedTarget.isHuman ? "you" : resolvedTarget.name}`
+    : "";
+  if (originalAction === resolvedAction) {
+    if (
+      resolvedAction === ACTIONS.FIRE &&
+      originalTargetId !== resolvedTargetId
+    ) {
+      return `Jumble kept FIRE but retargeted it${targetText}!`;
+    }
+    return `Jumble landed on ${actionLabel(resolvedAction)} again!`;
+  }
+  return `Jumble turned ${actionLabel(originalAction)} into ${actionLabel(resolvedAction)}${resolvedAction === ACTIONS.FIRE ? targetText : ""}!`;
 }
 
 function actionLabelForFighter(action, fighter) {
@@ -2111,6 +3166,9 @@ function actionButtonHint(action, player, target) {
     if (powerId === POWER_IDS.HARDEN) return "+1 stone heart";
     if (powerId === POWER_IDS.SIX_CHAMBER) return "+6 shots";
     if (powerId === POWER_IDS.TIME_FREEZE) return "+4 seconds";
+    if (powerId === POWER_IDS.DOUSE) return target ? `douse ${target.name}` : "pick a target";
+    if (powerId === POWER_IDS.STICKY_FINGERS) return target ? `steal from ${target.name}` : "pick a target";
+    if (powerId === POWER_IDS.JUMBLE) return target ? `jumble ${target.name}` : "pick a target";
     if (target) return target.name;
     if (powerNeedsTarget(powerId)) return "pick a target";
     return powerNameFor(player);
@@ -2143,6 +3201,9 @@ function powerOutcomeMessage(event) {
     [POWER_IDS.MIRROR]: target ? `MIRROR copied ${target.name}!` : "MIRROR!",
     [POWER_IDS.TIME_FREEZE]: "TIME FREEZE!",
     [POWER_IDS.MANIAC]: "MANIAC fired on everyone!",
+    [POWER_IDS.DOUSE]: target ? `DOUSE soaked ${target.name} for two beats!` : "DOUSE!",
+    [POWER_IDS.STICKY_FINGERS]: target ? `STICKY FINGERS targeted ${target.name}!` : "STICKY FINGERS!",
+    [POWER_IDS.JUMBLE]: target ? `JUMBLE scrambled ${target.name}!` : "JUMBLE!",
   }[event.powerId] ?? "Power used!";
 }
 
